@@ -12,27 +12,17 @@ $gameDesc = "";
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    $accepted_query = "UPDATE ask
+    SET approval = 'Accepted'
+    WHERE developer_id = 1;";
 
-    $publisherId = $_POST['selected_publisher_id'];
+    $declined_query = "UPDATE ask
+    SET approval = 'Declined'
+    WHERE developer_id = 1;";
 
-    $developerId = 1;
+    //$result = mysqli_query($db,$accepted_query);
+    //$result = mysqli_query($db,$declined);
 
-
-    $gameName = $_POST["gamename"];
-    $gameGenre = $_POST["gamegenre"];
-    $gameDesc = $_POST["gamedesc"];
-
-    echo "<script LANGUAGE='JavaScript'>
-        window.alert('$gameName');
-        </script>";
-
-    
-    $sql = "INSERT INTO ask(publisher_id, developer_id, ask_game_name, ask_game_genre, ask_game_desc) VALUES (?, ?, ?, ?, ?)";
-    $stmt = mysqli_prepare($db, $sql);
-    mysqli_stmt_bind_param($stmt, "iisss", $publisherId, $developerId, $gameName, $gameGenre, $gameDesc);
-    mysqli_stmt_execute($stmt);
-    header("location: developerWelcome.php");
-    
 }
 ?>
 
@@ -88,12 +78,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <h4 class="navbar-text">Developer <?php echo htmlspecialchars($_SESSION['developer_login_name']); ?></h4>
+                    <h4 class="navbar-text">Publisher <?php echo htmlspecialchars($_SESSION['publisher_login_name']); ?></h4>
 
                 </div>
-                <a href="developerWelcome.php">Home</a>
-                <a href="developGame.php">Develop Game</a>
-                <a href="publishedGames.php">Published Games</a>
+                <a href="publisherWelcome.php">Home</a>
+                <a href="publishRequest.php">Publish Requests</a>
                 <div class="navbar-right">
                     <a href="logout.php">Log Out</a>
                 </div>
@@ -106,31 +95,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="centerwrapper">
             <div id="centerdiv">
                 <br><br>
-                <h1>Game Specification</h1>
+                <h1>Publish Requests</h1>
 
                 <form id="gameForm" action="" method="post">
 
-                    <div class="form-group">
-                        <label>Game Name</label>
-                        <input type="text" name="gamename" class="form-control" id="gamename">
-
-                    </div>
-                    <div class="form-group">
-                        <label>Game Description</label>
-                        <textarea class="form-control" name="gamedesc" id="gamedesc" rows="4"></textarea>
-
-                    </div>
-                    <div class="form-group">
-                        <label>Game Genre</label>
-                        <input type="text" name="gamegenre" class="form-control" id="gamegenre">
-
-                    </div>
+    
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT publisher_login_name, publisher_id FROM publisher";
+                        $query = "SELECT ask_game_name, ask_game_desc, ask_game_genre FROM ask WHERE publisher_id = 1 and approval = 'Waiting for Approval'";
 
-                        echo "<p><b>Available Publishers:</b></p>";
+                        echo "<p><b>Requested Games:</b></p>";
 
                         $result = mysqli_query($db, $query);
 
@@ -141,18 +116,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         echo "<table class=\"table table-lg table-striped\">
                             <tr>
-                            <th>Publisher Name</th>
-                            <th>Publisher ID</th>
-                            <th>Option</th>
+                            <th>Game Name</th>
+                            <th>Game Description</th>
+                            <th>Game Genre</th>
+                            <th>        </th>
+                            <th>        </th>
                             </tr>";
-
+                            
                         while($row = mysqli_fetch_array($result)) {
                             echo "<tr>";
-                            echo "<td>" . $row['publisher_login_name'] . "</td>";
-                            echo "<td>" . $row['publisher_id'] . "</td>";
+                            echo "<td>" . $row['ask_game_name'] . "</td>";
+                            echo "<td>" . $row['ask_game_desc'] . "</td>";
+                            echo "<td>" . $row['ask_game_genre'] . "</td>";
                             echo "<td> <form action=\"\" METHOD=\"POST\">
-                                    <button onclick=\"checkEmpty()\" name = \"selected_publisher_id\"class=\"btn btn-success btn-sm\"  value =".$row['publisher_id'].">SELECT</button>
+                                    <button onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  >APPROVE</button>
                                     </form>
+                                </td>";
+                            echo "<td> <form action=\"\" METHOD=\"POST\">
+                                <button onclick=\"cancelled()\" name = \"selected_cancel\"class=\"btn btn-danger btn-sm\" >CANCEL</button>
+                                </form>
                                 </td>";
                             echo "</tr>";
                         }
@@ -166,16 +148,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <script type="text/javascript">
-        function checkEmpty() {
-            var gamenameVal = document.getElementById("gamename").value;
-            var gamedescVal = document.getElementById("gamedesc").value;
-            var gamegenreVal = document.getElementById("gamegenre").value;
-            if (gamenameVal === "" || gamedescVal === "" || gamegenreVal === "") {
-                alert("FILL!");
-            }
-            else {
-                var form = document.getElementById("gameForm").submit();
-            }
+        function approved() {
+            
+        }
+
+        function cancelled() {
+            
         }
     </script>
 </body>

@@ -58,7 +58,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container-fluid">
                 <div class="navbar-header">
                     <h4 class="navbar-text">Developer <?php echo htmlspecialchars($_SESSION['developer_login_name']); ?></h4>
-
                 </div>
                 <a href="developerWelcome.php">Home</a>
                 <a href="developGame.php">Develop Game</a>
@@ -71,6 +70,40 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </nav>
         <div id="centerwrapper">
             <div id="centerdiv">
+
+            <br><br>
+                <h1>Published Games</h1>
+
+                <form id="gameForm" action="" method="post">    
+                    <?php
+                        // Prepare a select statement
+                        $query = "SELECT game_name, game_desc, game_genre FROM game NATURAL JOIN  WHERE developer_id = '1'";
+
+                        $result = mysqli_query($db, $query);
+
+                        if (!$result) {
+                            printf("Error: %s\n", mysqli_error($db));
+                            exit();
+                        }
+
+                        echo "<table class=\"table table-lg table-striped\">
+                            <tr>
+                            <th>Game Name</th>
+                            <th>Game Description</th>
+                            <th>Game Genre</th>
+                            </tr>";
+                            
+                        while($row = mysqli_fetch_array($result)) {
+                            echo "<tr>";
+                            echo "<td>" . $row['game_name'] . "</td>";
+                            echo "<td>" . $row['game_desc'] . "</td>";
+                            echo "<td>" . $row['game_genre'] . "</td>";
+                            echo "</tr>";
+                        }
+
+                        echo "</table>";
+                        ?>
+                </form> 
                 
             </div>
         </div>

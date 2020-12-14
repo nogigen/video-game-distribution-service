@@ -126,6 +126,7 @@ public class dbConnection {
                     "game_price FLOAT NOT NULL, " +
                     "req_id INT, " +
                     "game_desc VARCHAR(250) NOT NULL, " +
+                    "game_genre VARCHAR(250) NOT NULL, " +
                     "latest_version_no FLOAT NOT NULL, " +
                     "FOREIGN KEY (req_id) REFERENCES systemrequirements(req_id))";
             stmt.execute(gameDefinition);
