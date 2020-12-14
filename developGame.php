@@ -15,7 +15,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $publisherId = $_POST['selected_publisher_id'];
 
-    $developerId = 1;
+    $developerId = $_SESSION["developer_id"];
 
 
     $gameName = $_POST["gamename"];

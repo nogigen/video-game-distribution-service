@@ -12,15 +12,30 @@ $gameDesc = "";
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $accepted_query = "UPDATE ask
-    SET approval = 'Accepted'
-    WHERE developer_id = 1;";
 
-    $declined_query = "UPDATE ask
-    SET approval = 'Declined'
-    WHERE developer_id = 1;";
+    if( isset($_POST['select_approve']) )
+    {
+        $gameName = $_POST['select_approve'];
 
-    //$result = mysqli_query($db,$accepted_query);
+        $accepted_query = "UPDATE ask
+        SET approval = 'Accepted'
+        WHERE ask_game_name = '$gameName'";
+
+        $result = mysqli_query($db,$accepted_query);
+    }
+    else{
+
+        $gameName = $_POST['select_cancel'];
+
+        $declined_query = "UPDATE ask
+        SET approval = 'Declined'
+        WHERE ask_game_name = '$gameName'";
+
+        $result = mysqli_query($db,$declined_query);
+
+    }
+
+
     //$result = mysqli_query($db,$declined);
 
 }
@@ -129,11 +144,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $row['ask_game_desc'] . "</td>";
                             echo "<td>" . $row['ask_game_genre'] . "</td>";
                             echo "<td> <form action=\"\" METHOD=\"POST\">
-                                    <button onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  >APPROVE</button>
+                                    <button onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  value =".$row['ask_game_name'] .">APPROVE</button>
                                     </form>
                                 </td>";
                             echo "<td> <form action=\"\" METHOD=\"POST\">
-                                <button onclick=\"cancelled()\" name = \"selected_cancel\"class=\"btn btn-danger btn-sm\" >CANCEL</button>
+                                <button onclick=\"cancelled()\" name = \"select_cancel\"class=\"btn btn-danger btn-sm\" value =".$row['ask_game_name'] .">CANCEL</button>
                                 </form>
                                 </td>";
                             echo "</tr>";
