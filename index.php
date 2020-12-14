@@ -16,170 +16,119 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $userType = $_POST["user_type"];
 
     if($userType == "user"){
-        $sql = "SELECT nick_name, password FROM person WHERE nick_name = ? and password = ?";
-        if($stmt = mysqli_prepare($db, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $entered_username, $entered_password);
-
-            //set parameters
-            $entered_username = $username;
-            $entered_password = $password;
-
-            //executing the statement
+        $sql = "SELECT  person_id, nick_name, password FROM person WHERE nick_name = '{$username}' and password = '{$password}'";
+        $res = mysqli_query($db, $sql);
+        if($stmt = mysqli_prepare($db, $sql)) {
             if(mysqli_stmt_execute($stmt)){
                 mysqli_stmt_store_result($stmt);
                 if(mysqli_stmt_num_rows($stmt) == 1){
-                    mysqli_stmt_bind_result($stmt, $username, $turned_pw);
-
-                    if(mysqli_stmt_fetch($stmt)){
-                        if($turned_pw == $password){
-                            //inputs are correct session is starting
-                            session_start();
-                            $_SESSION['nick_name'] = $username;
-                            $_SESSION['password'] = $password;
-                            header("location: userWelcome.php");
-                        }
-                    }
-                }else{
-                    //wrong input
-                    echo "<script type='text/javascript'>alert('Invalid Username or Password.');</script>";
+                    session_start();
+                    $row = mysqli_fetch_array($res);
+                    $id = $row['person_id'];
+                    $_SESSION['person_id'] = $id;
+                    $_SESSION['nick_name'] = $username;
+                    header("location: userWelcome.php");
+                }
+                else {
+                    echo "<script type='text/javascript'>alert('Invalid combinatio of username and password.');</script>";
                 }
             }
         }
     }
 
     else if($userType == "curator"){
-        $sql = "SELECT curator_login_name, curator_password FROM curator WHERE curator_login_name = ? and curator_password = ?";
-        if($stmt = mysqli_prepare($db, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $entered_username, $entered_password);
-
-            //set parameters
-            $entered_username = $username;
-            $entered_password = $password;
-
-            //executing the statement
+        $sql = "SELECT curator_id, curator_login_name, curator_password FROM curator WHERE curator_login_name = '{$username}' and curator_password = '{$password}'";
+        $res = mysqli_query($db, $sql);
+        if($stmt = mysqli_prepare($db, $sql)) {
             if(mysqli_stmt_execute($stmt)){
                 mysqli_stmt_store_result($stmt);
                 if(mysqli_stmt_num_rows($stmt) == 1){
-                    mysqli_stmt_bind_result($stmt, $username, $turned_pw);
-
-                    if(mysqli_stmt_fetch($stmt)){
-                        if($turned_pw == $password){
-                            //inputs are correct session is starting
-                            session_start();
-                            $_SESSION['curator_login_name'] = $username;
-                            $_SESSION['curator_password'] = $password;
-                            header("location: curatorWelcome.php");
-                        }
-                    }
-                }else{
-                    //wrong input
-                    echo "<script type='text/javascript'>alert('Invalid Username or Password.');</script>";
+                    session_start();
+                    $row = mysqli_fetch_array($res);
+                    $id = $row['curator_id'];
+                    $_SESSION['curator_id'] = $id;
+                    $_SESSION['curator_login_name'] = $username;
+                    header("location: userWelcome.php");
+                }
+                else {
+                    echo "<script type='text/javascript'>alert('Invalid combinatio of username and password.');</script>";
                 }
             }
         }
+
+
+
     }
     else if($userType == "publisher"){
-        $sql = "SELECT publisher_login_name, publisher_password FROM publisher WHERE publisher_login_name = ? and publisher_password = ?";
-        if($stmt = mysqli_prepare($db, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $entered_username, $entered_password);
+        $sql = "SELECT publisher_id, publisher_login_name, publisher_password FROM publisher WHERE publisher_login_name = '{$username}' and publisher_password = '{$password}'";
+        $res = mysqli_query($db, $sql);
 
-            //set parameters
-            $entered_username = $username;
-            $entered_password = $password;
-
-            //executing the statement
+        if($stmt = mysqli_prepare($db, $sql)) {
             if(mysqli_stmt_execute($stmt)){
                 mysqli_stmt_store_result($stmt);
                 if(mysqli_stmt_num_rows($stmt) == 1){
-                    mysqli_stmt_bind_result($stmt, $username, $turned_pw);
-
-                    if(mysqli_stmt_fetch($stmt)){
-                        if($turned_pw == $password){
-                            //inputs are correct session is starting
-                            session_start();
-                            $_SESSION['publisher_login_name'] = $username;
-                            $_SESSION['publisher_password'] = $password;
-                            header("location: publisherWelcome.php");
-                        }
-                    }
-                }else{
-                    //wrong input
-                    echo "<script type='text/javascript'>alert('Invalid Username or Password.');</script>";
+                    session_start();
+                    $row = mysqli_fetch_array($res);
+                    $id = $row['publisher_id'];
+                    $_SESSION['publisher_id'] = $id;
+                    $_SESSION['publisher_login_name'] = $username;
+                    header("location: publisherWelcome.php");
+                }
+                else {
+                    echo "<script type='text/javascript'>alert('Invalid combinatio of username and password.');</script>";
                 }
             }
         }
     }
+
     else if($userType == "developer"){
-        $sql = "SELECT developer_login_name, developer_password FROM developer WHERE developer_login_name = ? and developer_password = ?";
-        if($stmt = mysqli_prepare($db, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $entered_username, $entered_password);
+        $sql = "SELECT developer_id, developer_login_name, developer_password FROM developer WHERE developer_login_name = '{$username}' and developer_password = '{$password}'";
+        $res = mysqli_query($db, $sql);
 
-            //set parameters
-            $entered_username = $username;
-            $entered_password = $password;
-
-            //executing the statement
+        if($stmt = mysqli_prepare($db, $sql)) {
             if(mysqli_stmt_execute($stmt)){
                 mysqli_stmt_store_result($stmt);
                 if(mysqli_stmt_num_rows($stmt) == 1){
-                    mysqli_stmt_bind_result($stmt, $username, $turned_pw);
-
-                    if(mysqli_stmt_fetch($stmt)){
-                        if($turned_pw == $password){
-                            //inputs are correct session is starting
-                            session_start();
-                            $_SESSION['developer_login_name'] = $username;
-                            $_SESSION['developer_password'] = $password;
-                            header("location: developerWelcome.php");
-                        }
-                    }
-                }else{
-                    //wrong input
-                    echo "<script type='text/javascript'>alert('Invalid Username or Password.');</script>";
+                    session_start();
+                    $row = mysqli_fetch_array($res);
+                    $id = $row['developer_id'];
+                    $_SESSION['developer_id'] = $id;
+                    $_SESSION['developer_login_name'] = $username;
+                    header("location: developerWelcome.php");
+                }
+                else {
+                    echo "<script type='text/javascript'>alert('Invalid combinatio of username and password.');</script>";
                 }
             }
         }
     }
+
     else if($userType == "tester"){
-        $sql = "SELECT tester_login_name, tester_password FROM tester WHERE tester_login_name = ? and tester_password = ?";
-        if($stmt = mysqli_prepare($db, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $entered_username, $entered_password);
+        $sql = "SELECT tester_id, tester_login_name, tester_password FROM tester WHERE tester_login_name = '{$username}' and tester_password = '{$password}'";
+        $res = mysqli_query($db, $sql);
 
-            //set parameters
-            $entered_username = $username;
-            $entered_password = $password;
-
-            //executing the statement
+        if($stmt = mysqli_prepare($db, $sql)) {
             if(mysqli_stmt_execute($stmt)){
                 mysqli_stmt_store_result($stmt);
                 if(mysqli_stmt_num_rows($stmt) == 1){
-                    mysqli_stmt_bind_result($stmt, $username, $turned_pw);
-
-                    if(mysqli_stmt_fetch($stmt)){
-                        if($turned_pw == $password){
-                            //inputs are correct session is starting
-                            session_start();
-                            $_SESSION['tester_login_name'] = $username;
-                            $_SESSION['tester_password'] = $password;
-                            header("location: testerWelcome.php");
-                        }
-                    }
-                }else{
-                    //wrong input
-                    echo "<script type='text/javascript'>alert('Invalid Username or Password.');</script>";
+                    session_start();
+                    $row = mysqli_fetch_array($res);
+                    $id = $row['tester_id'];
+                    $_SESSION['tester_id'] = $id;
+                    $_SESSION['tester_login_name'] = $username;
+                    header("location: testerWelcome.php");
+                }
+                else {
+                    echo "<script type='text/javascript'>alert('Invalid combinatio of username and password.');</script>";
                 }
             }
         }
     }
     
-
+    /*
     // Close statement
     mysqli_stmt_close($stmt);
+    */
 }
 ?>
 
