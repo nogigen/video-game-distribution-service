@@ -13,9 +13,6 @@ $gameDesc = "";
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
-    
-
-
     $publisherId = $_POST['selected_publisher_id'];
 
     $developerId = 1;
@@ -29,13 +26,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         window.alert('$gameName');
         </script>";
 
-    /*
+    
     $sql = "INSERT INTO ask(publisher_id, developer_id, ask_game_name, ask_game_genre, ask_game_desc) VALUES (?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($db, $sql);
     mysqli_stmt_bind_param($stmt, "iisss", $publisherId, $developerId, $gameName, $gameGenre, $gameDesc);
     mysqli_stmt_execute($stmt);
     header("location: developerWelcome.php");
-    */
+    
 }
 ?>
 
@@ -110,7 +107,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <br><br>
                 <h1>Game Specification</h1>
 
-                <form id="loginForm" action="" method="post">
+                <form id="gameForm" action="" method="post">
 
                     <div class="form-group">
                         <label>Game Name</label>
@@ -161,12 +158,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         echo "</table>";
                         ?>
-                
                 </form>  
             </div>
-            
         </div>
-        
     </div>
 
 
@@ -176,10 +170,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             var gamedescVal = document.getElementById("gamedesc").value;
             var gamegenreVal = document.getElementById("gamegenre").value;
             if (gamenameVal === "" || gamedescVal === "" || gamegenreVal === "") {
-                alert("Make sure to fill all fields!");
+                alert("FILL!");
             }
             else {
-                var form = document.getElementById("loginForm").submit();
+                alert(gamenameVal);
+                alert(gamedescVal);
+                alert(gamegenreVal);
+                var form = document.getElementById("gameForm").submit();
             }
         }
     </script>

@@ -57,7 +57,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <h4 class="navbar-text">Publisher <?php echo htmlspecialchars($_SESSION['developer_login_name']); ?></h4>
+                    <h4 class="navbar-text">Developer <?php echo htmlspecialchars($_SESSION['developer_login_name']); ?></h4>
 
                 </div>
                 <a href="developerWelcome.php">Home</a>
