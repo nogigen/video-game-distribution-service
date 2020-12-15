@@ -28,6 +28,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_stmt_bind_param($stmt, "iisss", $publisherId, $developerId, $gameName, $gameGenre, $gameDesc);
     mysqli_stmt_execute($stmt);
     //header("location: developerWelcome.php");
+
+    echo "<script LANGUAGE='JavaScript'>
+        window.alert('Game is sent to the publisher for approval');
+        window.location.href = 'developerWelcome.php'; 
+        </script>";
     
 }
 ?>

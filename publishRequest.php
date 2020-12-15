@@ -21,7 +21,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $publish_game_query = "INSERT INTO game(game_name, game_genre, game_desc) VALUES ('$gameName', '$gameGenre', '$gameDesc')";
         $result = mysqli_query($db,$publish_game_query);
 
-
     }
     else{
 
