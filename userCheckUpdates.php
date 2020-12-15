@@ -9,9 +9,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $person_id = $_SESSION['person_id'];
     $gameName = $_POST['gamename'];
-    $gamePrice = $_POST['gameprice'];
 
-    if(isset($_POST['buy'])) {
+    if(isset($_POST['update'])) {
         // get the game_id from game_name
         $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
         $res = mysqli_query($db, $queryGame);
@@ -23,51 +22,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $gameIdRow = mysqli_fetch_array($res);
         $gameId = $gameIdRow['game_id'];
         $latestVersionNo = $gameIdRow['latest_version_no'];
-
-        // user's current credit
-        $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
+        
+        $query = "UPDATE has SET personVersion = '$latestVersionNo' WHERE person_id = '$person_id' and game_id = '$gameId'";
         $res = mysqli_query($db, $query);
-        $row = mysqli_fetch_array($res);
-        $credit = $row['credits'];
 
-        if($credit >= $gamePrice) {
-            // update the balance
-            $newBalance = $credit - $gamePrice;
-            $query = "UPDATE person SET credits = '$newBalance' WHERE person_id = '$person_id'";
-            $res = mysqli_query($db, $query);
-
-            if(!$res) {
-                printf("Error: Updating balance %s\n", mysqli_error($db));
-                exit();
-            }
-            // add game to user's library
-            $query = "INSERT INTO has VALUES ('$person_id', '$gameId', 0, '$latestVersionNo')";
-            $res = mysqli_query($db, $query);
-            if(!$res) {
-                printf("Error: Adding game to user's library. %s\n", mysqli_error($db));
-                exit();
-            }
-
-
+        if(!$res) {
+            printf("Error: Uninstall %s\n", mysqli_error($db));
+            exit();
         }
-        else {
-            echo "<script LANGUAGE='JavaScript'>
-            window.alert('Not enough credit to buy the game.');
-            </script>";
-        }
-        
-        
     }
+
     else {
         echo "<script LANGUAGE='JavaScript'>
         window.alert('it should never come here :D.');
         </script>";
     }
-
-
-
-
-
     
 }
 ?>
@@ -128,7 +97,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <a href="userWelcome.php">Home</a>
                 <a href="userLibrary.php">Library</a>
-                <a href="store.php">Store</a>
+                <a href="userStore.php">Store</a>
+                <a href="userCheckUpdates.php">Check Updates</a>
+                <a href="userCheckMods.php">Mods</a>
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
                     $res = mysqli_query($db, $query);
@@ -148,13 +119,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="centerwrapper">
             <div id="centerdiv">
                 <br><br>
-                <h1>All Games</h1>
+                <h1>Bought Games</h1>
 
 
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT game_id, game_name, game_genre, game_price FROM game";
+                        $query = "SELECT person_id, game_id, isInstalled, personVersion FROM has WHERE person_id = " .$_SESSION['person_id'];
+
+
+                        echo "<p><b>Your Games : </b></p>";
 
                         $result = mysqli_query($db, $query);
 
@@ -163,24 +137,32 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             exit();
                         }
 
-                        echo "<p><b>Current Games : </b></p>";
-                       
-
                         echo "<table class=\"table table-lg table-striped\">
                             <tr>
                             <th>Game Name</th>
                             <th>Game Genre</th>
                             <th>Publisher Name</th>
                             <th>Developer Name</th>
-                            <th>Credits</th>
+                            <th>Latest Version No</th>
+                            <th>User's version</th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {
                             $gameId = $hasRow['game_id'];
-                            $game_price = $hasRow['game_price'];
-                            $game_name = $hasRow['game_name'];
-                            $game_genre = $hasRow['game_genre'];
+                            $isInstalled = $hasRow['isInstalled'];
+                            $personVersion = $hasRow['personVersion'];
 
+                            $queryGame = "SELECT game_name, game_genre, latest_version_no FROM game WHERE game_id = '$gameId'";
+                            $result2 = mysqli_query($db, $queryGame);
+                            if(!$result2) {
+                                printf("Error1: %s\n", mysqli_error($db));
+                                exit();
+                            }
+                            $gameRow =  mysqli_fetch_array($result2);
+                            $game_name = $gameRow['game_name'];
+                            $game_genre = $gameRow['game_genre'];
+                            $latestVersionNo = $gameRow['latest_version_no'];
+                            
                             $queryPublisherId = "SELECT publisher_id FROM publishgame WHERE game_id = '$gameId'";
                             $result3 = mysqli_query($db, $queryPublisherId);
                             if(!$result3) {
@@ -200,7 +182,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $publisher_name = $publisherNameRow['publisher_name'];
 
                             
-                            $queryDeveloperId = "SELECT developer_id FROM updategame WHERE game_id = '$gameId'";
+                            $queryDeveloperId = "SELECT developer_id FROM updategame WHERE game_id = '$gameId' " ;
                             $result5 = mysqli_query($db, $queryDeveloperId);
 
                             if(!$result5) {
@@ -211,7 +193,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $developer_id = $developerIdRow['developer_id'];
 
                         
-                            $queryDeveloperName = "SELECT developer_name FROM developer WHERE developer_id = '$developer_id'";
+                            $queryDeveloperName = "SELECT developer_name FROM developer WHERE developer_id = '$developer_id'" ;
                             $result6 = mysqli_query($db, $queryDeveloperName);
                             
                             if(!$result6) {
@@ -220,32 +202,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
                             $developerNameRow = mysqli_fetch_array($result6);
                             $developer_name = $developerNameRow['developer_name'];
-                            
-                            $person_id = $_SESSION['person_id'];
-                            $query = "SELECT isInstalled FROM has WHERE person_id = '$person_id' and game_id = '$gameId'";
-                            $res = mysqli_prepare($db, $query);
-                            if(!$res) {
-                                printf("Error: %s\n", mysqli_error($db));
-                                exit();
-                            }
-                            mysqli_stmt_execute($res);
-                            mysqli_stmt_store_result($res);
-                            $numberOfRows = mysqli_stmt_num_rows($res);
-
-
+                                            
                             echo "<form action=\"\" METHOD=\"POST\">";
                             echo "<tr>";
                             echo "<td><input type=\"hidden\" name=\"gamename\" value=". $game_name .">" . $game_name . "</td>";
                             echo "<td>" . $game_genre . "</td>";
                             echo "<td>" . $publisher_name . "</td>";
                             echo "<td>" . $developer_name . "</td>";
-                            echo "<td><input type=\"hidden\" name=\"gameprice\" value=". $game_price .">" . $game_price . "</td>";
-                            
-                            if($numberOfRows == 0) {
-                                echo "<td>
-                                <button onclick=\"checkEmpty()\" name = \"buy\"class=\"btn btn-danger btn-sm\">BUY</button>
+                            echo "<td>" . $latestVersionNo . "</td>";
+
+                            if($isInstalled) {
+                                echo "<td>" . $personVersion . "</td>";
+                            }
+                            else {
+                                echo "<td>" . "-" . "</td>";
+                            }                         
+
+                            if(($personVersion != $latestVersionNo) && $isInstalled) {
+                                echo "<td> 
+                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"update\"class=\"btn btn-success btn-sm\">UPDATE</button>
                                 </td>";
-                            }                   
+                            }
 
                             echo "</tr>";
                             echo "</form>";

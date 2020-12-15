@@ -10,55 +10,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $person_id = $_SESSION['person_id'];
     $gameName = $_POST['gamename'];
 
-    if(isset($_POST['uninstall'])) {
+    if(isset($_POST['create_mod'])) {
 
-        // get the game_id from game_name
-        $queryGame = "SELECT game_id FROM game WHERE game_name = '$gameName'";
-        $res = mysqli_query($db, $queryGame);
 
-        if(!$res) {
-            printf("Error: %s\n", mysqli_error($db));
-            exit();
-        }
-        $gameIdRow = mysqli_fetch_array($res);
-        $gameId = $gameIdRow['game_id'];
-        
-        $query = "UPDATE has SET isInstalled = 0 WHERE person_id = '$person_id' and game_id = '$gameId'";
-        $res = mysqli_query($db, $query);
-
-        if(!$res) {
-            printf("Error: Uninstall %s\n", mysqli_error($db));
-            exit();
-        }
+    }
+    elseif(isset($_POST['see_mod'])) {
 
     }
 
-    elseif(isset($_POST['install'])) {
-
-        // get the game_id from game_name
-        $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
-        $res = mysqli_query($db, $queryGame);
-
-        if(!$res) {
-            printf("Error: %s\n", mysqli_error($db));
-            exit();
-        }
-        $gameIdRow = mysqli_fetch_array($res);
-        $gameId = $gameIdRow['game_id'];
-        $latestVersionNo = $gameIdRow['latest_version_no'];
-
-        $query = "UPDATE has SET isInstalled = 1, personVersion = '$latestVersionNo' WHERE person_id = '$person_id' and game_id = '$gameId'";
-        $res = mysqli_query($db, $query);
-
-        if(!$res) {
-            printf("Error: Install %s\n", mysqli_error($db));
-            exit();
-        }
-
-    }
-    elseif(isset($_POST['refund'])) {
-
-    }
 
     else {
         echo "<script LANGUAGE='JavaScript'>
@@ -253,19 +212,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                             if($isInstalled) {
                                 echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"uninstall\"class=\"btn btn-success btn-sm\">UNINSTALL</button>
+                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"create_mod\"class=\"btn btn-success btn-sm\">CREATE MOD</button>
                                 </td>";
 
-                            }
-                            else {
                                 echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"install\"class=\"btn btn-success btn-sm\">INSTALL</button>
+                                     <button type=\"submit\" onclick=\"checkEmpty()\" name = \"see_mod\"class=\"btn btn-success btn-sm\">SEE MODS</button>
                                 </td>";
                             }
-                            
-                            echo "<td> 
-                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"refund\"class=\"btn btn-success btn-sm\">REFUND</button>
-                                </td>";
 
                             echo "</tr>";
                             echo "</form>";
