@@ -123,11 +123,11 @@ public class dbConnection {
             String gameDefinition = "CREATE TABLE game " +
                     "(game_id INT AUTO_INCREMENT PRIMARY KEY, " +
                     "game_name VARCHAR(32) NOT NULL UNIQUE, " +
-                    "game_price FLOAT NOT NULL, " +
+                    "game_price FLOAT NOT NULL DEFAULT 10.00, " +
                     "req_id INT, " +
                     "game_desc VARCHAR(250) NOT NULL, " +
                     "game_genre VARCHAR(250) NOT NULL, " +
-                    "latest_version_no FLOAT NOT NULL, " +
+                    "latest_version_no FLOAT NOT NULL DEFAULT 1.0, " +
                     "FOREIGN KEY (req_id) REFERENCES systemrequirements(req_id))";
             stmt.execute(gameDefinition);
             System.out.println("Game table is created successfully.\n");
