@@ -4,11 +4,6 @@
 include("config.php");
 session_start();
 
-//defining necessary variables
-$gameName = "";
-$gameGenre = "";
-$gameDesc = "";
-
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -176,15 +171,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
                             $developerIdRow = mysqli_fetch_array($result5);
                             $developer_id = $developerIdRow['developer_id'];
-
+                            
                             $queryDeveloperName = "SELECT developer_name FROM developer WHERE developer_id = " .$developer_id;
                             $result6 = mysqli_query($db, $queryDeveloperName);
-                            if(!$result6) {
-                                printf("Error5: %s\n", mysqli_error($db));
-                                exit();
-                            }
+
                             $developerNameRow = mysqli_fetch_array($result6);
-                            //$developer_name = $developerNameRow['developer_name'];
+                            $developer_name = $developerNameRow['developer_name'];
 
 
                             echo "<tr>";
