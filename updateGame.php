@@ -4,16 +4,21 @@
 include("config.php");
 session_start();
 
-//defining necessary variables
-$gameName = "";
-$gameGenre = "";
-$gameDesc = "";
-
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    $updateDesc = $_POST["updatedesc"];
+    $versionNo = $_POST["version_no"];
+    $gameName = $_SESSION['game_name'];
+
+
+    $update_version_no_query = "UPDATE game
+    SET latest_version_no = '$versionNo'
+    WHERE game_name = '$gameName'";
+
+    $result = mysqli_query($db,$update_version_no_query);
+
     header("location: publishedGames.php");
- 
 }
 ?>
 
@@ -88,21 +93,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <br><br>
                 <h1>Update <?php echo htmlspecialchars($_SESSION['game_name']); ?> </h1>
 
-                <form id="gameForm" action="" method="post">
+                <form id="updateForm" action="" method="post">
 
                     <div class="form-group">
                         <label>Update Description</label>
-                        <textarea class="form-control" name="gamedesc" id="gamedesc" rows="4"></textarea>
+                        <textarea class="form-control" name="updatedesc" id="updatedesc" rows="4"></textarea>
 
                     </div>
                     <div class="form-group">
                         <label>New Version No.</label>
-                        <input type="text" name="gamegenre" class="form-control" id="gamegenre">
+                        <input type="text" name="version_no" class="form-control" id="version_no">
 
                     </div>
                     
                     <div class="form-group">
-                        <input onclick="checkEmptyAndLogin()" class="btn btn-primary" value="Update">
+                        <input type = "submit" onclick="checkEmpty()" class="btn btn-primary" value="Update">
                     </div>
                 </form>  
             </div>
@@ -112,15 +117,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <script type="text/javascript">
         function checkEmpty() {
-            var gamenameVal = document.getElementById("gamename").value;
-            var gamedescVal = document.getElementById("gamedesc").value;
-            var gamegenreVal = document.getElementById("gamegenre").value;
+            var gamenameVal = document.getElementById("updatedesc").value;
+            var gamedescVal = document.getElementById("version_no").value;
             if (gamenameVal === "" || gamedescVal === "" || gamegenreVal === "") {
                 alert("FILL!");
             }
             else {
-
-                var form = document.getElementById("gameForm").submit();
+                
+                var form = document.getElementById("updateForm").submit();
             }
         }
     </script>

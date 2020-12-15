@@ -86,7 +86,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT game_name, game_genre, game_desc, game_price, latest_version_no FROM game NATURAL JOIN ask";    
+                        $query = "SELECT DISTINCT game_name, game_genre, game_desc, game_price, latest_version_no FROM game NATURAL JOIN ask WHERE approval = 'Accepted' and developer_id = " .$_SESSION['developer_id'];
 
                         $result = mysqli_query($db, $query);
 
