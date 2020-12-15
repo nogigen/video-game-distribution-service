@@ -123,11 +123,11 @@ public class dbConnection {
             String gameDefinition = "CREATE TABLE game " +
                     "(game_id INT AUTO_INCREMENT PRIMARY KEY, " +
                     "game_name VARCHAR(32) NOT NULL UNIQUE, " +
-                    "game_price FLOAT NOT NULL, " +
+                    "game_price FLOAT NOT NULL DEFAULT 10.0, " +
                     "req_id INT, " +
                     "game_desc VARCHAR(250) NOT NULL, " +
                     "game_genre VARCHAR(250) NOT NULL, " +
-                    "latest_version_no FLOAT NOT NULL, " +
+                    "latest_version_no FLOAT NOT NULL DEFAULT 1.0, " +
                     "FOREIGN KEY (req_id) REFERENCES systemrequirements(req_id))";
             stmt.execute(gameDefinition);
             System.out.println("Game table is created successfully.\n");
@@ -446,7 +446,59 @@ public class dbConnection {
             System.out.println("Starting to insert values to tester table...");
             stmt.execute(testerInsert);
             System.out.println("Values are inserted to tester table.\n");
+
+            //SYSTEMREQ INSERTION
+            String systemreqInsert = "INSERT INTO systemrequirements VALUES" +
+                    "(DEFAULT,'os1', 'processor1', 'memory1', 'direct1', 'network1', 'storage1')";
+            System.out.println("Starting to insert values to SystemRequirements table.");
+            stmt.execute(systemreqInsert);
+            System.out.println("Values are inserted to SystemRequirements table.\n");
+
+            //GAME INSERTION
+            String gameInsert = "INSERT INTO game VALUES" +
+                    "(DEFAULT,'game1', 10, 1, 'desc1', 'genre1', 2.0)";
+            System.out.println("Starting to insert values to Game table.");
+            stmt.execute(gameInsert);
+
+            String gameInsert2 = "INSERT INTO game VALUES" +
+                    "(DEFAULT,'game2', 15, 1, 'desc2', 'genre2', 3.0)";
+            stmt.execute(gameInsert2);
+            System.out.println("Values are inserted to Game table.\n");
+
+            //HAS INSERTION
+            String hasInsert = "INSERT INTO has VALUES" +
+                    "(1, 1, 0, 2.0 )";
+            System.out.println("Starting to insert values to has table.");
+            stmt.execute(hasInsert);
+            String hasInsert2 = "INSERT INTO has VALUES" +
+                    "(1, 2, 1, 2.5 )";
+            stmt.execute(hasInsert2);
+            System.out.println("Values are inserted to Has table.\n");
+
+            //PUBLISHGAME INSERTION
+            String publishGameInsert = "INSERT INTO publishgame VALUES" +
+                    "(1, 1, 0)";
+            System.out.println("Starting to insert values to publishGame table.");
+            stmt.execute(publishGameInsert);
+
+            String publishGameInsert2 = "INSERT INTO publishgame VALUES" +
+                    "(1, 2, 0)";
+            stmt.execute(publishGameInsert2);
+            System.out.println("Values are inserted to publishGame table.\n");
+
+            //UPDATEGAME INSERTION
+            String updateGameInsert = "INSERT INTO updateGame VALUES" +
+                    "(1, 1, 'cool game1', '0.0')";
+            System.out.println("Starting to insert values to updateGame table.");
+            stmt.execute(updateGameInsert);
+
+            String updateGameInsert2 = "INSERT INTO updateGame VALUES" +
+                    "(2, 1, 'cool game2', '0.0')";
+
+            System.out.println("Values are inserted to updateGame table.\n");
+
         }
+
 
         catch (SQLException | ClassNotFoundException e) {
             System.err.println("Error Statement or Connection Failed!!!!");
