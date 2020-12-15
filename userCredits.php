@@ -99,6 +99,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 </div>
                 <a href="userWelcome.php">Home</a>
+                <a href="userLibrary.php">Library</a>
+                <a href="store.php">Store</a>
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
                     $res = mysqli_query($db, $query);

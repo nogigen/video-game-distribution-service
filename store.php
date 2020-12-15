@@ -10,52 +10,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $person_id = $_SESSION['person_id'];
     $gameName = $_POST['gamename'];
 
-    if(isset($_POST['uninstall'])) {
-
-        // get the game_id from game_name
-        $queryGame = "SELECT game_id FROM game WHERE game_name = '$gameName'";
-        $res = mysqli_query($db, $queryGame);
-
-        if(!$res) {
-            printf("Error: %s\n", mysqli_error($db));
-            exit();
-        }
-        $gameIdRow = mysqli_fetch_array($res);
-        $gameId = $gameIdRow['game_id'];
-        
-        $query = "UPDATE has SET isInstalled = 0 WHERE person_id = '$person_id' and game_id = '$gameId'";
-        $res = mysqli_query($db, $query);
-
-        if(!$res) {
-            printf("Error: Uninstall %s\n", mysqli_error($db));
-            exit();
-        }
-
-    }
-    elseif(isset($_POST['create_mod'])) {
-
-    }
-    elseif(isset($_POST['install'])) {
-
-        // get the game_id from game_name
-        $queryGame = "SELECT game_id FROM game WHERE game_name = '$gameName'";
-        $res = mysqli_query($db, $queryGame);
-
-        if(!$res) {
-            printf("Error: %s\n", mysqli_error($db));
-            exit();
-        }
-        $gameIdRow = mysqli_fetch_array($res);
-        $gameId = $gameIdRow['game_id'];
-        $query = "UPDATE has SET isInstalled = 1 WHERE person_id = '$person_id' and game_id = '$gameId'";
-        $res = mysqli_query($db, $query);
-
-        if(!$res) {
-            printf("Error: Uninstall %s\n", mysqli_error($db));
-            exit();
-        }
-    }
-    elseif(isset($_POST['refund'])) {
+    if(isset($_POST['buy'])) {
 
     }
     else {
@@ -148,16 +103,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="centerwrapper">
             <div id="centerdiv">
                 <br><br>
-                <h1>Bought Games</h1>
+                <h1>All Games</h1>
 
 
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT person_id, game_id, isInstalled, personVersion FROM has WHERE person_id = " .$_SESSION['person_id'];
-
-
-                        echo "<p><b>Your Games : </b></p>";
+                        $query = "SELECT game_id, game_name, game_genre, game_price FROM game";
 
                         $result = mysqli_query($db, $query);
 
@@ -166,29 +118,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             exit();
                         }
 
+                        echo "<p><b>Current Games : </b></p>";
+                       
+
                         echo "<table class=\"table table-lg table-striped\">
                             <tr>
                             <th>Game Name</th>
                             <th>Game Genre</th>
                             <th>Publisher Name</th>
                             <th>Developer Name</th>
+                            <th>Credits</th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {
                             $gameId = $hasRow['game_id'];
-                            $isInstalled = $hasRow['isInstalled'];
-                            $personVersion = $hasRow['personVersion'];
+                            $game_price = $hasRow['game_price'];
+                            $game_name = $hasRow['game_name'];
+                            $game_genre = $hasRow['game_genre'];
 
-                            $queryGame = "SELECT game_name, game_genre FROM game WHERE game_id = " .$gameId;
-                            $result2 = mysqli_query($db, $queryGame);
-                            if(!$result2) {
-                                printf("Error1: %s\n", mysqli_error($db));
-                                exit();
-                            }
-                            $gameRow =  mysqli_fetch_array($result2);
-                            $game_name = $gameRow['game_name'];
-                            $game_genre = $gameRow['game_genre'];
-                            
                             $queryPublisherId = "SELECT publisher_id FROM publishgame WHERE game_id = " .$gameId;
                             $result3 = mysqli_query($db, $queryPublisherId);
                             if(!$result3) {
@@ -228,32 +175,32 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
                             $developerNameRow = mysqli_fetch_array($result6);
                             $developer_name = $developerNameRow['developer_name'];
-                                            
+                            
+                            $person_id = $_SESSION['person_id'];
+                            $query = "SELECT isInstalled FROM has WHERE person_id = '$person_id' and game_id = '$gameId'";
+                            $res = mysqli_prepare($db, $query);
+                            if(!$res) {
+                                printf("Error: %s\n", mysqli_error($db));
+                                exit();
+                            }
+                            mysqli_stmt_execute($res);
+                            mysqli_stmt_store_result($res);
+                            $numberOfRows = mysqli_stmt_num_rows($res);
+
+
                             echo "<form action=\"\" METHOD=\"POST\">";
                             echo "<tr>";
                             echo "<td><input type=\"hidden\" name=\"gamename\" value=". $game_name .">" . $game_name . "</td>";
                             echo "<td>" . $game_genre . "</td>";
                             echo "<td>" . $publisher_name . "</td>";
                             echo "<td>" . $developer_name . "</td>";
+                            echo "<td>" . $game_price . "</td>";
                             
-                            if($isInstalled) {
-                                echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"uninstall\"class=\"btn btn-success btn-sm\">UNINSTALL</button>
+                            if($numberOfRows == 0) {
+                                echo "<td>
+                                <button onclick=\"checkEmpty()\" name = \"buy\"class=\"btn btn-danger btn-sm\">BUY</button>
                                 </td>";
-
-                                echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"create_mod\"class=\"btn btn-success btn-sm\">CREATE MOD</button>
-                                </td>";
-                            }
-                            else {
-                                echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"install\"class=\"btn btn-success btn-sm\">INSTALL</button>
-                                </td>";
-                            }
-
-                            echo "<td> 
-                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"refund\"class=\"btn btn-success btn-sm\">REFUND</button>
-                                </td>";
+                            }                   
 
                             echo "</tr>";
                             echo "</form>";

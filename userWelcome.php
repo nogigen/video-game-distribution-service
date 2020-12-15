@@ -50,13 +50,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container">
         
         <nav class="navbar navbar-inverse bg-primary navbar-fixed-top">
-        
             <div class="container-fluid">
                 <div class="navbar-header">
                     <h4 class="navbar-text">User <?php echo htmlspecialchars($_SESSION['nick_name']); ?></h4>
                 </div>
                 <a href="userWelcome.php">Home</a>
                 <a href="userLibrary.php">Library</a>
+                <a href="store.php">Store</a>
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
                     $res = mysqli_query($db, $query);
