@@ -4,30 +4,34 @@
 include("config.php");
 session_start();
 
-//defining necessary variables
-$gameName = "";
-$gameGenre = "";
-$gameDesc = "";
-
-
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     if( isset($_POST['select_approve']) )
     {
         $gameName = $_POST['gamename'];
+        $gameGenre = $_POST['gamegenre'];
+        $gameDesc = $_POST['gamedesc'];
 
         echo "<script LANGUAGE='JavaScript'>
         window.alert('$gameName');
         </script>";
-        
+
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('$gameGenre');
+        </script>";
+
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('$gameDesc');
+        </script>";
+
         $accepted_query = "UPDATE ask
         SET approval = 'Accepted'
         WHERE ask_game_name = '$gameName'";
 
         $result = mysqli_query($db,$accepted_query);
-
-        //$publish_game_query = "INSERT INTO game(game_name, game_genre, game_desc) VALUES game_name = '$gameName'";
+        $publish_game_query = "INSERT INTO game(game_name, game_genre, game_desc) VALUES ('$gameName', '$gameGenre', '$gameDesc')";
+        $result = mysqli_query($db,$publish_game_query);
 
 
     }
@@ -146,9 +150,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         while($row = mysqli_fetch_array($result)) {
                             echo "<form action=\"\" METHOD=\"POST\">";
                             echo "<tr>";
-                            echo "<td name=\"gamename\" value = \"zaaa\">" . $row['ask_game_name'] . "</td>";
-                            echo "<td>" . $row['ask_game_desc'] . "</td>";
-                            echo "<td>" . $row['ask_game_genre'] . "</td>";
+                            echo "<td><input type=\"hidden\" name=\"gamename\" value=". $row['ask_game_name'] .">" . $row['ask_game_name'] . "</td>";
+                            echo "<td><input type=\"hidden\" name=\"gamedesc\" value=". $row['ask_game_desc'] .">" . $row['ask_game_desc'] . "</td>";
+                            echo "<td><input type=\"hidden\" name=\"gamegenre\" value=". $row['ask_game_genre'] .">" . $row['ask_game_genre'] . "</td>";
                                 echo "<td> 
                                     <button type = \"submit\" onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  value =".$row['ask_game_name'] .">APPROVE</button>
                                     
