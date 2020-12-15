@@ -38,7 +38,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     elseif(isset($_POST['install'])) {
 
         // get the game_id from game_name
-        $queryGame = "SELECT game_id FROM game WHERE game_name = '$gameName'";
+        $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
         $res = mysqli_query($db, $queryGame);
 
         if(!$res) {
@@ -47,15 +47,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $gameIdRow = mysqli_fetch_array($res);
         $gameId = $gameIdRow['game_id'];
-        $query = "UPDATE has SET isInstalled = 1 WHERE person_id = '$person_id' and game_id = '$gameId'";
+        $latestVersionNo = $gameIdRow['latest_version_no'];
+
+        $query = "UPDATE has SET isInstalled = 1, personVersion = '$latestVersionNo' WHERE person_id = '$person_id' and game_id = '$gameId'";
         $res = mysqli_query($db, $query);
 
         if(!$res) {
-            printf("Error: Uninstall %s\n", mysqli_error($db));
+            printf("Error: Install %s\n", mysqli_error($db));
             exit();
         }
+
     }
     elseif(isset($_POST['refund'])) {
+
+    }
+    else if(isset($_POST['update'])) {
 
     }
     else {
@@ -172,6 +178,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Game Genre</th>
                             <th>Publisher Name</th>
                             <th>Developer Name</th>
+                            <th>Latest Version No</th>
+                            <th>User's version</th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {
@@ -179,7 +187,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $isInstalled = $hasRow['isInstalled'];
                             $personVersion = $hasRow['personVersion'];
 
-                            $queryGame = "SELECT game_name, game_genre FROM game WHERE game_id = " .$gameId;
+                            $queryGame = "SELECT game_name, game_genre, latest_version_no FROM game WHERE game_id = '$gameId'";
                             $result2 = mysqli_query($db, $queryGame);
                             if(!$result2) {
                                 printf("Error1: %s\n", mysqli_error($db));
@@ -188,8 +196,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $gameRow =  mysqli_fetch_array($result2);
                             $game_name = $gameRow['game_name'];
                             $game_genre = $gameRow['game_genre'];
+                            $latestVersionNo = $gameRow['latest_version_no'];
                             
-                            $queryPublisherId = "SELECT publisher_id FROM publishgame WHERE game_id = " .$gameId;
+                            $queryPublisherId = "SELECT publisher_id FROM publishgame WHERE game_id = '$gameId'";
                             $result3 = mysqli_query($db, $queryPublisherId);
                             if(!$result3) {
                                 printf("Error2: %s\n", mysqli_error($db));
@@ -198,7 +207,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $publisherIdRow = mysqli_fetch_array($result3);
                             $publisher_id = $publisherIdRow['publisher_id'];
 
-                            $queryPublisherName = "SELECT publisher_name FROM publisher WHERE publisher_id = " .$publisher_id;
+                            $queryPublisherName = "SELECT publisher_name FROM publisher WHERE publisher_id = '$publisher_id'";
                             $result4 = mysqli_query($db, $queryPublisherName);
                             if(!$result4) {
                                 printf("Error3: %s\n", mysqli_error($db));
@@ -208,7 +217,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $publisher_name = $publisherNameRow['publisher_name'];
 
                             
-                            $queryDeveloperId = "SELECT developer_id FROM updategame WHERE game_id = " .$gameId;
+                            $queryDeveloperId = "SELECT developer_id FROM updategame WHERE game_id = '$gameId' " ;
                             $result5 = mysqli_query($db, $queryDeveloperId);
 
                             if(!$result5) {
@@ -219,7 +228,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $developer_id = $developerIdRow['developer_id'];
 
                         
-                            $queryDeveloperName = "SELECT developer_name FROM developer WHERE developer_id = " .$developer_id;
+                            $queryDeveloperName = "SELECT developer_name FROM developer WHERE developer_id = '$developer_id'" ;
                             $result6 = mysqli_query($db, $queryDeveloperName);
                             
                             if(!$result6) {
@@ -235,6 +244,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $game_genre . "</td>";
                             echo "<td>" . $publisher_name . "</td>";
                             echo "<td>" . $developer_name . "</td>";
+                            echo "<td>" . $latestVersionNo . "</td>";
+
+                            if($isInstalled) {
+                                echo "<td>" . $personVersion . "</td>";
+                            }
+                            else {
+                                echo "<td>" . "-" . "</td>";
+                            }
                             
                             if($isInstalled) {
                                 echo "<td> 
@@ -254,6 +271,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td> 
                                 <button type=\"submit\" onclick=\"checkEmpty()\" name = \"refund\"class=\"btn btn-success btn-sm\">REFUND</button>
                                 </td>";
+
+                            if(($personVersion != $latestVersionNo) && $isInstalled) {
+                                echo "<td> 
+                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"update\"class=\"btn btn-success btn-sm\">UPDATE</button>
+                                </td>";
+                            }
 
                             echo "</tr>";
                             echo "</form>";

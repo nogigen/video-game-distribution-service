@@ -13,7 +13,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if(isset($_POST['buy'])) {
         // get the game_id from game_name
-        $queryGame = "SELECT game_id FROM game WHERE game_name = '$gameName'";
+        $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
         $res = mysqli_query($db, $queryGame);
 
         if(!$res) {
@@ -22,6 +22,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $gameIdRow = mysqli_fetch_array($res);
         $gameId = $gameIdRow['game_id'];
+        $latestVersionNo = $gameIdRow['latest_version_no'];
 
         // user's current credit
         $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
@@ -32,9 +33,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         if($credit >= $gamePrice) {
             // update the balance
             $newBalance = $credit - $gamePrice;
-            
+            $query = "UPDATE person SET credits = '$newBalance' WHERE person_id = '$person_id'";
+            $res = mysqli_query($db, $query);
 
+            if(!$res) {
+                printf("Error: Updating balance %s\n", mysqli_error($db));
+                exit();
+            }
             // add game to user's library
+            $query = "INSERT INTO has VALUES ('$person_id', '$gameId', 0, '$latestVersionNo')";
+            $res = mysqli_query($db, $query);
+            if(!$res) {
+                printf("Error: Adding game to user's library. %s\n", mysqli_error($db));
+                exit();
+            }
+
 
         }
         else {
