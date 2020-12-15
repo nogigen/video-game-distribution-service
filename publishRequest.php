@@ -123,7 +123,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT ask_game_name, ask_game_desc, ask_game_genre FROM ask WHERE publisher_id = 1 and approval = 'Waiting for Approval'";
+                        $query = "SELECT ask_game_name, ask_game_desc, ask_game_genre FROM ask WHERE approval = 'Waiting for Approval' and  publisher_id = " .$_SESSION['publisher_id'];
 
                         echo "<p><b>Requested Games:</b></p>";
 
@@ -153,12 +153,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <button type = \"submit\" onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  value =".$row['ask_game_name'] .">APPROVE</button>
                                     
                                 </td></form>";
-
+                                
                             echo "<td>
                                 <button onclick=\"cancelled()\" name = \"select_cancel\"class=\"btn btn-danger btn-sm\" value =".$row['ask_game_name'] .">CANCEL</button>
                                 </td>";
                             echo "</tr>";
-                            
                         }
 
                         echo "</table>";
