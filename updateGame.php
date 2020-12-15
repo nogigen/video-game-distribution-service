@@ -5,19 +5,17 @@ include("config.php");
 session_start();
 
 //defining necessary variables
-$username = "";
-$password = "";
+$gameName = "";
+$gameGenre = "";
+$gameDesc = "";
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $_SESSION['game_name'] = $_POST['update_button'];
-
-    header("location: updateGame.php");
-    
+    header("location: publishedGames.php");
+ 
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,6 +34,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         font-family: Arial;
         }
 
+        h1 { 
+        display: block;
+        font-size: 3em;
+        margin-top: 0.67em;
+        margin-bottom: 0.67em;
+        margin-left: 0;
+        margin-right: 0;
+        font-weight: bold;
+        }
+
         /* Links inside the navbar */
         .navbar a {
         float: left;
@@ -45,7 +53,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         padding: 14px 16px;
         text-decoration: none;
         }
-        
         /* Add a red background color to navbar links on hover */
         .navbar a:hover, .dropdown:hover .dropbtn {
         background-color: black;
@@ -79,47 +86,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="centerwrapper">
             <div id="centerdiv">
                 <br><br>
-                <h1>Published Games</h1>
+                <h1>Update <?php echo htmlspecialchars($_SESSION['game_name']); ?> </h1>
 
                 <form id="gameForm" action="" method="post">
 
+                    <div class="form-group">
+                        <label>Update Description</label>
+                        <textarea class="form-control" name="gamedesc" id="gamedesc" rows="4"></textarea>
+
+                    </div>
+                    <div class="form-group">
+                        <label>New Version No.</label>
+                        <input type="text" name="gamegenre" class="form-control" id="gamegenre">
+
+                    </div>
                     
-                    <?php
-                        // Prepare a select statement
-                        $query = "SELECT game_name, game_genre, game_desc, game_price, latest_version_no FROM game NATURAL JOIN ask";    
-
-                        $result = mysqli_query($db, $query);
-
-                        if (!$result) {
-                            printf("Error: %s\n", mysqli_error($db));
-                            exit();
-                        }
-
-                        echo "<table class=\"table table-lg table-striped\">
-                            <tr>
-                            <th>Game Name</th>
-                            <th>Genre</th>
-                            <th>Game Description</th>
-                            <th>Price</th>
-                            <th>Version</th>
-                            <th>Update</th>
-                            </tr>";
-
-                        while($row = mysqli_fetch_array($result)) {
-                            echo "<tr>";
-                            echo "<td>" . $row['game_name'] . "</td>";
-                            echo "<td>" . $row['game_genre'] . "</td>";
-                            echo "<td>" . $row['game_desc'] . "</td>";
-                            echo "<td>" . $row['game_price'] . "</td>";
-                            echo "<td>" . $row['latest_version_no'] . "</td>";
-                            echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"update_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">UPDATE</button>
-                                </td>";
-                            echo "</tr>";
-                        }
-
-                        echo "</table>";
-                        ?>
+                    <div class="form-group">
+                        <input onclick="checkEmptyAndLogin()" class="btn btn-primary" value="Update">
+                    </div>
                 </form>  
             </div>
         </div>

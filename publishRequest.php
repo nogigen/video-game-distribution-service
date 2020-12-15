@@ -12,19 +12,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $gameName = $_POST['gamename'];
         $gameGenre = $_POST['gamegenre'];
         $gameDesc = $_POST['gamedesc'];
-
-        echo "<script LANGUAGE='JavaScript'>
-        window.alert('$gameName');
-        </script>";
-
-        echo "<script LANGUAGE='JavaScript'>
-        window.alert('$gameGenre');
-        </script>";
-
-        echo "<script LANGUAGE='JavaScript'>
-        window.alert('$gameDesc');
-        </script>";
-
+        
         $accepted_query = "UPDATE ask
         SET approval = 'Accepted'
         WHERE ask_game_name = '$gameName'";
