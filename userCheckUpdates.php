@@ -11,6 +11,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameName = $_POST['gamename'];
 
     if(isset($_POST['update'])) {
+
+        $_SESSION['selected_gameName_to_update'] = $gameName;
+        header("location: userUpdate.php");
+
+        /*
         // get the game_id from game_name
         $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
         $res = mysqli_query($db, $queryGame);
@@ -30,6 +35,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             printf("Error: Uninstall %s\n", mysqli_error($db));
             exit();
         }
+        */
     }
 
     else {
