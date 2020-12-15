@@ -31,15 +31,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_stmt_store_result($res);
     $numberOfRows = mysqli_stmt_num_rows($res);
 
-    
-
     if($numberOfRows == 0){
         //INSERTION TO THE UPDATE TABLE
         $insert_to_update_query = "INSERT INTO updateGame(game_id, developer_id, update_desc, new_version_no) VALUES ('$gameId','$developerId', '$updateDesc', '$versionNo')";
         $result = mysqli_query($db,$insert_to_update_query);
     }
-    else{
-
+    else {
         echo "<script LANGUAGE='JavaScript'>
         window.alert('$numberOfRows');
         </script>";

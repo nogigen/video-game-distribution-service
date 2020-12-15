@@ -63,6 +63,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="developerWelcome.php">Home</a>
                 <a href="developGame.php">Develop Game</a>
                 <a href="publishedGames.php">Published Games</a>
+                <a href="checkApproval.php">Check Approval</a>
                 <div class="navbar-right">
                     <a href="logout.php">Log Out</a>
                 </div>

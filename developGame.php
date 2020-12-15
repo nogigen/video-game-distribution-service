@@ -22,17 +22,35 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameGenre = $_POST['gamegenre'];
     $gameDesc = $_POST['gamedesc'];
 
-    
-    $sql = "INSERT INTO ask(publisher_id, developer_id, ask_game_name, ask_game_genre, ask_game_desc) VALUES (?, ?, ?, ?, ?)";
-    $stmt = mysqli_prepare($db, $sql);
-    mysqli_stmt_bind_param($stmt, "iisss", $publisherId, $developerId, $gameName, $gameGenre, $gameDesc);
-    mysqli_stmt_execute($stmt);
-    //header("location: developerWelcome.php");
+    //
+    $waitOrAccepted = "SELECT ask_game_name from ask WHERE ask_game_name = '$gameName' and (approval = 'Waiting for Approval' or approval = 'Accepted')";
+    $res = mysqli_prepare($db, $waitOrAccepted);
+    mysqli_stmt_execute($res);
+    mysqli_stmt_store_result($res);
+    $numberOfRows = mysqli_stmt_num_rows($res);
 
-    echo "<script LANGUAGE='JavaScript'>
-        window.alert('Game is sent to the publisher for approval');
-        window.location.href = 'developerWelcome.php'; 
-        </script>";
+    if($numberOfRows == 0){
+
+        $waitOrAccepted = "SELECT ask_game_name from ask WHERE ask_game_name = '$gameName' and approval = 'Declined' and publisher_id = '$publisherId'";
+        $res = mysqli_prepare($db, $waitOrAccepted);
+        mysqli_stmt_execute($res);
+        mysqli_stmt_store_result($res);
+        $numberOfRows = mysqli_stmt_num_rows($res);
+
+        if($numberOfRows == 0){
+            //INSERT
+            $sql = "INSERT INTO ask(publisher_id, developer_id, ask_game_name, ask_game_genre, ask_game_desc) VALUES (?, ?, ?, ?, ?)";
+            $stmt = mysqli_prepare($db, $sql);
+            mysqli_stmt_bind_param($stmt, "iisss", $publisherId, $developerId, $gameName, $gameGenre, $gameDesc);
+            mysqli_stmt_execute($stmt);
+            //header("location: developerWelcome.php");
+
+            echo "<script LANGUAGE='JavaScript'>
+                window.alert('Game is sent to the publisher for approval');
+                window.location.href = 'developerWelcome.php'; 
+                </script>";
+        }
+    }
     
 }
 ?>
@@ -94,6 +112,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="developerWelcome.php">Home</a>
                 <a href="developGame.php">Develop Game</a>
                 <a href="publishedGames.php">Published Games</a>
+                <a href="checkApproval.php">Check Approval</a>
                 <div class="navbar-right">
                     <a href="logout.php">Log Out</a>
                 </div>

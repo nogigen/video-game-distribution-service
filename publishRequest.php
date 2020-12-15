@@ -6,16 +6,18 @@ session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
+    $gameName = $_POST['gamename'];
+    $gameGenre = $_POST['gamegenre'];
+    $gameDesc = $_POST['gamedesc'];
+    $publisherId = $_SESSION['publisher_id'];
+
 
     if( isset($_POST['select_approve']) )
     {
-        $gameName = $_POST['gamename'];
-        $gameGenre = $_POST['gamegenre'];
-        $gameDesc = $_POST['gamedesc'];
         
         $accepted_query = "UPDATE ask
         SET approval = 'Accepted'
-        WHERE ask_game_name = '$gameName'";
+        WHERE ask_game_name = '$gameName' AND publisher_id = '$publisherId'";
 
         $result = mysqli_query($db,$accepted_query);
         $publish_game_query = "INSERT INTO game(game_name, game_genre, game_desc) VALUES ('$gameName', '$gameGenre', '$gameDesc')";
@@ -23,15 +25,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     }
     else{
-
-        $gameName = $_POST['select_cancel'];
-
+    
         $declined_query = "UPDATE ask
         SET approval = 'Declined'
-        WHERE ask_game_name = '$gameName'";
+        WHERE ask_game_name = '$gameName' AND publisher_id = '$publisherId'";
 
         $result = mysqli_query($db,$declined_query);
-
     }
 
 }

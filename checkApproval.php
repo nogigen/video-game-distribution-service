@@ -80,14 +80,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="centerwrapper">
             <div id="centerdiv">
                 <br><br>
-                <h1>Published Games</h1>
+                <h1>Check Approval</h1>
 
                 <form id="gameForm" action="" method="post">
 
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT DISTINCT game_name, game_genre, game_desc, game_price, latest_version_no FROM game NATURAL JOIN ask WHERE approval = 'Accepted' and developer_id = " .$_SESSION['developer_id'];
+                        $query = "SELECT  ask_game_name, ask_game_genre, ask_game_desc, publisher_name, approval FROM ask NATURAL JOIN publisher WHERE developer_id = " .$_SESSION['developer_id'];
 
                         $result = mysqli_query($db, $query);
 
@@ -101,21 +101,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Game Name</th>
                             <th>Genre</th>
                             <th>Game Description</th>
-                            <th>Price</th>
-                            <th>Version</th>
-                            <th>Update</th>
+                            <th>Publisher</th>
+                            <th>Approval Status</th>
                             </tr>";
 
                         while($row = mysqli_fetch_array($result)) {
                             echo "<tr>";
-                            echo "<td>" . $row['game_name'] . "</td>";
-                            echo "<td>" . $row['game_genre'] . "</td>";
-                            echo "<td>" . $row['game_desc'] . "</td>";
-                            echo "<td>" . $row['game_price'] . "</td>";
-                            echo "<td>" . $row['latest_version_no'] . "</td>";
-                            echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"update_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">UPDATE</button>
-                                </td>";
+                            echo "<td>" . $row['ask_game_name'] . "</td>";
+                            echo "<td>" . $row['ask_game_genre'] . "</td>";
+                            echo "<td>" . $row['ask_game_desc'] . "</td>";
+                            echo "<td>" . $row['publisher_name'] . "</td>";
+                            echo "<td>" . $row['approval'] . "</td>";
                             echo "</tr>";
                         }
 
