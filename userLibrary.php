@@ -261,6 +261,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 echo "<td> 
                                     <button type=\"submit\" onclick=\"checkEmpty()\" name = \"create_mod\"class=\"btn btn-success btn-sm\">CREATE MOD</button>
                                 </td>";
+
+                                echo "<td> 
+                                     <button type=\"submit\" onclick=\"checkEmpty()\" name = \"see_mod\"class=\"btn btn-success btn-sm\">SEE MODS</button>
+                                </td>";
                             }
                             else {
                                 echo "<td> 
@@ -268,15 +272,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </td>";
                             }
 
-                            echo "<td> 
-                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"refund\"class=\"btn btn-success btn-sm\">REFUND</button>
-                                </td>";
-
                             if(($personVersion != $latestVersionNo) && $isInstalled) {
                                 echo "<td> 
                                 <button type=\"submit\" onclick=\"checkEmpty()\" name = \"update\"class=\"btn btn-success btn-sm\">UPDATE</button>
                                 </td>";
                             }
+
+                            
+                            echo "<td> 
+                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"refund\"class=\"btn btn-success btn-sm\">REFUND</button>
+                                </td>";
 
                             echo "</tr>";
                             echo "</form>";
