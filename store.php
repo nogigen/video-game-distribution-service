@@ -9,9 +9,41 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $person_id = $_SESSION['person_id'];
     $gameName = $_POST['gamename'];
+    $gamePrice = $_POST['gameprice'];
 
     if(isset($_POST['buy'])) {
+        // get the game_id from game_name
+        $queryGame = "SELECT game_id FROM game WHERE game_name = '$gameName'";
+        $res = mysqli_query($db, $queryGame);
 
+        if(!$res) {
+            printf("Error: %s\n", mysqli_error($db));
+            exit();
+        }
+        $gameIdRow = mysqli_fetch_array($res);
+        $gameId = $gameIdRow['game_id'];
+
+        // user's current credit
+        $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
+        $res = mysqli_query($db, $query);
+        $row = mysqli_fetch_array($res);
+        $credit = $row['credits'];
+
+        if($credit >= $gamePrice) {
+            // update the balance
+            $newBalance = $credit - $gamePrice;
+            
+
+            // add game to user's library
+
+        }
+        else {
+            echo "<script LANGUAGE='JavaScript'>
+            window.alert('Not enough credit to buy the game.');
+            </script>";
+        }
+        
+        
     }
     else {
         echo "<script LANGUAGE='JavaScript'>
@@ -136,7 +168,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $game_name = $hasRow['game_name'];
                             $game_genre = $hasRow['game_genre'];
 
-                            $queryPublisherId = "SELECT publisher_id FROM publishgame WHERE game_id = " .$gameId;
+                            $queryPublisherId = "SELECT publisher_id FROM publishgame WHERE game_id = '$gameId'";
                             $result3 = mysqli_query($db, $queryPublisherId);
                             if(!$result3) {
                                 printf("Error2: %s\n", mysqli_error($db));
@@ -145,7 +177,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $publisherIdRow = mysqli_fetch_array($result3);
                             $publisher_id = $publisherIdRow['publisher_id'];
 
-                            $queryPublisherName = "SELECT publisher_name FROM publisher WHERE publisher_id = " .$publisher_id;
+                            $queryPublisherName = "SELECT publisher_name FROM publisher WHERE publisher_id = '$publisher_id'";
                             $result4 = mysqli_query($db, $queryPublisherName);
                             if(!$result4) {
                                 printf("Error3: %s\n", mysqli_error($db));
@@ -155,7 +187,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $publisher_name = $publisherNameRow['publisher_name'];
 
                             
-                            $queryDeveloperId = "SELECT developer_id FROM updategame WHERE game_id = " .$gameId;
+                            $queryDeveloperId = "SELECT developer_id FROM updategame WHERE game_id = '$gameId'";
                             $result5 = mysqli_query($db, $queryDeveloperId);
 
                             if(!$result5) {
@@ -166,7 +198,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $developer_id = $developerIdRow['developer_id'];
 
                         
-                            $queryDeveloperName = "SELECT developer_name FROM developer WHERE developer_id = " .$developer_id;
+                            $queryDeveloperName = "SELECT developer_name FROM developer WHERE developer_id = '$developer_id'";
                             $result6 = mysqli_query($db, $queryDeveloperName);
                             
                             if(!$result6) {
@@ -194,7 +226,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $game_genre . "</td>";
                             echo "<td>" . $publisher_name . "</td>";
                             echo "<td>" . $developer_name . "</td>";
-                            echo "<td>" . $game_price . "</td>";
+                            echo "<td><input type=\"hidden\" name=\"gameprice\" value=". $game_price .">" . $game_price . "</td>";
                             
                             if($numberOfRows == 0) {
                                 echo "<td>
