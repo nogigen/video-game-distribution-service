@@ -15,15 +15,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if( isset($_POST['select_approve']) )
     {
-        $gameName = $_POST['select_approve'];
+        $gameName = $_POST['gamename'];
 
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('$gameName');
+        </script>";
+        
         $accepted_query = "UPDATE ask
         SET approval = 'Accepted'
         WHERE ask_game_name = '$gameName'";
 
         $result = mysqli_query($db,$accepted_query);
 
-        //$publish_game_query = "INSERT INTO game VALUES game_name = '$gameName' and ";
+        //$publish_game_query = "INSERT INTO game(game_name, game_genre, game_desc) VALUES game_name = '$gameName'";
 
 
     }
@@ -140,19 +144,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             </tr>";
                             
                         while($row = mysqli_fetch_array($result)) {
+                            echo "<form action=\"\" METHOD=\"POST\">";
                             echo "<tr>";
-                            echo "<td>" . $row['ask_game_name'] . "</td>";
+                            echo "<td name=\"gamename\" value = \"zaaa\">" . $row['ask_game_name'] . "</td>";
                             echo "<td>" . $row['ask_game_desc'] . "</td>";
                             echo "<td>" . $row['ask_game_genre'] . "</td>";
-                            echo "<td> <form action=\"\" METHOD=\"POST\">
-                                    <button onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  value =".$row['ask_game_name'] .">APPROVE</button>
-                                    </form>
-                                </td>";
-                            echo "<td> <form action=\"\" METHOD=\"POST\">
+                                echo "<td> 
+                                    <button type = \"submit\" onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  value =".$row['ask_game_name'] .">APPROVE</button>
+                                    
+                                </td></form>";
+
+                            echo "<td>
                                 <button onclick=\"cancelled()\" name = \"select_cancel\"class=\"btn btn-danger btn-sm\" value =".$row['ask_game_name'] .">CANCEL</button>
-                                </form>
                                 </td>";
                             echo "</tr>";
+                            
                         }
 
                         echo "</table>";
