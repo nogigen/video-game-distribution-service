@@ -22,6 +22,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         WHERE ask_game_name = '$gameName'";
 
         $result = mysqli_query($db,$accepted_query);
+
+        //$publish_game_query = "INSERT INTO game VALUES game_name = '$gameName' and ";
+
+
     }
     else{
 
@@ -34,9 +38,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = mysqli_query($db,$declined_query);
 
     }
-
-
-    //$result = mysqli_query($db,$declined);
 
 }
 ?>

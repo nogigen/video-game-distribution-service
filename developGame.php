@@ -18,24 +18,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $developerId = $_SESSION["developer_id"];
 
 
-    $gameName = $_POST["gamename"];
-    $gameGenre = $_POST["gamegenre"];
-    $gameDesc = $_POST["gamedesc"];
-
-    echo "<script LANGUAGE='JavaScript'>
-        window.alert('$gameName');
-        </script>";
+    $gameName = $_POST['gamename'];
+    $gameGenre = $_POST['gamegenre'];
+    $gameDesc = $_POST['gamedesc'];
 
     
     $sql = "INSERT INTO ask(publisher_id, developer_id, ask_game_name, ask_game_genre, ask_game_desc) VALUES (?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($db, $sql);
     mysqli_stmt_bind_param($stmt, "iisss", $publisherId, $developerId, $gameName, $gameGenre, $gameDesc);
     mysqli_stmt_execute($stmt);
-    header("location: developerWelcome.php");
+    //header("location: developerWelcome.php");
     
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -150,9 +145,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<tr>";
                             echo "<td>" . $row['publisher_login_name'] . "</td>";
                             echo "<td>" . $row['publisher_id'] . "</td>";
-                            echo "<td> <form action=\"\" METHOD=\"POST\">
-                                    <button onclick=\"checkEmpty()\" name = \"selected_publisher_id\"class=\"btn btn-success btn-sm\"  value =".$row['publisher_id'].">SELECT</button>
-                                    </form>
+                            echo "<td> 
+                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"selected_publisher_id\"class=\"btn btn-success btn-sm\"  value =".$row['publisher_id'].">SELECT</button>
                                 </td>";
                             echo "</tr>";
                         }
@@ -174,6 +168,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 alert("FILL!");
             }
             else {
+
                 var form = document.getElementById("gameForm").submit();
             }
         }
