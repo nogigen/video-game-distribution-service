@@ -11,31 +11,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameName = $_POST['gamename'];
 
     if(isset($_POST['update'])) {
-
         $_SESSION['selected_gameName_to_update'] = $gameName;
         header("location: userUpdate.php");
-
-        /*
-        // get the game_id from game_name
-        $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
-        $res = mysqli_query($db, $queryGame);
-
-        if(!$res) {
-            printf("Error: %s\n", mysqli_error($db));
-            exit();
-        }
-        $gameIdRow = mysqli_fetch_array($res);
-        $gameId = $gameIdRow['game_id'];
-        $latestVersionNo = $gameIdRow['latest_version_no'];
-        
-        $query = "UPDATE has SET personVersion = '$latestVersionNo' WHERE person_id = '$person_id' and game_id = '$gameId'";
-        $res = mysqli_query($db, $query);
-
-        if(!$res) {
-            printf("Error: Uninstall %s\n", mysqli_error($db));
-            exit();
-        }
-        */
     }
 
     else {

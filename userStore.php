@@ -156,7 +156,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT game_id, game_name, game_genre, game_price FROM game";
+                        $query = "SELECT game_id, game_name, game_genre, game_price, latest_version_no FROM game";
 
                         $result = mysqli_query($db, $query);
 
