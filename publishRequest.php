@@ -11,6 +11,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameDesc = $_POST['gamedesc'];
     $publisherId = $_SESSION['publisher_id'];
 
+    $queryGameId = "SELECT game_id FROM game WHERE game_name = '$gameName'";
+    $result3 = mysqli_query($db, $queryGameId);
+    $gameIdRow = mysqli_fetch_array($result3);
+    $gameId = $gameIdRow['game_id'];
+    
 
     if( isset($_POST['select_approve']) )
     {
@@ -18,10 +23,30 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $accepted_query = "UPDATE ask
         SET approval = 'Accepted'
         WHERE ask_game_name = '$gameName' AND publisher_id = '$publisherId'";
-
         $result = mysqli_query($db,$accepted_query);
+
         $publish_game_query = "INSERT INTO game(game_name, game_genre, game_desc) VALUES ('$gameName', '$gameGenre', '$gameDesc')";
         $result = mysqli_query($db,$publish_game_query);
+
+        //GET GAME ID
+        $queryGameId = "SELECT game_id FROM game WHERE game_name = '$gameName'";
+        $result3 = mysqli_query($db, $queryGameId);
+        $gameIdRow = mysqli_fetch_array($result3);
+        $gameId = $gameIdRow['game_id'];
+
+        //ADD TO PUBLISH GAME
+        $publish_game_query_2 = "INSERT INTO publishgame(publisher_id, game_id, discount) VALUES ('$publisherId', '$gameId', 0)";
+        $result = mysqli_query($db,$publish_game_query_2);
+
+        //GET DEVELOPER ID
+        $queryDeveloperId = "SELECT developer_id FROM ask WHERE ask_game_name = '$gameName'";
+        $result3 = mysqli_query($db, $queryDeveloperId);
+        $developerIdRow = mysqli_fetch_array($result3);
+        $developerId = $developerIdRow['developer_id'];
+
+        //ADD TO UPDATEGAME INITIAL
+        $insert_to_update_query = "INSERT INTO updateGame(game_id, developer_id, update_desc, new_version_no) VALUES ('$gameId','$developerId', '', 1)";
+        $result = mysqli_query($db,$insert_to_update_query);
 
     }
     else{
