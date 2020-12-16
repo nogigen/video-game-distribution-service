@@ -8,28 +8,7 @@ session_start();
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $person_id = $_SESSION['person_id'];
-    $gameName = $_POST['gamename'];
-
-    if(isset($_POST['create_mod'])) {
-
-        $_SESSION['gameName_for_mod'] = $gameName;
-        header("location: userCreateMod.php");
-        
-    }
-    elseif(isset($_POST['see_mod'])) {
-        $_SESSION['gameName_for_mod'] = $gameName;
-        header("location: userSeeMod.php");
-    }
-
-
-    else {
-        echo "<script LANGUAGE='JavaScript'>
-        window.alert('it should never come here :D.');
-        </script>";
-    }
-
-
-
+    $gameName = $_SESSION['gameName_for_mod'];
 
 
     
@@ -114,16 +93,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="centerwrapper">
             <div id="centerdiv">
                 <br><br>
-                <h1>Bought Games</h1>
-
-
+                <?php
+                    $gameName = $_SESSION['gameName_for_mod'];
+                    echo "<h2>Available Mods for Game : $gameName </h2>";              
                     
-                    <?php
+                    // get the game_id from game_name
+                    $queryGame = "SELECT game_id FROM game WHERE game_name = '$gameName'";
+                    $res = mysqli_query($db, $queryGame);
+
+                    if(!$res) {
+                        printf("Error: %s\n", mysqli_error($db));
+                        exit();
+                    }
+                    $gameIdRow = mysqli_fetch_array($res);
+                    $gameId = $gameIdRow['game_id'];
+
                         // Prepare a select statement
-                        $query = "SELECT person_id, game_id, isInstalled, personVersion FROM has WHERE person_id = " .$_SESSION['person_id'];
+                        $query = "SELECT mod_id, game_id, person_id FROM develop WHERE game_id = '$gameId'";
 
-
-                        echo "<p><b>Your Games : </b></p>";
+                        echo "<p><b>Mods : </b></p>";
 
                         $result = mysqli_query($db, $query);
 
@@ -211,15 +199,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
                             else {
                                 echo "<td>" . "-" . "</td>";
-                            }
-                            
-                            if($isInstalled) {
-                                echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"create_mod\"class=\"btn btn-success btn-sm\">CREATE MOD</button>
-                                </td>";
+                            }                         
 
+                            if(($personVersion != $latestVersionNo) && $isInstalled) {
                                 echo "<td> 
-                                     <button type=\"submit\" onclick=\"checkEmpty()\" name = \"see_mod\"class=\"btn btn-success btn-sm\">SEE MODS</button>
+                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"update\"class=\"btn btn-success btn-sm\">UPDATE</button>
                                 </td>";
                             }
 
