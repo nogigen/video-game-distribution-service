@@ -48,6 +48,33 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 exit();
             }
 
+            // update shop history
+            $query = "INSERT INTO shophistory (bought_date, bought_price) VALUES(CURDATE(), '$gamePrice')";
+            $res = mysqli_query($db, $query);
+            if(!$res) {
+                printf("Error: Updating shop history. %s\n", mysqli_error($db));
+                exit();
+            }
+          
+
+            // get the latest shop_id
+            $query = "SELECT MAX(shop_id) as shop_id FROM shophistory";
+            $res = mysqli_query($db, $query);
+            if(!$res) {
+                printf("Error: Updating shop history. %s\n", mysqli_error($db));
+                exit();
+            }
+            $row = mysqli_fetch_array($res);
+            $shopId = $row['shop_id'];
+
+             // update renew table
+             $query = "INSERT into renew VALUES('$shopId', '$person_id', '$gameId')";
+             $res = mysqli_query($db, $query);
+             if(!$res) {
+                 printf("Error: Inserting to renew table. %s\n", mysqli_error($db));
+                 exit();
+             }
+            
 
         }
         else {

@@ -265,10 +265,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <button type=\"submit\" onclick=\"checkEmpty()\" name = \"install\"class=\"btn btn-success btn-sm\">INSTALL</button>
                                 </td>";
                             }
-                            
-                            echo "<td> 
-                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"refund\"class=\"btn btn-success btn-sm\">REFUND</button>
-                                </td>";
 
                             echo "</tr>";
                             echo "</form>";
