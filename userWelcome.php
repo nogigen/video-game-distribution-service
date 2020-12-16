@@ -66,7 +66,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $credit = $row['credits'];
                     echo "<a href='userCredits.php'>Credit : $credit TL </a>";
                 ?>
-                
+                <a href="followCurators.php">Follow Curators</a>
                 <div class="navbar-right">
 
                     <a href="logout.php">Log Out</a>
