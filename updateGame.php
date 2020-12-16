@@ -12,18 +12,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameName = $_SESSION['game_name'];
     $developerId = $_SESSION['developer_id'];
 
-    //UPDATE VERSION NO
-    $update_version_no_query = "UPDATE game
-    SET latest_version_no = '$versionNo'
-    WHERE game_name = '$gameName'";
-    $result = mysqli_query($db,$update_version_no_query);
-
     //GETS GAME ID
     $queryGameId = "SELECT game_id FROM game WHERE game_name = '$gameName'";
     $result = mysqli_query($db, $queryGameId);
     $gameIdRow = mysqli_fetch_array($result);
     $gameId = $gameIdRow['game_id'];
 
+    //GETS CURRENT VERSION NO
+    $queryLatestNo = "SELECT latest_version_no FROM game WHERE game_name = '$gameName'";
+    $result = mysqli_query($db, $queryLatestNo);
+    $latestNoRow = mysqli_fetch_array($result);
+    $latestVersionNo = $latestNoRow['latest_version_no'];
+    $latestVersionNo = floatval($latestVersionNo);
 
     $is_ever_updated_query = "SELECT game_id from updateGame WHERE game_id = '$gameId'";
     $res = mysqli_prepare($db, $is_ever_updated_query);
@@ -31,23 +31,57 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_stmt_store_result($res);
     $numberOfRows = mysqli_stmt_num_rows($res);
 
-    if($numberOfRows == 0){
-        //INSERTION TO THE UPDATE TABLE
-        $insert_to_update_query = "INSERT INTO updateGame(game_id, developer_id, update_desc, new_version_no) VALUES ('$gameId','$developerId', '$updateDesc', '$versionNo')";
-        $result = mysqli_query($db,$insert_to_update_query);
-    }
-    else {
+    $floatVersionNo = floatval($versionNo);
+
+    
+
+    if($updateDesc == "" || $versionNo == ""){
+
         echo "<script LANGUAGE='JavaScript'>
-        window.alert('$numberOfRows');
+        window.alert('Fill Completely');
+        window.location.href = 'updateGame.php'; 
         </script>";
-        $overwrite_update_query = "UPDATE updateGame
-        SET update_desc = '$updateDesc', new_version_no = $versionNo
-        WHERE game_id = '$gameId'";
-        $result = mysqli_query($db,$overwrite_update_query);
+    }
+    else{
+        if($floatVersionNo == 0){
+            echo "<script LANGUAGE='JavaScript'>
+            window.alert('Version No. should be positive float!');
+            window.location.href = 'updateGame.php'; 
+            </script>";
+        }
+        else if($floatVersionNo <= $latestVersionNo){
+            echo "<script LANGUAGE='JavaScript'>
+            window.alert('New Version No. shoud be higher than the old one!');
+            window.location.href = 'updateGame.php'; 
+            </script>";
+        }
+
+        else{
+            //SUCCESS CASE
+
+            //UPDATE UPDATEGAME TABLE
+            $overwrite_update_query = "UPDATE updateGame
+            SET update_desc = '$updateDesc', new_version_no = $versionNo
+            WHERE game_id = '$gameId'";
+            $result = mysqli_query($db,$overwrite_update_query);
+
+            //UPDATE GAME TABLE
+            $update_version_no_query = "UPDATE game
+            SET latest_version_no = '$versionNo'
+            WHERE game_name = '$gameName'";
+            $result = mysqli_query($db,$update_version_no_query);
+
+            echo "<script LANGUAGE='JavaScript'>
+            window.alert('Game is updated!');
+            window.location.href = 'publishedGames.php'; 
+            </script>";
+        }
     }
 
-    header("location: publishedGames.php");
+    
+        
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -148,10 +182,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             var gamenameVal = document.getElementById("updatedesc").value;
             var gamedescVal = document.getElementById("version_no").value;
             if (gamenameVal === "" || gamedescVal === "" || gamegenreVal === "") {
-                alert("FILL!");
+                //alert("FILL!");
             }
             else { 
-                var form = document.getElementById("updateForm").submit();
+                //var form = document.getElementById("updateForm").submit();
             }
         }
     </script>

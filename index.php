@@ -48,7 +48,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $id = $row['curator_id'];
                     $_SESSION['curator_id'] = $id;
                     $_SESSION['curator_login_name'] = $username;
-                    header("location: userWelcome.php");
+                    header("location: curatorWelcome.php");
                 }
                 else {
                     echo "<script type='text/javascript'>alert('Invalid combinatio of username and password.');</script>";
