@@ -73,6 +73,41 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </nav>
         <div id="centerwrapper">
             <div id="centerdiv">
+            <br><br>
+                <h1>Followers</h1>
+
+                <form id="gameForm" action="" method="post">
+
+                    
+                    <?php
+                        // Prepare a select statement
+                        $query = "SELECT nick_name, person_name, person_surname FROM curator NATURAL JOIN person NATURAL JOIN follow WHERE curator_id =" .$_SESSION['curator_id'];
+
+                        $result = mysqli_query($db, $query);
+
+                        if (!$result) {
+                            printf("Error: %s\n", mysqli_error($db));
+                            exit();
+                        }
+
+                        echo "<table class=\"table table-lg table-striped\">
+                            <tr>
+                            <th>Nick Name</th>
+                            <th>Name</th>
+                            <th>Surname</th>
+                            </tr>";
+
+                        while($row = mysqli_fetch_array($result)) {
+                            echo "<tr>";
+                            echo "<td>" . $row['nick_name'] . "</td>";
+                            echo "<td>" . $row['person_name'] . "</td>";
+                            echo "<td>" . $row['person_surname'] . "</td>";
+                            echo "</tr>";
+                        }
+
+                        echo "</table>";
+                        ?>
+                </form>  
                 
             </div>
         </div>
