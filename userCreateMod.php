@@ -50,6 +50,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             printf("Error: Inserting develop(mod) %s\n", mysqli_error($db));
             exit();
         }
+
+        header("location: userCheckMods.php");
     }
 }
 ?>

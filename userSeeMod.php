@@ -9,8 +9,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $person_id = $_SESSION['person_id'];
     $gameName = $_SESSION['gameName_for_mod'];
+    $modId = $_POST['mod_id'];
 
+    if(isset($_POST['install_mod'])) {
+        $_SESSION['selected_mod_id'] = $modId;
+        header("location: userModFeatures.php");
+    }
+    elseif(isset($_POST['uninstall_mod'])) {
+        // delete from download table
+        $query = "DELETE FROM download WHERE person_id = '$person_id' and mod_id = '$modId'";
+        $res = mysqli_query($db, $query);
 
+        if(!$res) {
+            printf("Error: %s\n", mysqli_error($db));
+            exit();
+        }
+    }
+    else {
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('it should never come here :D.');
+        </script>";
+    }
     
 }
 ?>
@@ -94,6 +113,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             <div id="centerdiv">
                 <br><br>
                 <?php
+                    $personId = $_SESSION['person_id'];
                     $gameName = $_SESSION['gameName_for_mod'];
                     echo "<h2>Available Mods for Game : $gameName </h2>";              
                     
@@ -108,92 +128,95 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $gameIdRow = mysqli_fetch_array($res);
                     $gameId = $gameIdRow['game_id'];
 
-                        // Prepare a select statement
-                        $query = "SELECT mod_id, game_id, person_id FROM develop WHERE game_id = '$gameId'";
+                    // get game name and game genre
+                    $queryGame = "SELECT game_name, game_genre FROM game WHERE game_id = '$gameId'";
+                    $result2 = mysqli_query($db, $queryGame);
+                    if(!$result2) {
+                        printf("Error1: %s\n", mysqli_error($db));
+                        exit();
+                    }
+                    $gameRow =  mysqli_fetch_array($result2);
+                    $game_name = $gameRow['game_name'];
+                    $game_genre = $gameRow['game_genre'];
 
-                        echo "<p><b>Mods : </b></p>";
 
-                        $result = mysqli_query($db, $query);
 
-                        if (!$result) {
-                            printf("Error: %s\n", mysqli_error($db));
-                            exit();
-                        }
+                    $query = "SELECT mod_id, person_id FROM develop WHERE game_id = '$gameId'";
+
+                    echo "<p><b>Mods : </b></p>";
+
+                    $result = mysqli_query($db, $query);
+
+                    if (!$result) {
+                        printf("Error: %s\n", mysqli_error($db));
+                        exit();
+                    }
 
                         echo "<table class=\"table table-lg table-striped\">
                             <tr>
                             <th>Game Name</th>
                             <th>Game Genre</th>
-                            <th>Publisher Name</th>
-                            <th>Developer Name</th>
-                            <th>Latest Version No</th>
-                            <th>User's version</th>
+                            <th>Mod Name</th>
+                            <th>Mod's Creator</th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {
-                            $gameId = $hasRow['game_id'];
-                            $isInstalled = $hasRow['isInstalled'];
-                            $personVersion = $hasRow['personVersion'];
-
-                            $queryGame = "SELECT game_name, game_genre, latest_version_no FROM game WHERE game_id = '$gameId'";
+                            $modId = $hasRow['mod_id'];
+                            $modCreatorId = $hasRow['person_id'];
+                            
+                            // get mod name
+                            $queryGame = "SELECT mod_name FROM gamemod WHERE mod_id = '$modId'";
                             $result2 = mysqli_query($db, $queryGame);
                             if(!$result2) {
                                 printf("Error1: %s\n", mysqli_error($db));
                                 exit();
                             }
-                            $gameRow =  mysqli_fetch_array($result2);
-                            $game_name = $gameRow['game_name'];
-                            $game_genre = $gameRow['game_genre'];
-                            $latestVersionNo = $gameRow['latest_version_no'];
-                            
-                            $queryPublisherId = "SELECT publisher_id FROM publishgame WHERE game_id = '$gameId'";
-                            $result3 = mysqli_query($db, $queryPublisherId);
-                            if(!$result3) {
-                                printf("Error2: %s\n", mysqli_error($db));
+                            $modRow =  mysqli_fetch_array($result2);
+                            $mod_name = $modRow['mod_name'];
+
+                            // get creater's name (person)
+                            $query = "SELECT nick_name FROM person WHERE person_id = '$modCreatorId'";
+                            $res = mysqli_query($db, $query);
+                            if(!$res) {
+                                printf("Error: %s\n", mysqli_error($db));
                                 exit();
                             }
-                            $publisherIdRow = mysqli_fetch_array($result3);
-                            $publisher_id = $publisherIdRow['publisher_id'];
+                            $personRow =  mysqli_fetch_array($res);
+                            $creator_name = $personRow['nick_name'];
 
-                            $queryPublisherName = "SELECT publisher_name FROM publisher WHERE publisher_id = '$publisher_id'";
-                            $result4 = mysqli_query($db, $queryPublisherName);
-                            if(!$result4) {
-                                printf("Error3: %s\n", mysqli_error($db));
+                            // check to see if the user already has the mod or not.
+                            $query = "SELECT person_id FROM download WHERE person_id = '$personId' and mod_id = '$modId'";
+                            $res = mysqli_prepare($db, $query);
+
+                            if(!$res) {
+                                printf("Error: %s\n", mysqli_error($db));
                                 exit();
                             }
-                            $publisherNameRow = mysqli_fetch_array($result4);
-                            $publisher_name = $publisherNameRow['publisher_name'];
 
-                            
-                            $queryDeveloperId = "SELECT developer_id FROM updategame WHERE game_id = '$gameId' " ;
-                            $result5 = mysqli_query($db, $queryDeveloperId);
-
-                            if(!$result5) {
-                                printf("Error4: %s\n", mysqli_error($db));
-                                exit();
-                            }
-                            $developerIdRow = mysqli_fetch_array($result5);
-                            $developer_id = $developerIdRow['developer_id'];
-
-                        
-                            $queryDeveloperName = "SELECT developer_name FROM developer WHERE developer_id = '$developer_id'" ;
-                            $result6 = mysqli_query($db, $queryDeveloperName);
-                            
-                            if(!$result6) {
-                                printf("Error5: %s\n", mysqli_error($db));
-                                exit();
-                            }
-                            $developerNameRow = mysqli_fetch_array($result6);
-                            $developer_name = $developerNameRow['developer_name'];
-                                            
+                            mysqli_stmt_execute($res);
+                            mysqli_stmt_store_result($res);
+                            $numberOfRows = mysqli_stmt_num_rows($res);
+                           
                             echo "<form action=\"\" METHOD=\"POST\">";
                             echo "<tr>";
-                            echo "<td><input type=\"hidden\" name=\"gamename\" value=". $game_name .">" . $game_name . "</td>";
+                            echo "<td>" . $game_name . "</td>";
                             echo "<td>" . $game_genre . "</td>";
-                            echo "<td>" . $publisher_name . "</td>";
-                            echo "<td>" . $developer_name . "</td>";
-                            echo "<td>" . $latestVersionNo . "</td>";
+                            echo "<td><input type=\"hidden\" name=\"mod_id\" value=". $modId .">" . $mod_name . "</td>";
+                            echo "<td>" . $creator_name. "</td>";
 
+                            if($numberOfRows == 0) {
+                                echo "<td> 
+                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"install_mod\"class=\"btn btn-success btn-sm\">INSTALL MOD</button>
+                                </td>";
+                            }
+                            else {
+                                echo "<td> 
+                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"uninstall_mod\"class=\"btn btn-success btn-sm\">UNINSTALL MOD</button>
+                                </td>";
+                            }
+
+
+                            /*
                             if($isInstalled) {
                                 echo "<td>" . $personVersion . "</td>";
                             }
@@ -206,7 +229,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <button type=\"submit\" onclick=\"checkEmpty()\" name = \"update\"class=\"btn btn-success btn-sm\">UPDATE</button>
                                 </td>";
                             }
-
+                            */
                             echo "</tr>";
                             echo "</form>";
                         }
