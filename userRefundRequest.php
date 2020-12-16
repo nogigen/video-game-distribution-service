@@ -64,7 +64,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if($numberOfRows == 0) {    
             // create refund history.
-            $query = "INSERT INTO refundhistory(shop_id, refund_description, refund_approval) VALUES('$shopId', '$refund_desc', 0)";
+            $query = "INSERT INTO refundhistory(shop_id, refund_description, refund_approval) VALUES('$shopId', '$refund_desc', 'Waiting for Approval')";
             $res = mysqli_query($db, $query);
 
             if(!$res) {
