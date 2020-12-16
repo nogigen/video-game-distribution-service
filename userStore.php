@@ -48,6 +48,33 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 exit();
             }
 
+            // update shop history
+            $query = "INSERT INTO shophistory (bought_date, bought_price) VALUES(CURDATE(), '$gamePrice')";
+            $res = mysqli_query($db, $query);
+            if(!$res) {
+                printf("Error: Updating shop history. %s\n", mysqli_error($db));
+                exit();
+            }
+          
+
+            // get the latest shop_id
+            $query = "SELECT MAX(shop_id) as shop_id FROM shophistory";
+            $res = mysqli_query($db, $query);
+            if(!$res) {
+                printf("Error: Updating shop history. %s\n", mysqli_error($db));
+                exit();
+            }
+            $row = mysqli_fetch_array($res);
+            $shopId = $row['shop_id'];
+
+             // update renew table
+             $query = "INSERT into renew VALUES('$shopId', '$person_id', '$gameId')";
+             $res = mysqli_query($db, $query);
+             if(!$res) {
+                 printf("Error: Inserting to renew table. %s\n", mysqli_error($db));
+                 exit();
+             }
+            
 
         }
         else {
@@ -133,6 +160,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userCheckMods.php">Mods</a>
                 <a href="followCurators.php">Follow Curators</a>
                 <a href="userRefund.php">Refund</a>
+                <a href="userRefundHistory.php">Refund History</a>
+                <a href="userShopHistory.php">Shop History</a>
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
                     $res = mysqli_query($db, $query);
