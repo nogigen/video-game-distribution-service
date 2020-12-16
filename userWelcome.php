@@ -59,6 +59,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userStore.php">Store</a>
                 <a href="userCheckUpdates.php">Check Updates</a>
                 <a href="userCheckMods.php">Mods</a>
+                <a href="followCurators.php">Follow Curators</a>
+                <a href="userRefund.php">Refund</a>
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
                     $res = mysqli_query($db, $query);
@@ -66,7 +68,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $credit = $row['credits'];
                     echo "<a href='userCredits.php'>Credit : $credit TL </a>";
                 ?>
-                <a href="followCurators.php">Follow Curators</a>
+                
                 <div class="navbar-right">
 
                     <a href="logout.php">Log Out</a>
