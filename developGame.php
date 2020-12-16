@@ -30,7 +30,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $numberOfRows = mysqli_stmt_num_rows($res);
 
     if($numberOfRows == 0){
-
         $waitOrAccepted = "SELECT ask_game_name from ask WHERE ask_game_name = '$gameName' and approval = 'Declined' and publisher_id = '$publisherId'";
         $res = mysqli_prepare($db, $waitOrAccepted);
         mysqli_stmt_execute($res);
@@ -51,7 +50,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 </script>";
         }
     }
-    
 }
 ?>
 
