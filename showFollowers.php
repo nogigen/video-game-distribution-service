@@ -60,8 +60,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $res = mysqli_query($db, $query);
                     $row = mysqli_fetch_array($res);
                     $followers = $row['no_of_followers'];
-                    echo "<a href='curatorFollowers.php'>Followers : $followers</a>";
+                    echo "<a href='showFollowers.php'>Followers : $followers</a>";
                 ?>
+                <a href="curatorSuggestGame.php">Suggest Game</a>
 
                 
                 <div class="navbar-right">

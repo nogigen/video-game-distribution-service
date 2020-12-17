@@ -6,6 +6,9 @@ session_start();
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $_SESSION['game_name'] = $_POST['review_button'];
+    header("location: curatorReview.php");
     
 }
 ?>
@@ -63,7 +66,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "<a href='showFollowers.php'>Followers : $followers</a>";
                 ?>
                 <a href="curatorSuggestGame.php">Suggest Game</a>
-                
+
                 <div class="navbar-right">
 
                     <a href="logout.php">Log Out</a>
@@ -73,6 +76,50 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </nav>
         <div id="centerwrapper">
             <div id="centerdiv">
+
+            <br><br>
+                <h1>List of Games</h1>
+
+                <form id="gameForm" action="" method="post">
+
+                    
+                    <?php
+                        // Prepare a select statement
+                        $query = "SELECT  game_name, game_genre, game_desc, publisher_name, developer_name FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN updateGame NATURAL JOIN developer";
+
+                        $result = mysqli_query($db, $query);
+
+                        if (!$result) {
+                            printf("Error: %s\n", mysqli_error($db));
+                            exit();
+                        }
+
+                        echo "<table class=\"table table-lg table-striped\">
+                            <tr>
+                            <th>Game Name</th>
+                            <th>Genre</th>
+                            <th>Game Description</th>
+                            <th>Publisher Name</th>
+                            <th>Developer Name</th>
+                            <th>        </th>
+                            </tr>";
+
+                        while($row = mysqli_fetch_array($result)) {
+                            echo "<tr>";
+                            echo "<td>" . $row['game_name'] . "</td>";
+                            echo "<td>" . $row['game_genre'] . "</td>";
+                            echo "<td>" . $row['game_desc'] . "</td>";
+                            echo "<td>" . $row['publisher_name'] . "</td>";
+                            echo "<td>" . $row['developer_name'] . "</td>";
+                            echo "<td>
+                                <button onclick=\"cancelled()\" name = \"review_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">REVIEW</button>
+                                </td>";
+                            echo "</tr>";
+                        }
+
+                        echo "</table>";
+                        ?>
+                </form>  
                 
             </div>
         </div>
