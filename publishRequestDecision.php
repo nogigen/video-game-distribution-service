@@ -35,7 +35,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $result = mysqli_query($db,$publish_game_query_2);
 
         //ADD TO UPDATEGAME INITIAL
-        $insert_to_update_query = "INSERT INTO updateGame(game_id, developer_id, update_desc, new_version_no) VALUES ('$gameId','$developerId', '', 1)";
+        $insert_to_update_query = "INSERT INTO updateGame(game_id, developer_id, update_desc, new_version_no) VALUES ('$gameId','$developer_id', '', 1)";
         $result = mysqli_query($db,$insert_to_update_query);
 
         header("location: publishRefundRequests.php");
