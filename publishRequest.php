@@ -9,17 +9,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameName = $_POST['gamename'];
     $gameGenre = $_POST['gamegenre'];
     $gameDesc = $_POST['gamedesc'];
+    $developer_id = $_POST['developerid'];
     $publisherId = $_SESSION['publisher_id'];
-
-    $queryGameId = "SELECT game_id FROM game WHERE game_name = '$gameName'";
-    $result3 = mysqli_query($db, $queryGameId);
-    $gameIdRow = mysqli_fetch_array($result3);
-    $gameId = $gameIdRow['game_id'];
     
 
     if( isset($_POST['select_approve']) )
     {
-        
+        /*
         $accepted_query = "UPDATE ask
         SET approval = 'Accepted'
         WHERE ask_game_name = '$gameName' AND publisher_id = '$publisherId'";
@@ -38,22 +34,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $publish_game_query_2 = "INSERT INTO publishgame(publisher_id, game_id, discount) VALUES ('$publisherId', '$gameId', 0)";
         $result = mysqli_query($db,$publish_game_query_2);
 
-        //GET DEVELOPER ID
-        $queryDeveloperId = "SELECT developer_id FROM ask WHERE ask_game_name = '$gameName'";
-        $result3 = mysqli_query($db, $queryDeveloperId);
-        $developerIdRow = mysqli_fetch_array($result3);
-        $developerId = $developerIdRow['developer_id'];
-
         //ADD TO UPDATEGAME INITIAL
         $insert_to_update_query = "INSERT INTO updateGame(game_id, developer_id, update_desc, new_version_no) VALUES ('$gameId','$developerId', '', 1)";
         $result = mysqli_query($db,$insert_to_update_query);
+        */
+        $_SESSION['selected_developer_id'] = $developer_id;
+        $_SESSION['selected_ask_game_name'] = $gameName;
+
+        header("location: publishRequestDecision.php");
+
 
     }
     else{
     
         $declined_query = "UPDATE ask
         SET approval = 'Declined'
-        WHERE ask_game_name = '$gameName' AND publisher_id = '$publisherId'";
+        WHERE ask_game_name = '$gameName' AND publisher_id = '$publisherId' AND developer_id ='$developerId'";
 
         $result = mysqli_query($db,$declined_query);
     }
@@ -141,7 +137,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT ask_game_name, ask_game_desc, ask_game_genre FROM ask WHERE approval = 'Waiting for Approval' and  publisher_id = " .$_SESSION['publisher_id'];
+                        $query = "SELECT ask_game_name, ask_game_desc, ask_game_genre, developer_id FROM ask WHERE approval = 'Waiting for Approval' and  publisher_id = " .$_SESSION['publisher_id'];
 
                         echo "<p><b>Requested Games:</b></p>";
 
@@ -167,6 +163,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td><input type=\"hidden\" name=\"gamename\" value=". $row['ask_game_name'] .">" . $row['ask_game_name'] . "</td>";
                             echo "<td><input type=\"hidden\" name=\"gamedesc\" value=". $row['ask_game_desc'] .">" . $row['ask_game_desc'] . "</td>";
                             echo "<td><input type=\"hidden\" name=\"gamegenre\" value=". $row['ask_game_genre'] .">" . $row['ask_game_genre'] . "</td>";
+                            echo "<td><input type=\"hidden\" name=\"developerid\" value=". $row['developer_id'] .">" . $row['developer_id'] . "</td>";
                                 echo "<td> 
                                     <button type = \"submit\" onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  value =".$row['ask_game_name'] .">APPROVE</button>
                                     
