@@ -8,13 +8,6 @@ session_start();
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $publisher_id = $_SESSION['publisher_id'];
-    $refund_id = $_POST['refund_request'];
-
-    if(isset($_POST['refund_request'])) {
-        $_SESSION['selected_refund_id'] = $refund_id;      
-        header("location: publishRefundRequestDecision.php");
-    }
-
     
 }   
 ?>
@@ -77,6 +70,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="publishRequest.php">Publish Requests</a>
                 <a href="publishRefundRequests.php">Refund Requests</a>      
                 <a href="publishRefundRequestHistory.php">Refund Request History</a>
+                <a href ="publishRequestHistory.php">Publish Request History </a>
                 <a href="publisherMyGames.php">My Games</a>
 
 

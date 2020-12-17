@@ -4,20 +4,14 @@
 include("config.php");
 session_start();
 
-//defining necessary variables
-$username = "";
-$password = "";
-
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $_SESSION['game_name'] = $_POST['update_button'];
+    $publisher_id = $_SESSION['publisher_id'];
 
-    header("location: updateGame.php");
     
-}
+}   
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,6 +30,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         font-family: Arial;
         }
 
+        h1 { 
+        display: block;
+        font-size: 3em;
+        margin-top: 0.67em;
+        margin-bottom: 0.67em;
+        margin-left: 0;
+        margin-right: 0;
+        font-weight: bold;
+        }
+
         /* Links inside the navbar */
         .navbar a {
         float: left;
@@ -45,7 +49,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         padding: 14px 16px;
         text-decoration: none;
         }
-        
         /* Add a red background color to navbar links on hover */
         .navbar a:hover, .dropdown:hover .dropbtn {
         background-color: black;
@@ -61,7 +64,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <h4 class="navbar-text">Developer <?php echo htmlspecialchars($_SESSION['developer_login_name']); ?></h4>
+                    <h4 class="navbar-text">Publisher <?php echo htmlspecialchars($_SESSION['publisher_login_name']); ?></h4>
 
                 </div>
                 <a href="publisherWelcome.php">Home</a>
@@ -70,6 +73,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="publishRefundRequestHistory.php">Refund Request History</a>
                 <a href ="publishRequestHistory.php">Publish Request History </a>
                 <a href="publisherMyGames.php">My Games</a>
+
+
                 <div class="navbar-right">
                     <a href="logout.php">Log Out</a>
                 </div>
@@ -82,14 +87,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="centerwrapper">
             <div id="centerdiv">
                 <br><br>
-                <h1>Published Games</h1>
+                <h1>Publish Request History</h1>
 
-                <form id="gameForm" action="" method="post">
 
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT DISTINCT game_name, game_genre, game_desc, game_price, latest_version_no, publisher_id FROM game NATURAL JOIN ask WHERE approval = 'Accepted' and developer_id = " .$_SESSION['developer_id'];
+                        $publisher_id = $_SESSION['publisher_id'];
+
+                        $query = "SELECT developer_id, ask_game_name, ask_game_genre, approval FROM ask WHERE publisher_id = '$publisher_id'";
+
+
+                        echo "<p><b>All Publish Requests : </b></p>";
 
                         $result = mysqli_query($db, $query);
 
@@ -101,29 +110,45 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         echo "<table class=\"table table-lg table-striped\">
                             <tr>
                             <th>Game Name</th>
-                            <th>Genre</th>
-                            <th>Game Description</th>
-                            <th>Price</th>
-                            <th>Version</th>
-                            <th>Update</th>
+                            <th>Game Genre</th>
+                            <th>Developer Name</th>
+                            <th>Publish Status</th>
+
                             </tr>";
 
-                        while($row = mysqli_fetch_array($result)) {
+                        while($hasRow = mysqli_fetch_array($result)) {
+                            $developer_id = $hasRow['developer_id'];
+                            $game_name = $hasRow['ask_game_name'];
+                            $game_genre = $hasRow['ask_game_genre'];
+                            $approval = $hasRow['approval'];
+
+
+                            // get developer name
+                            $query = "SELECT developer_name FROM developer WHERE developer_id = '$developer_id'" ;
+                            $res = mysqli_query($db, $query);
+                            if(!$res) {
+                                printf("Error5: %s\n", mysqli_error($db));
+                                exit();
+                            }
+                            $developerRow = mysqli_fetch_array($res);
+                            $developer_name = $developerRow['developer_name'];
+            
+                            
+                            echo "<form action=\"\" METHOD=\"POST\">";
                             echo "<tr>";
-                            echo "<td>" . $row['game_name'] . "</td>";
-                            echo "<td>" . $row['game_genre'] . "</td>";
-                            echo "<td>" . $row['game_desc'] . "</td>";
-                            echo "<td>" . $row['game_price'] . "</td>";
-                            echo "<td>" . $row['latest_version_no'] . "</td>";
-                            echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"update_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">UPDATE</button>
-                                </td>";
+                            echo "<td>" . $game_name . "</td>";
+                            echo "<td>" . $game_genre . "</td>";
+                            echo "<td>" . $developer_name . "</td>";
+                            echo "<td>" . $approval . "</td>";
+     
                             echo "</tr>";
+                            echo "</form>";
                         }
 
                         echo "</table>";
+                        
                         ?>
-                </form>  
+          
             </div>
         </div>
     </div>
@@ -131,16 +156,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <script type="text/javascript">
         function checkEmpty() {
-            var gamenameVal = document.getElementById("gamename").value;
-            var gamedescVal = document.getElementById("gamedesc").value;
-            var gamegenreVal = document.getElementById("gamegenre").value;
-            if (gamenameVal === "" || gamedescVal === "" || gamegenreVal === "") {
-                alert("FILL!");
-            }
-            else {
 
-                var form = document.getElementById("gameForm").submit();
-            }
         }
     </script>
 </body>

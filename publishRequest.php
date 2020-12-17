@@ -49,7 +49,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     
         $declined_query = "UPDATE ask
         SET approval = 'Declined'
-        WHERE ask_game_name = '$gameName' AND publisher_id = '$publisherId' AND developer_id ='$developerId'";
+        WHERE ask_game_name = '$gameName' AND publisher_id = '$publisherId' AND developer_id ='$developer_id'";
 
         $result = mysqli_query($db,$declined_query);
     }
@@ -116,6 +116,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="publishRequest.php">Publish Requests</a>
                 <a href="publishRefundRequests.php">Refund Requests</a>      
                 <a href="publishRefundRequestHistory.php">Refund Request History</a>
+                <a href ="publishRequestHistory.php">Publish Request History </a>
                 <a href="publisherMyGames.php">My Games</a>
 
 
@@ -170,7 +171,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <button type = \"submit\" onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  value =".$row['ask_game_name'] .">APPROVE</button>
                                     
                                 </td></form>";
-                                
+                            
                             echo "<td>
                                 <button onclick=\"cancelled()\" name = \"select_cancel\"class=\"btn btn-danger btn-sm\" value =".$row['ask_game_name'] .">CANCEL</button>
                                 </td>";
