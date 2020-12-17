@@ -64,10 +64,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <h4 class="navbar-text">Developer <?php echo htmlspecialchars($_SESSION['developer_login_name']); ?></h4>
 
                 </div>
-                <a href="developerWelcome.php">Home</a>
-                <a href="developGame.php">Develop Game</a>
-                <a href="publishedGames.php">Published Games</a>
-                <a href="checkApproval.php">Check Approval</a>
+                <a href="publisherWelcome.php">Home</a>
+                <a href="publishRequest.php">Publish Requests</a>
+                <a href="publishRefundRequests.php">Refund Requests</a>      
+                <a href="publishRefundRequestHistory.php">Refund Request History</a>
+                <a href="publisherGames.php">My Games</a>
                 <div class="navbar-right">
                     <a href="logout.php">Log Out</a>
                 </div>

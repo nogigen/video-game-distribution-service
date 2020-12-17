@@ -114,8 +114,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <a href="publisherWelcome.php">Home</a>
                 <a href="publishRequest.php">Publish Requests</a>
-                <a href="publishRefundRequests.php">Refund Requests</a>
+                <a href="publishRefundRequests.php">Refund Requests</a>      
                 <a href="publishRefundRequestHistory.php">Refund Request History</a>
+                <a href="publisherGames.php">My Games</a>
 
                 <div class="navbar-right">
                     <a href="logout.php">Log Out</a>
