@@ -7,8 +7,49 @@ session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $_SESSION['game_name'] = $_POST['review_button'];
-    header("location: userReviewGame.php");
+    $gameName = $_SESSION['game_name'];
+    $personId = $_SESSION['person_id'];
+
+    $reviewText = $_POST['reviewcomment'];
+    $score = $_POST['rating'];
+
+    if($reviewText == ""){ 
+
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('Please fill the Review Comment');
+        window.location.href = 'userReviewGame.php'; 
+        </script>";
+    }
+
+    else{ //SUCCESS CASE
+
+        //GET GAME ID
+        $queryGameId = "SELECT game_id FROM game WHERE game_name = '$gameName'";
+        $result = mysqli_query($db, $queryGameId);
+        $gameIdRow = mysqli_fetch_array($result);
+        $gameId = $gameIdRow['game_id'];
+
+        //INSERT INTO PERSONREVIEW TABLE
+        $insert_review = "INSERT INTO personreview(review_text, review_score) VALUES ('$reviewText', '$score')";
+        $result = mysqli_query($db,$insert_review);
+
+        //GET REVIEW ID
+        $queryReviewId = "SELECT MAX(review_id) as review_id FROM personreview";
+        $result = mysqli_query($db, $queryReviewId);
+        $reviewIdRow = mysqli_fetch_array($result);
+        $reviewId = $reviewIdRow['review_id'];
+
+
+        //INSERT INTO REVIEW TABLE
+        $insert_publish = "INSERT INTO review VALUES ('$reviewId', '$personId', '$gameId')";
+        $result = mysqli_query($db,$insert_publish);
+
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('Review has ben published');
+        window.location.href = 'userReview.php'; 
+        </script>";
+
+    }
 
 }
 ?>
@@ -85,55 +126,36 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </nav>
         <div id="centerwrapper">
             <div id="centerdiv">
-            <div id="centerwrapper">
-            <div id="centerdiv">
-
             <br><br>
-                <h1>List of Games</h1>
+                <h1>Review <?php echo htmlspecialchars($_SESSION['game_name']); ?> </h1>
 
-                <form id="gameForm" action="" method="post">
+                <form id="updateForm" action="" method="post">
 
-                    <?php
-                        // Prepare a select statement
-                        $query = "SELECT  game_name, game_genre, game_desc, publisher_name, developer_name FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN updateGame NATURAL JOIN developer NATURAL JOIN has WHERE isInstalled = 1";
+                    <div class="form-group">
+                        <label>Review Comment</label>
+                        <textarea class="form-control" name="reviewcomment" id="updatedesc" rows="4"></textarea>
 
-                        $result = mysqli_query($db, $query);
-
-                        if (!$result) {
-                            printf("Error: %s\n", mysqli_error($db));
-                            exit();
-                        }
-
-                        echo "<table class=\"table table-lg table-striped\">
-                            <tr>
-                            <th>Game Name</th>
-                            <th>Genre</th>
-                            <th>Game Description</th>
-                            <th>Publisher Name</th>
-                            <th>Developer Name</th>
-                            <th>        </th>
-                            </tr>";
-
-                        while($row = mysqli_fetch_array($result)) {
-                            echo "<tr>";
-                            echo "<td>" . $row['game_name'] . "</td>";
-                            echo "<td>" . $row['game_genre'] . "</td>";
-                            echo "<td>" . $row['game_desc'] . "</td>";
-                            echo "<td>" . $row['publisher_name'] . "</td>";
-                            echo "<td>" . $row['developer_name'] . "</td>";
-                            echo "<td>
-                                <button onclick=\"cancelled()\" name = \"review_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">REVIEW</button>
-                                </td>";
-                            echo "</tr>";
-                        }
-
-                        echo "</table>";
-                        ?>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Rating</label>
+                        <select class="form-control" name="rating" id="exampleFormControlSelect1">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type = "submit" onclick="checkEmpty()" class="btn btn-primary" value="Publish Review">
+                    </div>
                 </form>  
-                
-            </div>
-        </div>
-                
             </div>
         </div>
     </div>
