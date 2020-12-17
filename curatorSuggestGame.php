@@ -6,6 +6,9 @@ session_start();
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $_SESSION['game_name'] = $_POST['review_button'];
+    header("location: curatorReview.php");
     
 }
 ?>
@@ -98,6 +101,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Game Description</th>
                             <th>Publisher Name</th>
                             <th>Developer Name</th>
+                            <th>        </th>
                             </tr>";
 
                         while($row = mysqli_fetch_array($result)) {
@@ -107,6 +111,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $row['game_desc'] . "</td>";
                             echo "<td>" . $row['publisher_name'] . "</td>";
                             echo "<td>" . $row['developer_name'] . "</td>";
+                            echo "<td>
+                                <button onclick=\"cancelled()\" name = \"review_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">REVIEW</button>
+                                </td>";
                             echo "</tr>";
                         }
 

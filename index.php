@@ -207,7 +207,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     </div>
                     <div class="form-group">
-                        <input onclick="checkEmptyAndLogin()" class="btn btn-primary" value="Login">
+                        <input type = "submit" onclick="checkEmptyAndLogin()" class="btn btn-primary" value="Login">
                     </div>
                 </form>
             </div>
