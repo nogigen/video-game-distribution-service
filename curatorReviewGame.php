@@ -44,6 +44,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $insert_publish = "INSERT INTO publish VALUES ('$cReviewId', '$curatorId', '$gameId')";
         $result = mysqli_query($db,$insert_publish);
 
+        $_SESSION['review_text'] = $reviewText;
+        $_SESSION['score'] = $score;
+        $_SESSION['the_review_id'] = $cReviewId;
+
+
         echo "<script LANGUAGE='JavaScript'>
         window.alert('Review has ben published');
         window.location.href = 'curatorSuggestGame.php'; 

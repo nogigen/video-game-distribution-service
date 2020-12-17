@@ -11,20 +11,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if(isset($_POST['delete_review'])) {
 
-        //DELETE FROM REVIEW
-        $follow_insertion = "DELETE FROM review WHERE review_id = '$reviewId'";
+        //DELETE FROM PUBLISH
+        $follow_insertion = "DELETE FROM publish WHERE c_review_id = '$reviewId'";
         $result = mysqli_query($db,$follow_insertion);
 
-        //DELETE FROM PERSONREVIEW
-        $follow_insertion = "DELETE FROM personreview WHERE review_id = '$reviewId'";
+        //DELETE FROM CURATORREVIEW
+        $follow_insertion = "DELETE FROM curatorreview WHERE c_review_id = '$reviewId'";
         $result = mysqli_query($db,$follow_insertion);
 
         echo "<script LANGUAGE='JavaScript'>
                 window.alert('Review is successfully deleted.');
-                window.location.href = 'userReview.php'; 
+                window.location.href = 'curatorSuggestGame.php'; 
                 </script>";
 
     }
+
+
     
 }
 ?>
@@ -71,26 +73,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <nav class="navbar navbar-inverse bg-primary navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <h4 class="navbar-text">User <?php echo htmlspecialchars($_SESSION['nick_name']); ?></h4>
+                    <h4 class="navbar-text">Curator <?php echo htmlspecialchars($_SESSION['curator_login_name']); ?></h4>
                 </div>
-                <a href="userWelcome.php">Home</a>
-                <a href="userLibrary.php">Library</a>
-                <a href="userStore.php">Store</a>
-                <a href="userCheckUpdates.php">Check Updates</a>
-                <a href="userCheckMods.php">Mods</a>
-                <a href="followCurators.php">Follow Curators</a>
-                <a href="userRefund.php">Refund</a>
-                <a href="userRefundHistory.php">Refund History</a>
-                <a href="userShopHistory.php">Shop History</a>
+                <a href="curatorWelcome.php">Home</a>
                 <?php
-                    $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
+                    $query = "SELECT no_of_followers FROM curator WHERE curator_id = " .$_SESSION['curator_id'];
                     $res = mysqli_query($db, $query);
                     $row = mysqli_fetch_array($res);
-                    $credit = $row['credits'];
-                    echo "<a href='userCredits.php'>Credit : $credit TL </a>";
+                    $followers = $row['no_of_followers'];
+                    echo "<a href='showFollowers.php'>Followers : $followers</a>";
                 ?>
-
-                <a href="userReview.php">Review Games</a>
+                <a href="curatorSuggestGame.php">Suggest Game</a>
                 
                 <div class="navbar-right">
 
@@ -104,7 +97,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             <br><br>
                 <?php
                 $gameName = $_SESSION['game_name'];
-                $person_id = $_SESSION['person_id'];
 
                 $review_desc = $_SESSION['review_text'];
                 $rating = $_SESSION['score'];
@@ -128,7 +120,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <button type=\"submit\" onclick=\"checkEmpty()\" name = \"delete_review\"class=\"btn btn-danger btn-sm\">DELETE REVIEW</button>
                 </form>";
                 ?>
-
                 
             </div>
         </div>

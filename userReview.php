@@ -7,8 +7,25 @@ session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $_SESSION['game_name'] = $_POST['review_button'];
-    header("location: userReviewGame.php");
+    if(isset($_POST['review_button'])) {
+
+        $_SESSION['game_name'] = $_POST['review_button'];
+
+        echo "<script LANGUAGE='JavaScript'>
+                window.location.href = 'userReviewGame.php'; 
+                </script>";
+
+    }
+
+    else if(isset($_POST['review_details_button'])) {
+
+        $_SESSION['game_name'] = $_POST['review_details_button'];
+
+        header("location: userReviewGameDetails.php");
+
+    }
+
+
 
 }
 ?>
@@ -115,15 +132,40 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             </tr>";
 
                         while($row = mysqli_fetch_array($result)) {
+
+                            $personId = $_SESSION['person_id'];
+
+                            $is_ever_reviewed = "SELECT game_id FROM game NATURAL JOIN review NATURAL JOIN personreview WHERE person_id = '$personId'";
+                            $res = mysqli_prepare($db, $is_ever_reviewed);
+                            mysqli_stmt_execute($res);
+                            mysqli_stmt_store_result($res);
+                            $numberOfRows = mysqli_stmt_num_rows($res);
+
+                            $isReviewed = TRUE;
+
+                            if($numberOfRows == 0){
+                                $isReviewed = FALSE;
+                            }
+
+
                             echo "<tr>";
                             echo "<td>" . $row['game_name'] . "</td>";
                             echo "<td>" . $row['game_genre'] . "</td>";
                             echo "<td>" . $row['game_desc'] . "</td>";
                             echo "<td>" . $row['publisher_name'] . "</td>";
                             echo "<td>" . $row['developer_name'] . "</td>";
-                            echo "<td>
+
+                            if($isReviewed){
+                                echo "<td>
+                                <button onclick=\"cancelled()\" name = \"review_details_button\"class=\"btn btn-primary btn-sm\" value =".$row['game_name'] .">REVIEW DETAILS</button>
+                                </td>";
+                            }   
+                            else{
+                                echo "<td>
                                 <button onclick=\"cancelled()\" name = \"review_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">REVIEW</button>
                                 </td>";
+                            }         
+  
                             echo "</tr>";
                         }
 

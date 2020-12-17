@@ -39,15 +39,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $reviewIdRow = mysqli_fetch_array($result);
         $reviewId = $reviewIdRow['review_id'];
 
-
         //INSERT INTO REVIEW TABLE
         $insert_publish = "INSERT INTO review VALUES ('$reviewId', '$personId', '$gameId')";
         $result = mysqli_query($db,$insert_publish);
+
+        $_SESSION['review_text'] = $reviewText;
+        $_SESSION['score'] = $score;
+        $_SESSION['the_review_id'] = $reviewId;
+
+        
 
         echo "<script LANGUAGE='JavaScript'>
         window.alert('Review has ben published');
         window.location.href = 'userReview.php'; 
         </script>";
+
+        
 
     }
 
