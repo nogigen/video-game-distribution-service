@@ -7,9 +7,7 @@ session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $person_id = $_SESSION['person_id'];
     $gameName = $_POST['gamename'];
-    $gamePrice = $_POST['gameprice'];
 
     if(isset($_POST['buy'])) {
         // get the game_id from game_name
@@ -22,68 +20,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $gameIdRow = mysqli_fetch_array($res);
         $gameId = $gameIdRow['game_id'];
-        $latestVersionNo = $gameIdRow['latest_version_no'];
 
-        // user's current credit
-        $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
-        $res = mysqli_query($db, $query);
-        $row = mysqli_fetch_array($res);
-        $credit = $row['credits'];
+        $_SESSION['selected_game_id'] = $gameId;
 
-        if($credit >= $gamePrice) {
-            // update the balance
-            $newBalance = $credit - $gamePrice;
-            $query = "UPDATE person SET credits = '$newBalance' WHERE person_id = '$person_id'";
-            $res = mysqli_query($db, $query);
+        header("location: userStoreDisplay.php");
 
-            if(!$res) {
-                printf("Error: Updating balance %s\n", mysqli_error($db));
-                exit();
-            }
-            // add game to user's library
-            $query = "INSERT INTO has VALUES ('$person_id', '$gameId', 0, '$latestVersionNo')";
-            $res = mysqli_query($db, $query);
-            if(!$res) {
-                printf("Error: Adding game to user's library. %s\n", mysqli_error($db));
-                exit();
-            }
-
-            // update shop history
-            $query = "INSERT INTO shophistory (bought_date, bought_price) VALUES(CURDATE(), '$gamePrice')";
-            $res = mysqli_query($db, $query);
-            if(!$res) {
-                printf("Error: Updating shop history. %s\n", mysqli_error($db));
-                exit();
-            }
-          
-
-            // get the latest shop_id
-            $query = "SELECT MAX(shop_id) as shop_id FROM shophistory";
-            $res = mysqli_query($db, $query);
-            if(!$res) {
-                printf("Error: Updating shop history. %s\n", mysqli_error($db));
-                exit();
-            }
-            $row = mysqli_fetch_array($res);
-            $shopId = $row['shop_id'];
-
-             // update renew table
-             $query = "INSERT into renew VALUES('$shopId', '$person_id', '$gameId')";
-             $res = mysqli_query($db, $query);
-             if(!$res) {
-                 printf("Error: Inserting to renew table. %s\n", mysqli_error($db));
-                 exit();
-             }
-            
-
-        }
-        else {
-            echo "<script LANGUAGE='JavaScript'>
-            window.alert('Not enough credit to buy the game.');
-            </script>";
-        }
-        
-        
     }
     else {
         echo "<script LANGUAGE='JavaScript'>
@@ -273,7 +214,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $game_genre . "</td>";
                             echo "<td>" . $publisher_name . "</td>";
                             echo "<td>" . $developer_name . "</td>";
-                            echo "<td><input type=\"hidden\" name=\"gameprice\" value=". $game_price .">" . $game_price . "</td>";
+                            echo "<td>" . $game_price . "</td>";
                             
                             if($numberOfRows == 0) {
                                 echo "<td>
