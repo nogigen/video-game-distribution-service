@@ -55,7 +55,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         WHERE curator_id = '$curatorId'";
         $result = mysqli_query($db,$update_version_no_query);
 
-        //INSERT TO FOLLOW TABLE
+        //DELETE FOLLOW TABLE
         $follow_insertion = "DELETE FROM follow WHERE curator_id = '$curatorId' AND person_id = '$personId'";
         $result = mysqli_query($db,$follow_insertion);
 
@@ -65,6 +65,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     }
 
+    else if(isset($_POST['seeprofile'])) {
+
+        $curatorId = $_POST['seeprofile'];
+
+        $query = "SELECT curator_login_name FROM curator WHERE curator_id = '$curatorId'";
+        $res = mysqli_query($db, $query);
+        $curatorNameRow = mysqli_fetch_array($res);
+        $curatorName = $curatorNameRow['curator_login_name'];
+
+
+
+        $_SESSION['curator_id'] = $curatorId;
+        $_SESSION['curator_name'] = $curatorName;
+
+
+        header("location: userSeeCuratorProfile.php");
+
+    }
 
     
 }
@@ -207,7 +225,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </td>";
 
                                 echo "<td> 
-                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"seeprofile\"class=\"btn btn-success btn-sm\">SEE PROFILE</button>
+                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"seeprofile\"class=\"btn btn-success btn-sm\" value =". $row['curator_id'] .">SEE PROFILE</button>
                                 </td>";
 
                             }
@@ -217,7 +235,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </td>";
 
                                 echo "<td> 
-                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"seeprofile\"class=\"btn btn-success btn-sm\">SEE PROFILE</button>
+                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"seeprofile\"class=\"btn btn-success btn-sm\" value =". $row['curator_id'] .">SEE PROFILE</button>
                                 </td>";
                             }
                             echo "</tr>";
