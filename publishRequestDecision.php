@@ -10,45 +10,72 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameGenre = $_POST['gamegenre'];
     $gameDesc = $_POST['game_desc'];
     $developer_id = $_SESSION['selected_developer_id'];
+    $req_id = $_SESSION['selected_req_id'];
     $publisherId = $_SESSION['publisher_id'];
     $gameName = $_SESSION['selected_ask_game_name'];
     $gamePrice = (float)$_POST['gameprice'];
 
     if(isset($_POST['publish'])) {
 
-        $accepted_query = "UPDATE ask
-        SET approval = 'Accepted'
-        WHERE ask_game_name = '$gameName' AND publisher_id = '$publisherId'";
-        $result = mysqli_query($db,$accepted_query);
+        // check game name
+        $query = "SELECT game_id FROM game WHERE game_name = '$gameName'";
+        $res = mysqli_prepare($db, $query);
+        mysqli_stmt_execute($res);
+        mysqli_stmt_store_result($res);
+        $numberOfRows = mysqli_stmt_num_rows($res);
 
-        $publish_game_query = "INSERT INTO game(game_name,game_price, game_genre, game_desc) VALUES ('$gameName','$gamePrice', '$gameGenre', '$gameDesc')";
-        $result = mysqli_query($db,$publish_game_query);
+        if($numberOfRows != 0) {
+            echo "<script LANGUAGE='JavaScript'>
+            window.alert('A game with the same name got approved. You should come up with a new game name and make a publish request again.');
+            window.location.href = 'developGame.php'; 
+            </script>";
+        }
 
-        //GET GAME ID
-        $queryGameId = "SELECT game_id FROM game WHERE game_name = '$gameName'";
-        $result3 = mysqli_query($db, $queryGameId);
-        $gameIdRow = mysqli_fetch_array($result3);
-        $gameId = $gameIdRow['game_id'];
+        else {
 
-        //ADD TO PUBLISH GAME
-        $publish_game_query_2 = "INSERT INTO publishgame(publisher_id, game_id, discount) VALUES ('$publisherId', '$gameId', 0)";
-        $result = mysqli_query($db,$publish_game_query_2);
 
-        //ADD TO UPDATEGAME INITIAL
-        $insert_to_update_query = "INSERT INTO updateGame(game_id, developer_id, update_desc, new_version_no) VALUES ('$gameId','$developer_id', '', 1)";
-        $result = mysqli_query($db,$insert_to_update_query);
+            $accepted_query = "UPDATE ask
+            SET approval = 'Accepted'
+            WHERE ask_game_name = '$gameName' AND publisher_id = '$publisherId' and developer_id = '$developer_id'";
+            $result = mysqli_query($db,$accepted_query);
 
-        header("location: publishRefundRequests.php");
+            $publish_game_query = "INSERT INTO game(game_name,game_price,req_id, game_genre, game_desc) VALUES ('$gameName','$gamePrice', '$req_id', '$gameGenre', '$gameDesc')";
+            $result = mysqli_query($db,$publish_game_query);
 
+            if (!$result) {
+                printf("Error: Inserting game %s\n", mysqli_error($db));
+                exit();
+            }
+
+            //GET GAME ID
+            $queryGameId = "SELECT game_id FROM game WHERE game_name = '$gameName'";
+            $result3 = mysqli_query($db, $queryGameId);
+            $gameIdRow = mysqli_fetch_array($result3);
+            $gameId = $gameIdRow['game_id'];
+
+            //ADD TO PUBLISH GAME
+            $publish_game_query_2 = "INSERT INTO publishgame(publisher_id, game_id, discount) VALUES ('$publisherId', '$gameId', 0)";
+            $result = mysqli_query($db,$publish_game_query_2);
+
+            if (!$result) {
+                printf("Error: Inserting publishgame %s\n", mysqli_error($db));
+                exit();
+            }
+
+            //ADD TO UPDATEGAME INITIAL
+            $msg = "initial game";
+            $insert_to_update_query = "INSERT INTO updateGame(game_id, developer_id, update_desc, new_version_no) VALUES ('$gameId','$developer_id', '$msg' , 1)";
+            $result = mysqli_query($db,$insert_to_update_query);
+
+            if (!$result) {
+                printf("Error: Inserting updategame %s\n", mysqli_error($db));
+                exit();
+            }
+
+            header("location: publishRefundRequests.php");
+
+        }
     }
-    
-
-    else {
-        echo "<script LANGUAGE='JavaScript'>
-        window.alert('it should never come here :D.');
-        </script>";
-    }
-    
 }
 ?>
 
@@ -129,6 +156,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <?php
                     $developer_id = $_SESSION['selected_developer_id'];
                     $publisher_id = $_SESSION['publisher_id'];
+                    $req_id = $_SESSION['selected_req_id'];
                     $gameName = $_SESSION['selected_ask_game_name'];
 
                     $query = "SELECT ask_game_desc, ask_game_genre FROM ask WHERE approval = 'Waiting for Approval' and  publisher_id = '$publisher_id' and developer_id = '$developer_id' and ask_game_name = '$gameName'";
@@ -148,6 +176,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $row = mysqli_fetch_array($result);
                     $developer_name = $row['developer_name'];
 
+                    // get min system req info
+                    $query = "SELECT os, processor, memory, storage FROM systemrequirements WHERE req_id = '$req_id'";
+                    $result = mysqli_query($db, $query);
+                    $row = mysqli_fetch_array($result);
+                    $os = $row['os'];
+                    $processor = $row['processor'];
+                    $memory = $row['memory'];
+                    $storage = $row['storage'];
 
                     echo "<h2>Publish Game</h2>";
 
@@ -177,6 +213,32 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                          <textarea class=\"form-control\" name=\"game_desc\" id=\"game_desc\" rows=\"8\" value=\"$game_desc\" readonly=\"readonly\">$game_desc</textarea>
     
                       </div>
+
+                      <h4><b>Minimum System Requirements</b></h4>
+
+                      <div class=\"form-group\">
+                      <label>Operating System</label>
+                      <textarea class=\"form-control\" rows=\"1\"  readonly=\"readonly\">$os</textarea>
+ 
+                        </div>
+
+                        <div class=\"form-group\">
+                        <label>Processor</label>
+                        <textarea class=\"form-control\" rows=\"1\"  readonly=\"readonly\">$processor</textarea>
+   
+                          </div>
+
+                          <div class=\"form-group\">
+                          <label>Memory</label>
+                          <textarea class=\"form-control\" rows=\"1\"  readonly=\"readonly\">$memory</textarea>
+     
+                            </div>
+
+                            <div class=\"form-group\">
+                            <label>Storage</label>
+                            <textarea class=\"form-control\" rows=\"1\"  readonly=\"readonly\">$storage</textarea>
+       
+                              </div>
                       
                       <div class=\"form-group\">
                       <label>Game Price</label>

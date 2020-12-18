@@ -41,6 +41,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['selected_developer_id'] = $developer_id;
         $_SESSION['selected_ask_game_name'] = $gameName;
 
+        $query = "SELECT req_id FROM ask WHERE publisher_id = '$publisherId' and developer_id = '$developer_id' and ask_game_name = '$gameName' and ask_game_genre = '$gameGenre' and ask_game_desc = '$gameDesc'";
+        $result = mysqli_query($db,$query);
+        $reqRow = mysqli_fetch_array($result);
+        $req_id = $reqRow['req_id'];
+
+        $_SESSION['selected_req_id'] = $req_id;
+
         header("location: publishRequestDecision.php");
 
 

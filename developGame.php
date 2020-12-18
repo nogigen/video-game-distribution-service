@@ -4,10 +4,13 @@
 include("config.php");
 session_start();
 
-//defining necessary variables
-$gameName = "";
-$gameGenre = "";
-$gameDesc = "";
+function isEmpty($inputStr) {
+    if (isset($inputStr) && (string) $inputStr !== '') {
+        return false;
+    }
+    return true;
+}
+
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -21,33 +24,102 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameName = $_POST['gamename'];
     $gameGenre = $_POST['gamegenre'];
     $gameDesc = $_POST['gamedesc'];
+    $os = $_POST['operatingsystem'];
+    $memory = $_POST['memory'];
+    $storage = $_POST['memory'];
+    $processor = $_POST['processor'];
 
-    //
-    $waitOrAccepted = "SELECT ask_game_name from ask WHERE ask_game_name = '$gameName' and (approval = 'Waiting for Approval' or approval = 'Accepted')";
-    $res = mysqli_prepare($db, $waitOrAccepted);
+    $query = "SELECT game_id FROM game WHERE game_name = '$gameName'";
+    $res = mysqli_prepare($db, $query);
     mysqli_stmt_execute($res);
     mysqli_stmt_store_result($res);
     $numberOfRows = mysqli_stmt_num_rows($res);
 
-    if($numberOfRows == 0){
-        $waitOrAccepted = "SELECT ask_game_name from ask WHERE ask_game_name = '$gameName' and approval = 'Declined' and publisher_id = '$publisherId'";
+    if($numberOfRows != 0) {
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('There is a game with that name in the store. Choose a different game name.');
+        window.location.href = 'developGame.php'; 
+        </script>";
+    }
+
+    elseif(isEmpty($gameName) || isEmpty($gameGenre) || isEmpty($gameDesc) || isEmpty($os) || isEmpty($memory) || isEmpty($storage) || isEmpty($processor)) {
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('You should fill all the boxes!');
+        window.location.href = 'developGame.php'; 
+        </script>";
+    }
+
+    else {
+    
+        //
+        $waitOrAccepted = "SELECT ask_game_name from ask WHERE ask_game_name = '$gameName' and (approval = 'Waiting for Approval' or approval = 'Accepted')";
         $res = mysqli_prepare($db, $waitOrAccepted);
         mysqli_stmt_execute($res);
         mysqli_stmt_store_result($res);
         $numberOfRows = mysqli_stmt_num_rows($res);
 
         if($numberOfRows == 0){
-            //INSERT
-            $sql = "INSERT INTO ask(publisher_id, developer_id, ask_game_name, ask_game_genre, ask_game_desc) VALUES (?, ?, ?, ?, ?)";
-            $stmt = mysqli_prepare($db, $sql);
-            mysqli_stmt_bind_param($stmt, "iisss", $publisherId, $developerId, $gameName, $gameGenre, $gameDesc);
-            mysqli_stmt_execute($stmt);
-            //header("location: developerWelcome.php");
 
-            echo "<script LANGUAGE='JavaScript'>
-                window.alert('Game is sent to the publisher for approval');
-                window.location.href = 'developerWelcome.php'; 
-                </script>";
+            $waitOrAccepted = "SELECT ask_game_name from ask WHERE ask_game_name = '$gameName' and approval = 'Declined' and publisher_id = '$publisherId' and developer_id = '$developerId'";
+            $res = mysqli_prepare($db, $waitOrAccepted);
+            mysqli_stmt_execute($res);
+            mysqli_stmt_store_result($res);
+            $numberOfRows = mysqli_stmt_num_rows($res);
+
+            if($numberOfRows == 0){
+
+                // create a system requirements if not already exists.
+                $query = "SELECT req_id FROM systemrequirements WHERE os = '$os' and memory = '$memory' and processor = '$processor' and storage = '$storage'";
+                $res = mysqli_prepare($db, $query);
+                mysqli_stmt_execute($res);
+                mysqli_stmt_store_result($res);
+                $rows = mysqli_stmt_num_rows($res);
+
+                if($rows == 0) {
+                    // insert into systemrequirements
+                    $query = "INSERT INTO systemrequirements VALUES (DEFAULT, '$os', '$processor', '$memory', '$storage')";
+                    $result = mysqli_query($db, $query);
+                    if (!$result) {
+                        printf("Error: Inserting into systemrequirements table. %s\n", mysqli_error($db));
+                        exit();
+                    }
+
+                    // get req id
+                    $query = "SELECT MAX(req_id) as req_id FROM systemrequirements";
+                    $result = mysqli_query($db, $query);
+                    if (!$result) {
+                        printf("Error: Selecting max req_id from systemrequirements table. %s\n", mysqli_error($db));
+                        exit();
+                    }
+                    $sysReqRow = mysqli_fetch_array($result);
+                    $req_id = $sysReqRow['req_id'];
+
+
+                }
+                else {
+                    // select that systemrequirements 
+                    $query = "SELECT req_id FROM systemrequirements WHERE os = '$os' and memory = '$memory' and processor = '$processor' and storage = '$storage'";
+                    $result = mysqli_query($db, $query);
+                    if (!$result) {
+                        printf("Error: %s\n", mysqli_error($db));
+                        exit();
+                    }
+                    $systemReqRow = mysqli_fetch_array($result);
+                    $req_id = $systemReqRow['req_id'];
+                }
+
+                //INSERT
+                $sql = "INSERT INTO ask(publisher_id, developer_id, req_id, ask_game_name, ask_game_genre, ask_game_desc) VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = mysqli_prepare($db, $sql);
+                mysqli_stmt_bind_param($stmt, "iiisss", $publisherId, $developerId, $req_id, $gameName, $gameGenre, $gameDesc);
+                mysqli_stmt_execute($stmt);
+                //header("location: developerWelcome.php");
+
+                echo "<script LANGUAGE='JavaScript'>
+                    window.alert('Game is sent to the publisher for approval');
+                    window.location.href = 'developerWelcome.php'; 
+                    </script>";
+            }
         }
     }
 }
@@ -143,11 +215,35 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     </div>
                     
+                    <br>
+                    <h4><b>Minimum System Requirements</b></h4>
+                    
+                    <div class="form-group">
+                        <label>Operating System</label>
+                        <input type="text" name="operatingsystem" class="form-control" id="operatingsystem">
+
+                    </div>
+
+                    <div class="form-group">
+                        <label>Processor</label>
+                        <input type="text" name="processor" class="form-control" id="processor">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Memory</label>
+                        <input type="text" name="memory" class="form-control" id="memory">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Storage</label>
+                        <input type="text" name="storage" class="form-control" id="storage">
+                    </div>
+
                     <?php
                         // Prepare a select statement
                         $query = "SELECT publisher_login_name, publisher_id FROM publisher";
 
-                        echo "<p><b>Available Publishers:</b></p>";
+                        echo "<h5><p><b>Available Publishers:</b></p></h5>";
 
                         $result = mysqli_query($db, $query);
 
@@ -186,7 +282,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             var gamenameVal = document.getElementById("gamename").value;
             var gamedescVal = document.getElementById("gamedesc").value;
             var gamegenreVal = document.getElementById("gamegenre").value;
-            if (gamenameVal === "" || gamedescVal === "" || gamegenreVal === "") {
+            var osVal = document.getElementById("operatingsystem").value;
+            var processorVal = document.getElementById("processor").value;
+            var memoryVal = document.getElementById("memory").value;
+            var storageVal = document.getElementById("storage").value;
+            if (gamenameVal.length == 0 || gamedescVal.length = 0 || gamegenreVal.length == 0 || osVal.length == 0 || processorVal.length == 0 || memoryVal.length == 0 || storageVal.length == 0) {
                 alert("FILL!");
             }
             else {
