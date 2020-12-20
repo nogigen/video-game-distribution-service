@@ -119,7 +119,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         </div>";
 
-                        echo "<table class=\"table table-lg table-striped\">
+                        echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
                             <tr>
                             <th>Game Name</th>
                             <th>Genre</th>
@@ -155,7 +155,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <script type="text/javascript">
-                function myFunction() {
+        function myFunction() {
             // Declare variables
             var input, filter, table, tr, td, i, txtValue, filterType, filterTypeVal;
             input = document.getElementById("myInput");

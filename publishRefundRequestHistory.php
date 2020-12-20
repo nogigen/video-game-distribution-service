@@ -106,7 +106,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             exit();
                         }
 
-                        echo "<table class=\"table table-lg table-striped\">
+                        echo "<div class=\"form-group\">
+                        <input type=\"text\" id=\"myInput\" onkeyup=\"myFunction()\" placeholder=\"Search for value & col type..\">
+                        <select id = \"filterType\">
+                            <option value =\"filterGameName\" selected=\"selected\">Game Name</option>
+                            <option value = \"filterGameGenre\">Game Genre</option>
+                            <option value = \"filterUserNickName\">User NickName</option>
+                            <option value = \"filterDeveloperName\">Developer Name</option>
+                            <option value = \"filterBoughtDate\">Bought Date</option>
+                            <option value = \"filterBoughtPrice\">Bought Price</option>
+                            <option value = \"filterRefundStatus\">Refund Status</option>
+                        </select>
+
+                        </div>";
+
+                        echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
                             <tr>
                             <th>Game Name</th>
                             <th>Game Genre</th>
@@ -214,8 +228,54 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <script type="text/javascript">
-        function checkEmpty() {
+        function myFunction() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue, filterType, filterTypeVal;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
 
+            filterType = document.getElementById("filterType");
+            filterTypeVal = filterType.value;
+
+            var index = 0;
+            if(filterTypeVal === "filterGameName") {
+                index = 0;
+            }
+            else if(filterTypeVal === "filterGameGenre") {
+                index = 1;
+            }
+
+            else if(filterTypeVal === "filterUserNickName") {
+                index = 2;
+            }
+            else if(filterTypeVal === "filterDeveloperName") {
+                index = 3;
+            }
+            else if(filterTypeVal === "filterBoughtDate") {
+                index = 4;
+            }
+            else if(filterTypeVal === "filterBoughtPrice") {
+                index = 5;
+            }
+            else if(filterTypeVal === "filterRefundStatus") {
+                index = 6;
+            }
+
+            
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[index];
+                if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+                }
+            }
         }
     </script>
 </body>
