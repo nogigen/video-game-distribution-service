@@ -78,12 +78,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script LANGUAGE='JavaScript'>
             window.alert('Not enough credit to buy the game.');
             </script>";
-        }
-        
-        
-
-
+        } 
     }
+    else if(isset($_POST['gift'])) {
+        header("location: userGiftGame.php");
+    }
+  
     elseif(isset($_POST['cancel'])) {
         header("location: userStore.php");
     }
@@ -326,7 +326,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
 
     
-                        <button type=\"submit\" onclick=\"checkEmpty()\" name = \"buy\"class=\"btn btn-success btn-sm\">BUY</button>
+                        <button type=\"submit\" onclick=\"checkEmpty()\" name =\"buy\"class=\"btn btn-success btn-sm\">BUY</button>
+                        <button type=\"submit\" onclick=\"checkEmpty()\" name =\"gift\"class=\"btn btn-success btn-sm\">GIFT</button>
                         <button type=\"submit\" onclick=\"checkEmpty()\" name = \"cancel\"class=\"btn btn-danger btn-sm\">CANCEL</button>
 
 
