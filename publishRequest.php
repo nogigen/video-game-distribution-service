@@ -46,6 +46,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $reqRow = mysqli_fetch_array($result);
         $req_id = $reqRow['req_id'];
 
+
         $_SESSION['selected_req_id'] = $req_id;
 
         header("location: publishRequestDecision.php");

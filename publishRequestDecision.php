@@ -159,6 +159,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $req_id = $_SESSION['selected_req_id'];
                     $gameName = $_SESSION['selected_ask_game_name'];
 
+
                     $query = "SELECT ask_game_desc, ask_game_genre FROM ask WHERE approval = 'Waiting for Approval' and  publisher_id = '$publisher_id' and developer_id = '$developer_id' and ask_game_name = '$gameName'";
                     $result = mysqli_query($db, $query);
                     if(!$result) {
