@@ -7,29 +7,26 @@ session_start();
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    if(isset($_POST['review_button'])) {
+    $person_id = $_SESSION['person_id'];
 
-        $_SESSION['game_name'] = $_POST['review_button'];
-
+        /*
         echo "<script LANGUAGE='JavaScript'>
-                window.location.href = 'userReviewGame.php'; 
-                </script>";
+        window.alert('it should never come here :D.');
+        </script>";
+        */
+    if(isset($_POST['send'])) {
+        $friendship_id = $_POST['send'];
+
+
+
+
 
     }
-
-    else if(isset($_POST['review_details_button'])) {
-
-        $_SESSION['game_name'] = $_POST['review_details_button'];
-
-        header("location: userReviewGameDetails.php");
-
-    }
-
+    
 
 
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -48,6 +45,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         font-family: Arial;
         }
 
+        h1 { 
+        display: block;
+        font-size: 3em;
+        margin-top: 0.67em;
+        margin-bottom: 0.67em;
+        margin-left: 0;
+        margin-right: 0;
+        font-weight: bold;
+        }
+
         /* Links inside the navbar */
         .navbar a {
         float: left;
@@ -57,7 +64,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         padding: 14px 16px;
         text-decoration: none;
         }
-        
         /* Add a red background color to navbar links on hover */
         .navbar a:hover, .dropdown:hover .dropbtn {
         background-color: black;
@@ -70,9 +76,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container">
         
         <nav class="navbar navbar-inverse bg-primary navbar-fixed-top">
+        
             <div class="container-fluid">
                 <div class="navbar-header">
                     <h4 class="navbar-text">User <?php echo htmlspecialchars($_SESSION['nick_name']); ?></h4>
+
                 </div>
                 <a href="userWelcome.php">Home</a>
                 <a href="userLibrary.php">Library</a>
@@ -87,6 +95,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
                 <a href="userFriends.php">Friends</a>
+                <a href="userSendFriendRequests.php">Send Friend Requests</a>
+
 
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
@@ -95,28 +105,36 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $credit = $row['credits'];
                     echo "<a href='userCredits.php'>Credit : $credit TL </a>";
                 ?>
-
                 
                 <div class="navbar-right">
-
                     <a href="logout.php">Log Out</a>
                 </div>
     </div>
             </div>
+            
         </nav>
+
+        
         <div id="centerwrapper">
             <div id="centerdiv">
-            <div id="centerwrapper">
-            <div id="centerdiv">
+                <br><br>
+                <h1>My Friends</h1>
 
-            <br><br>
-                <h1>List of Games</h1>
 
-                <form id="gameForm" action="" method="post">
-
+                    
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT  game_name, game_genre, game_desc, publisher_name, developer_name FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN updateGame NATURAL JOIN developer NATURAL JOIN has WHERE isInstalled = 1";
+                        $person_id = $_SESSION['person_id'];
+                        $query = "SELECT person_id FROM person WHERE person_id = '$person_id'
+                                  EXCEPT
+                                  
+                                  SELECT person_id1 as person_id FROM relationship WHERE person_id2 = '$person_id'
+                                  EXCEPT
+                                  
+                                  SELECT person_id2 as person_id FROM relationship WHERE person_id1 = '$person_id'"; 
+
+
+                        echo "<p><b>Non-Friend Users  : </b></p>";
 
                         $result = mysqli_query($db, $query);
 
@@ -128,74 +146,62 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         echo "<div class=\"form-group\">
                         <input type=\"text\" id=\"myInput\" onkeyup=\"myFunction()\" placeholder=\"Search for value & col type..\">
                         <select id = \"filterType\">
-                            <option value =\"filterGameName\" selected=\"selected\">Game Name</option>
-                            <option value = \"filterGameGenre\">Game Genre</option>
-                            <option value = \"filterPublisherName\">Publisher Name</option>
-                            <option value = \"filterDeveloperName\">Developer Name</option>
+                            <option value =\"filterNickname\" selected=\"selected\">Nickname</option>
+                            <option value = \"filterFirstName\">First Name</option>
+                            <option value = \"filterLastName\">Last Name</option>
                         </select>
-    
+
                         </div>";
+
 
                         echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
                             <tr>
-                            <th>Game Name</th>
-                            <th>Game Genre</th>
-                            <th>Publisher Name</th>
-                            <th>Developer Name</th>
-                            <th>        </th>
+                            <th>Nickname</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
                             </tr>";
 
-                        while($row = mysqli_fetch_array($result)) {
+                        while($hasRow = mysqli_fetch_array($result)) {
+                            $non_friend_person_id = $hasRow['person_id'];
+                        
+                            // get friends nickname,first name and last name
+                            $query = "SELECT nick_name, person_name, person_surname FROM person WHERE person_id = '$non_friend_person_id'";
+                            $result = mysqli_query($db, $query);
 
-                            $personId = $_SESSION['person_id'];
-
-                            $is_ever_reviewed = "SELECT game_id FROM game NATURAL JOIN review NATURAL JOIN personreview WHERE person_id = '$personId'";
-                            $res = mysqli_prepare($db, $is_ever_reviewed);
-                            mysqli_stmt_execute($res);
-                            mysqli_stmt_store_result($res);
-                            $numberOfRows = mysqli_stmt_num_rows($res);
-
-                            $isReviewed = TRUE;
-
-                            if($numberOfRows == 0){
-                                $isReviewed = FALSE;
+                            if (!$result) {
+                                printf("Error: %s\n", mysqli_error($db));
+                                exit();
                             }
-
-
+                            $personRow = mysqli_fetch_array($result);
+                            $nickname = $personRow['nick_name'];
+                            $firstName = $personRow['person_name'];
+                            $lastName = $personRow['person_surname'];
+    
+                                            
+                            echo "<form action=\"\" METHOD=\"POST\">";
                             echo "<tr>";
-                            echo "<td>" . $row['game_name'] . "</td>";
-                            echo "<td>" . $row['game_genre'] . "</td>";
-                            echo "<td>" . $row['publisher_name'] . "</td>";
-                            echo "<td>" . $row['developer_name'] . "</td>";
+                            echo "<td>" . $nickname . "</td>";
+                            echo "<td>" . $firstName . "</td>";
+                            echo "<td>" . $lastName . "</td>";
+                            
+                            echo "<button type=\"submit\" onclick=\"checkEmpty()\" name =\"add_friend\"class=\"btn btn-success\" value=\"$non_friend_person_id\">ADD FRIEND</button>";
+                            
 
-                            if($isReviewed){
-                                echo "<td>
-                                <button onclick=\"cancelled()\" name = \"review_details_button\"class=\"btn btn-primary btn-sm\" value =".$row['game_name'] .">REVIEW DETAILS</button>
-                                </td>";
-                            }   
-                            else{
-                                echo "<td>
-                                <button onclick=\"cancelled()\" name = \"review_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">REVIEW</button>
-                                </td>";
-                            }         
-  
                             echo "</tr>";
+                            echo "</form>";
                         }
 
                         echo "</table>";
+                        
                         ?>
-                </form>  
-                
-            </div>
-        </div>
-                
+          
             </div>
         </div>
     </div>
 
 
     <script type="text/javascript">
-                function myFunction() {
+        function myFunction() {
             // Declare variables
             var input, filter, table, tr, td, i, txtValue, filterType, filterTypeVal;
             input = document.getElementById("myInput");
@@ -207,19 +213,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             filterTypeVal = filterType.value;
 
             var index = 0;
-            if(filterTypeVal === "filterGameName") {
+            if(filterTypeVal === "filterNickname") {
                 index = 0;
             }
-            else if(filterTypeVal === "filterGameGenre") {
+            else if(filterTypeVal === "filterFirstName") {
                 index = 1;
             }
 
-            else if(filterTypeVal === "filterPublisherName") {
+            else if(filterTypeVal === "filterLastName") {
                 index = 2;
             }
-            else if(filterTypeVal === "filterDeveloperName") {
-                index = 3;
-            }
+
             
             // Loop through all table rows, and hide those who don't match the search query
             for (i = 1; i < tr.length; i++) {

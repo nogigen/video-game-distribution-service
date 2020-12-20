@@ -8,13 +8,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $gameName = $_POST['gamename'];
     $gameGenre = $_POST['gamegenre'];
-    $gameDesc = $_POST['gamedesc'];
     $developer_id = $_POST['developerid'];
     $publisherId = $_SESSION['publisher_id'];
     
 
     if( isset($_POST['select_approve']) )
     {
+        $gameDesc = $_POST['select_approve'];
+
         /*
         $accepted_query = "UPDATE ask
         SET approval = 'Accepted'
@@ -43,10 +44,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $query = "SELECT req_id FROM ask WHERE publisher_id = '$publisherId' and developer_id = '$developer_id' and ask_game_name = '$gameName' and ask_game_genre = '$gameGenre' and ask_game_desc = '$gameDesc'";
         $result = mysqli_query($db,$query);
+
+        if (!$result) {
+            printf("Error: System Requirement select is failed. %s\n", mysqli_error($db));
+            exit();
+        }
+
         $reqRow = mysqli_fetch_array($result);
         $req_id = $reqRow['req_id'];
 
         $_SESSION['selected_req_id'] = $req_id;
+
+
 
         header("location: publishRequestDecision.php");
 
@@ -199,7 +208,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td><input type=\"hidden\" name=\"gamegenre\" value=". $row['ask_game_genre'] .">" . $row['ask_game_genre'] . "</td>";
                             echo "<td><input type=\"hidden\" name=\"developerid\" value=". $row['developer_id'] .">" . $developer_name . "</td>";
                                 echo "<td> 
-                                    <button type = \"submit\" onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  value =".$row['ask_game_name'] .">APPROVE</button>
+                                    <button type = \"submit\" onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\"  value =".$row['ask_game_desc'] .">APPROVE</button>
                                     
                                 </td></form>";
                             
