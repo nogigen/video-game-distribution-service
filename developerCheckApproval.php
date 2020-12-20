@@ -13,7 +13,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $_SESSION['game_name'] = $_POST['update_button'];
 
-    header("location: updateGame.php");
+    header("location: developerUpdateGame.php");
     
 }
 ?>
@@ -65,9 +65,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 </div>
                 <a href="developerWelcome.php">Home</a>
-                <a href="developGame.php">Develop Game</a>
-                <a href="publishedGames.php">Published Games</a>
-                <a href="checkApproval.php">Check Approval</a>
+                <a href="developerDevelopGame.php">Develop Game</a>
+                <a href="developerPublishedGames.php">Published Games</a>
+                <a href="developerCheckApproval.php">Check Approval</a>
                 <div class="navbar-right">
                     <a href="logout.php">Log Out</a>
                 </div>

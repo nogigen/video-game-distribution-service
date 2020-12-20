@@ -39,20 +39,20 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         echo "<script LANGUAGE='JavaScript'>
         window.alert('Fill Completely');
-        window.location.href = 'updateGame.php'; 
+        window.location.href = 'developerUpdateGame.php'; 
         </script>";
     }
     else{
         if($floatVersionNo == 0){
             echo "<script LANGUAGE='JavaScript'>
             window.alert('Version No. should be positive float!');
-            window.location.href = 'updateGame.php'; 
+            window.location.href = 'developerUpdateGame.php'; 
             </script>";
         }
         else if($floatVersionNo <= $latestVersionNo){
             echo "<script LANGUAGE='JavaScript'>
             window.alert('New Version No. shoud be higher than the old one!');
-            window.location.href = 'updateGame.php'; 
+            window.location.href = 'developerUpdateGame.php'; 
             </script>";
         }
 
@@ -73,7 +73,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
             echo "<script LANGUAGE='JavaScript'>
             window.alert('Game is updated!');
-            window.location.href = 'publishedGames.php'; 
+            window.location.href = 'developerPublishedGames.php'; 
             </script>";
         }
     }
@@ -139,8 +139,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 </div>
                 <a href="developerWelcome.php">Home</a>
-                <a href="developGame.php">Develop Game</a>
-                <a href="publishedGames.php">Published Games</a>
+                <a href="developerDevelopGame.php">Develop Game</a>
+                <a href="developerPublishedGames.php">Published Games</a>
+                <a href="developerCheckApproval.php">Check Approval</a>
                 <div class="navbar-right">
                     <a href="logout.php">Log Out</a>
                 </div>

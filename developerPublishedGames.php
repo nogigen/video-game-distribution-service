@@ -13,7 +13,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $_SESSION['game_name'] = $_POST['update_button'];
 
-    header("location: updateGame.php");
+    header("location: developerUpdateGame.php");
     
 }
 ?>
@@ -64,12 +64,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <h4 class="navbar-text">Developer <?php echo htmlspecialchars($_SESSION['developer_login_name']); ?></h4>
 
                 </div>
-                <a href="publisherWelcome.php">Home</a>
-                <a href="publishRequest.php">Publish Requests</a>
-                <a href="publishRefundRequests.php">Refund Requests</a>      
-                <a href="publishRefundRequestHistory.php">Refund Request History</a>
-                <a href ="publishRequestHistory.php">Publish Request History </a>
-                <a href="publisherMyGames.php">My Games</a>
+                <a href="developerWelcome.php">Home</a>
+                <a href="developerDevelopGame.php">Develop Game</a>
+                <a href="developerPublishedGames.php">Published Games</a>
+                <a href="developerCheckApproval.php">Check Approval</a>
                 <div class="navbar-right">
                     <a href="logout.php">Log Out</a>
                 </div>
