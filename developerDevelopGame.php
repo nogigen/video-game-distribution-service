@@ -38,14 +38,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     if($numberOfRows != 0) {
         echo "<script LANGUAGE='JavaScript'>
         window.alert('There is a game with that name in the store. Choose a different game name.');
-        window.location.href = 'developGame.php'; 
+        window.location.href = 'developerDevelopGame.php'; 
         </script>";
     }
 
     elseif(isEmpty($gameName) || isEmpty($gameGenre) || isEmpty($gameDesc) || isEmpty($os) || isEmpty($memory) || isEmpty($storage) || isEmpty($processor)) {
         echo "<script LANGUAGE='JavaScript'>
         window.alert('You should fill all the boxes!');
-        window.location.href = 'developGame.php'; 
+        window.location.href = 'developerDevelopGame.php'; 
         </script>";
     }
 
@@ -252,7 +252,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             exit();
                         }
 
-                        echo "<table class=\"table table-lg table-striped\">
+                        echo "<div class=\"form-group\">
+                        <input type=\"text\" id=\"myInput\" onkeyup=\"myFunction()\" placeholder=\"Search for value & col type..\">
+                        <select id = \"filterType\">
+                            <option value =\"filterPublishername\" selected=\"selected\">Publisher Name</option>
+                            <option value = \"filterPublisherID\">Publisher ID</option>
+                        </select>
+
+                        </div>";
+
+                        echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
                             <tr>
                             <th>Publisher Name</th>
                             <th>Publisher ID</th>
@@ -278,6 +287,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <script type="text/javascript">
+
+
         function checkEmpty() {
             var gamenameVal = document.getElementById("gamename").value;
             var gamedescVal = document.getElementById("gamedesc").value;
@@ -294,6 +305,42 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 var form = document.getElementById("gameForm").submit();
             }
         }
+
+        
+
+        function myFunction() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue, filterType, filterTypeVal;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+
+            filterType = document.getElementById("filterType");
+            filterTypeVal = filterType.value;
+
+            var index = 0;
+            if(filterTypeVal === "filterPublisherName") {
+                index = 0;
+            }
+            else if(filterTypeVal === "filterPublisherID") {
+                index = 1;
+            }
+
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[index];
+                if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+                }
+            }
+        }
+
     </script>
 </body>
 </html>

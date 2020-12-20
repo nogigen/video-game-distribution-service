@@ -78,7 +78,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $res = mysqli_query($db, $query);
                     $row = mysqli_fetch_array($res);
                     $followers = $row['no_of_followers'];
-                    echo "<a href='showFollowers.php'>Followers : $followers</a>";
+                    echo "<a href='curatorShowFollowers.php'>Followers : $followers</a>";
+
                 ?>
                 <a href="curatorSuggestGame.php">Suggest Game</a>
 
@@ -109,11 +110,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             exit();
                         }
 
-                        echo "<table class=\"table table-lg table-striped\">
+                        echo "<div class=\"form-group\">
+                        <input type=\"text\" id=\"myInput\" onkeyup=\"myFunction()\" placeholder=\"Search for value & col type..\">
+                        <select id = \"filterType\">
+                            <option value =\"filterGameName\" selected=\"selected\">Game Name</option>
+                            <option value = \"filterGameGenre\">Game Genre</option>
+                            <option value = \"filterPublisherName\">Publisher Name</option>
+                            <option value = \"filterDeveloperName\">Developer Name</option>
+                        </select>
+
+                        </div>";
+
+                        echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
                             <tr>
                             <th>Game Name</th>
-                            <th>Genre</th>
-                            <th>Game Description</th>
+                            <th>Game Genre</th>
                             <th>Publisher Name</th>
                             <th>Developer Name</th>
                             <th>        </th>
@@ -139,7 +150,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<tr>";
                             echo "<td>" . $row['game_name'] . "</td>";
                             echo "<td>" . $row['game_genre'] . "</td>";
-                            echo "<td>" . $row['game_desc'] . "</td>";
                             echo "<td>" . $row['publisher_name'] . "</td>";
                             echo "<td>" . $row['developer_name'] . "</td>";
 
@@ -167,7 +177,44 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <script type="text/javascript">
-        
+                function myFunction() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue, filterType, filterTypeVal;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+
+            filterType = document.getElementById("filterType");
+            filterTypeVal = filterType.value;
+
+            var index = 0;
+            if(filterTypeVal === "filterGameName") {
+                index = 0;
+            }
+            else if(filterTypeVal === "filterGameGenre") {
+                index = 1;
+            }
+
+            else if(filterTypeVal === "filterPublisherName") {
+                index = 2;
+            }
+            else if(filterTypeVal === "filterDeveloperName") {
+                index = 3;
+            }
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[index];
+                if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+                }
+            }
+        }
     </script>
 </body>
 </html>
