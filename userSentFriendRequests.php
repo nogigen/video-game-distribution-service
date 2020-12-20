@@ -92,8 +92,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userShopHistory.php">Shop History</a>
                 <a href="userReview.php">Review Games</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
+                <a href="userSendFriendRequests.php">Send Friend Requests</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
                 <a href="userFriends.php">Friends</a>
+
 
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
@@ -150,6 +152,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Nickname</th>
                             <th>First Name</th>
                             <th>Last Name</th>
+                            <th>Status</th>
                             </tr>";
 
                         while($row = mysqli_fetch_array($result)) {
@@ -158,13 +161,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $friendship_id = $row['friendship_id'];
 
                             $query = "SELECT nick_name, person_name, person_surname FROM person WHERE person_id ='$received_user_id'";
-                            $result = mysqli_query($db, $query);
+                            $result2 = mysqli_query($db, $query);
 
-                            if (!$result) {
+                            if (!$result2) {
                                 printf("Error: %s\n", mysqli_error($db));
                                 exit();
                             }
-                            $personRow = mysqli_fetch_array($result);
+                            $personRow = mysqli_fetch_array($result2);
                             $nickname = $personRow['nick_name'];
                             $personFirstName = $personRow['person_name'];
                             $personLastName = $personRow['person_surname'];
@@ -175,10 +178,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $nickname . "</td>";
                             echo "<td>" . $personFirstName . "</td>";
                             echo "<td>" . $personLastName . "</td>";
+                            echo "<td>" . $status . "</td>";
 
                             if($status == "Waiting for Approval") {
                                 echo "<td> 
-                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"seemore\"class=\"btn btn-success btn-sm\" value =\"$friendsip_id\">SEE MORE</button>
+                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"seemore\"class=\"btn btn-success btn-sm\" value =\"$friendship_id\">SEE MORE</button>
                                 </td>";
                             }
 

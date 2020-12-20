@@ -3,29 +3,25 @@
 //config inclusion session starts
 include("config.php");
 session_start();
-
-
+    
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $person_id = $_SESSION['person_id'];
 
-        /*
+    if(isset($_POST['add'])) {
+        $other_person_id = $_POST['add'];
+
+        $_SESSION['other_person_id'] = $other_person_id;
+        header("location: userSendFriendRequestScreen.php");
+
+    }
+    else {
         echo "<script LANGUAGE='JavaScript'>
         window.alert('it should never come here :D.');
         </script>";
-        */
-    if(isset($_POST['send'])) {
-        $friendship_id = $_POST['send'];
-
-
-
-
-
-    }
-    
-
-
+    }    
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -93,10 +89,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userShopHistory.php">Shop History</a>
                 <a href="userReview.php">Review Games</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
+                <a href="userSendFriendRequests.php">Send Friend Requests</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
                 <a href="userFriends.php">Friends</a>
-                <a href="userSendFriendRequests.php">Send Friend Requests</a>
-
 
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
@@ -118,23 +113,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="centerwrapper">
             <div id="centerdiv">
                 <br><br>
-                <h1>My Friends</h1>
+                <h1>Non-Friend Users</h1>
 
 
                     
                     <?php
-                        // Prepare a select statement
                         $person_id = $_SESSION['person_id'];
-                        $query = "SELECT person_id FROM person WHERE person_id = '$person_id'
-                                  EXCEPT
-                                  
-                                  SELECT person_id1 as person_id FROM relationship WHERE person_id2 = '$person_id'
-                                  EXCEPT
-                                  
-                                  SELECT person_id2 as person_id FROM relationship WHERE person_id1 = '$person_id'"; 
-
-
-                        echo "<p><b>Non-Friend Users  : </b></p>";
+                        $query = "SELECT person_id FROM person WHERE person_id <> '$person_id'";
 
                         $result = mysqli_query($db, $query);
 
@@ -142,6 +127,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             printf("Error: %s\n", mysqli_error($db));
                             exit();
                         }
+
+                        echo "<p><b>Users  : </b></p>";
 
                         echo "<div class=\"form-group\">
                         <input type=\"text\" id=\"myInput\" onkeyup=\"myFunction()\" placeholder=\"Search for value & col type..\">
@@ -153,43 +140,72 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         </div>";
 
-
+                   
                         echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
                             <tr>
                             <th>Nickname</th>
                             <th>First Name</th>
                             <th>Last Name</th>
+                            <th></th>
                             </tr>";
 
-                        while($hasRow = mysqli_fetch_array($result)) {
-                            $non_friend_person_id = $hasRow['person_id'];
-                        
-                            // get friends nickname,first name and last name
-                            $query = "SELECT nick_name, person_name, person_surname FROM person WHERE person_id = '$non_friend_person_id'";
-                            $result = mysqli_query($db, $query);
+                        while($row = mysqli_fetch_array($result)) {
+                            $personID = $row['person_id'];
 
-                            if (!$result) {
+                            $cond = false;
+
+                            $query = "SELECT person_id1 FROM relationship WHERE person_id1 = '$personID' and person_id2 = '$person_id' and (relationship_status = 'Accepted' or relationship_status = 'Waiting for Approval')";
+                            $res = mysqli_prepare($db, $query);
+                            if(!$res) {
                                 printf("Error: %s\n", mysqli_error($db));
                                 exit();
                             }
-                            $personRow = mysqli_fetch_array($result);
-                            $nickname = $personRow['nick_name'];
-                            $firstName = $personRow['person_name'];
-                            $lastName = $personRow['person_surname'];
-    
-                                            
-                            echo "<form action=\"\" METHOD=\"POST\">";
-                            echo "<tr>";
-                            echo "<td>" . $nickname . "</td>";
-                            echo "<td>" . $firstName . "</td>";
-                            echo "<td>" . $lastName . "</td>";
-                            
-                            echo "<button type=\"submit\" onclick=\"checkEmpty()\" name =\"add_friend\"class=\"btn btn-success\" value=\"$non_friend_person_id\">ADD FRIEND</button>";
-                            
+                            mysqli_stmt_execute($res);
+                            mysqli_stmt_store_result($res);
+                            $numberOfRows1 = mysqli_stmt_num_rows($res);
 
-                            echo "</tr>";
-                            echo "</form>";
-                        }
+
+                            $query = "SELECT person_id1 FROM relationship WHERE person_id1 = '$person_id' and person_id2 = '$personID' and (relationship_status = 'Accepted' or relationship_status = 'Waiting for Approval')";
+                            $res = mysqli_prepare($db, $query);
+                            if(!$res) {
+                                printf("Error: %s\n", mysqli_error($db));
+                                exit();
+                            }
+                            mysqli_stmt_execute($res);
+                            mysqli_stmt_store_result($res);
+                            $numberOfRows2 = mysqli_stmt_num_rows($res);
+
+                            if($numberOfRows1 == 0 && $numberOfRows2 == 0) {
+                                $cond = true;
+                            }
+
+                            if($cond) {  
+
+                                $query = "SELECT nick_name, person_name, person_surname FROM person WHERE person_id = '$personID'";
+                                $result2 = mysqli_query($db, $query);
+                                if(!$result2) {
+                                    printf("Error: %s\n", mysqli_error($db));
+                                    exit();
+                                }
+                                $personRow = mysqli_fetch_array($result2);
+                                
+
+                                echo "<form action=\"\" METHOD=\"POST\">";
+                                echo "<tr>";
+                                echo "<td>" . $personRow['nick_name'] . "</td>";
+                                echo "<td>" . $personRow['person_name'] . "</td>";
+                                echo "<td>" . $personRow['person_surname']. "</td>";
+                                
+                        
+                                    echo "<td>
+                                    <button onclick=\"checkEmpty()\" name =\"add\"class=\"btn btn-success btn-sm\" value=\"$personID\">ADD FRIEND</button>
+                                    </td>";
+                                                
+
+                                echo "</tr>";
+                                echo "</form>";
+                            }
+                    }
 
                         echo "</table>";
                         
@@ -201,7 +217,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <script type="text/javascript">
-        function myFunction() {
+                function myFunction() {
             // Declare variables
             var input, filter, table, tr, td, i, txtValue, filterType, filterTypeVal;
             input = document.getElementById("myInput");

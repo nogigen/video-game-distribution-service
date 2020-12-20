@@ -31,9 +31,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $follow_insertion = "INSERT INTO follow(person_id, curator_id) VALUES ('$personId', '$curatorId')";
         $result = mysqli_query($db,$follow_insertion);
 
+        /*
         echo "<script LANGUAGE='JavaScript'>
-                window.location.href = 'followCurators.php'; 
+                window.location.href = 'userFollowCurators.php'; 
                 </script>";
+                */
 
     }
 
@@ -58,10 +60,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         //DELETE FOLLOW TABLE
         $follow_insertion = "DELETE FROM follow WHERE curator_id = '$curatorId' AND person_id = '$personId'";
         $result = mysqli_query($db,$follow_insertion);
-
+        /*
         echo "<script LANGUAGE='JavaScript'>
-                window.location.href = 'followCurators.php'; 
+                window.location.href = 'userFollowCurators.php'; 
                 </script>";
+                */
 
     }
 
@@ -153,8 +156,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userShopHistory.php">Shop History</a>
                 <a href="userReview.php">Review Games</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
+                <a href="userSendFriendRequests.php">Send Friend Requests</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
                 <a href="userFriends.php">Friends</a>
+
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
                     $res = mysqli_query($db, $query);

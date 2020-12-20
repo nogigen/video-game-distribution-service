@@ -36,7 +36,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-        //header("location: userSentFriendRequests.php");
+        header("location: userSentFriendRequests.php");
 
     }
     else {
@@ -112,8 +112,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userShopHistory.php">Shop History</a>
                 <a href="userReview.php">Review Games</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
+                <a href="userSendFriendRequests.php">Send Friend Requests</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
                 <a href="userFriends.php">Friends</a>
+
 
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
