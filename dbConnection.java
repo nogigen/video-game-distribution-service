@@ -112,8 +112,6 @@ public class dbConnection {
                     "os VARCHAR(32) NOT NULL, " +
                     "processor VARCHAR(32) NOT NULL, " +
                     "memory VARCHAR(32) NOT NULL, " +
-                    "direct_x VARCHAR(32) NOT NULL, " +
-                    "network VARCHAR(32) NOT NULL, " +
                     "storage VARCHAR(32) NOT NULL, " +
                     "PRIMARY KEY(req_id))";
             stmt.execute(systemrequirementsDefinition);
@@ -123,7 +121,7 @@ public class dbConnection {
             String gameDefinition = "CREATE TABLE game " +
                     "(game_id INT AUTO_INCREMENT PRIMARY KEY, " +
                     "game_name VARCHAR(32) NOT NULL UNIQUE, " +
-                    "game_price FLOAT NOT NULL DEFAULT 10.0, " +
+                    "game_price FLOAT NOT NULL, " +
                     "req_id INT, " +
                     "game_desc VARCHAR(250) NOT NULL, " +
                     "game_genre VARCHAR(250) NOT NULL, " +
@@ -180,7 +178,7 @@ public class dbConnection {
             //SHOP HISTORY
             String shopHistoryDefinition = "CREATE TABLE shophistory " +
                     "(shop_id INT AUTO_INCREMENT, " +
-                    "bougt_date DATE, " +
+                    "bought_date DATE, " +
                     "bought_price FLOAT, " +
                     "PRIMARY KEY(shop_id))";
             stmt.execute(shopHistoryDefinition);
@@ -188,7 +186,7 @@ public class dbConnection {
 
             //RENEW
             String renewDefinition = "CREATE TABLE renew " +
-                    "(shop_id INT AUTO_INCREMENT, " +
+                    "(shop_id INT, " +
                     "person_id INT, " +
                     "game_id INT, " +
                     "PRIMARY KEY(shop_id), " +
@@ -196,12 +194,23 @@ public class dbConnection {
             stmt.execute(renewDefinition);
             System.out.println("Renew table is created successfully.\n");
 
+            //PUBLISHER
+            String publisherDefinition = "CREATE TABLE publisher " +
+                    "(publisher_id INT AUTO_INCREMENT, " +
+                    "publisher_login_name VARCHAR(32) NOT NULL UNIQUE," +
+                    "publisher_name VARCHAR(32) NOT NULL, " +
+                    "publisher_email VARCHAR(32) NOT NULL UNIQUE, " +
+                    "publisher_password VARCHAR(32) NOT NULL, " +
+                    "PRIMARY KEY(publisher_id))";
+            stmt.execute(publisherDefinition);
+            System.out.println("Publisher table is created successfully.\n");
+
             //REFUND HISTORY
             String refundhistoryDefinition = "CREATE TABLE refundhistory " +
                     "(refund_id INT AUTO_INCREMENT, " +
                     "shop_id INT, " +
                     "refund_description VARCHAR(120) NOT NULL, " +
-                    "refund_approval BIT DEFAULT 0, " +
+                    "refund_approval ENUM('Waiting for Approval', 'Declined', 'Accepted') DEFAULT 'Waiting for Approval', " +
                     "PRIMARY KEY(refund_id), " +
                     "FOREIGN KEY (shop_id) REFERENCES shophistory(shop_id))";
             stmt.execute(refundhistoryDefinition);
@@ -212,16 +221,19 @@ public class dbConnection {
                     "(refund_id INT, " +
                     "person_id INT, " +
                     "game_id INT, " +
+                    "publisher_id INT, " +
                     "PRIMARY KEY(refund_id), " +
+                    "UNIQUE (person_id, game_id)," +
                     "FOREIGN KEY (refund_id) REFERENCES refundhistory(refund_id), " +
                     "FOREIGN KEY(person_id) REFERENCES person(person_id), " +
+                    "FOREIGN KEY(publisher_id) REFERENCES publisher(publisher_id), " +
                     "FOREIGN KEY(game_id) REFERENCES game(game_id))";
             stmt.execute(requestDefinition);
             System.out.println("Request table is created successfully.\n");
 
             //PERSON REVIEW
             String personreviewDefinition = "CREATE TABLE personreview " +
-                    "(review_id INT, " +
+                    "(review_id INT AUTO_INCREMENT, " +
                     "review_text VARCHAR(300) NOT NULL, " +
                     "review_score INT NOT NULL, " +
                     "PRIMARY KEY(review_id))";
@@ -318,17 +330,6 @@ public class dbConnection {
             stmt.execute(wishlistDefinition);
             System.out.println("Wishlist table is created successfully.\n");
 
-            //PUBLISHER
-            String publisherDefinition = "CREATE TABLE publisher " +
-                    "(publisher_id INT AUTO_INCREMENT, " +
-                    "publisher_login_name VARCHAR(32) NOT NULL UNIQUE," +
-                    "publisher_name VARCHAR(32) NOT NULL, " +
-                    "publisher_email VARCHAR(32) NOT NULL UNIQUE, " +
-                    "publisher_password VARCHAR(32) NOT NULL, " +
-                    "PRIMARY KEY(publisher_id))";
-            stmt.execute(publisherDefinition);
-            System.out.println("Publisher table is created successfully.\n");
-
             //DEVELOPER
             String developerDefinition = "CREATE TABLE developer " +
                     "(developer_id INT AUTO_INCREMENT, " +
@@ -375,7 +376,7 @@ public class dbConnection {
             System.out.println("Debug table is created successfully.\n");
 
             //UPDATE
-            String updateDefinition = "CREATE TABLE updateGame " +
+            String updateDefinition = "CREATE TABLE updategame " +
                     "(game_id INT, " +
                     "developer_id INT, " +
                     "update_desc VARCHAR(100) NOT NULL, " +
@@ -386,20 +387,23 @@ public class dbConnection {
             stmt.execute(updateDefinition);
             System.out.println("Update table is created successfully.\n");
 
+            //ASK
             String askDefinition = "CREATE TABLE ask " +
                     "(publisher_id INT, " +
                     "developer_id INT, " +
+                    "req_id INT, " +
                     "ask_game_name VARCHAR(50) NOT NULL, " +
                     "ask_game_genre VARCHAR(30) NOT NULL, " +
                     "ask_game_desc VARCHAR(50) NOT NULL, " +
                     "approval ENUM('Available', 'Waiting for Approval', 'Declined', 'Accepted') DEFAULT 'Waiting for Approval', " +
                     "PRIMARY KEY(publisher_id, developer_id, ask_game_name), " +
-                    "UNIQUE(developer_id, ask_game_name)," +
                     "FOREIGN KEY (publisher_id) REFERENCES publisher(publisher_id), " +
+                    "FOREIGN KEY (req_id) REFERENCES systemrequirements(req_id), " +
                     "FOREIGN KEY (developer_id) REFERENCES developer(developer_id))";
             stmt.execute(askDefinition);
             System.out.println("Ask table is created successfully.\n");
 
+            //PUBLISHGAME
             String publishgameDefinition = "CREATE TABLE publishgame " +
                     "(publisher_id INT, " +
                     "game_id INT, " +
@@ -449,20 +453,24 @@ public class dbConnection {
 
             //SYSTEMREQ INSERTION
             String systemreqInsert = "INSERT INTO systemrequirements VALUES" +
-                    "(DEFAULT,'os1', 'processor1', 'memory1', 'direct1', 'network1', 'storage1')";
+                    "(1,'os1', 'processor1', 'memory1', 'storage1')";
             System.out.println("Starting to insert values to SystemRequirements table.");
             stmt.execute(systemreqInsert);
             System.out.println("Values are inserted to SystemRequirements table.\n");
 
             //GAME INSERTION
             String gameInsert = "INSERT INTO game VALUES" +
-                    "(DEFAULT,'game1', 10, 1, 'desc1', 'genre1', 2.0)";
+                    "(1,'game1', 10, 1, 'desc1', 'genre1', 2.0)";
             System.out.println("Starting to insert values to Game table.");
             stmt.execute(gameInsert);
 
             String gameInsert2 = "INSERT INTO game VALUES" +
-                    "(DEFAULT,'game2', 15, 1, 'desc2', 'genre2', 3.0)";
+                    "(2,'game2', 15, 1, 'desc2', 'genre2', 3.0)";
             stmt.execute(gameInsert2);
+
+            String gameInsert3 = "INSERT INTO game VALUES" +
+                    "(3,'game3', 12, 1, 'desc3', 'genre3', 3.0)";
+            stmt.execute(gameInsert3);
             System.out.println("Values are inserted to Game table.\n");
 
             //HAS INSERTION
@@ -471,7 +479,7 @@ public class dbConnection {
             System.out.println("Starting to insert values to has table.");
             stmt.execute(hasInsert);
             String hasInsert2 = "INSERT INTO has VALUES" +
-                    "(1, 2, 1, 2.5 )";
+                    "(1, 2, 1, 2.5)";
             stmt.execute(hasInsert2);
             System.out.println("Values are inserted to Has table.\n");
 
@@ -487,15 +495,32 @@ public class dbConnection {
             System.out.println("Values are inserted to publishGame table.\n");
 
             //UPDATEGAME INSERTION
-            String updateGameInsert = "INSERT INTO updateGame VALUES" +
-                    "(1, 1, 'cool game1', '0.0')";
+            String updateGameInsert = "INSERT INTO updategame VALUES" +
+                    "(1, 1, 'cool game1', '2.0')";
             System.out.println("Starting to insert values to updateGame table.");
             stmt.execute(updateGameInsert);
 
-            String updateGameInsert2 = "INSERT INTO updateGame VALUES" +
-                    "(2, 1, 'cool game2', '0.0')";
+            String updateGameInsert2 = "INSERT INTO updategame VALUES" +
+                    "(2, 1, 'cool game2', '3.0')";
+            stmt.execute(updateGameInsert2);
 
             System.out.println("Values are inserted to updateGame table.\n");
+
+            //SHOPHISTORY INSERTION
+            String shophistoryInsert = "INSERT INTO shophistory VALUES " +
+                    "(DEFAULT,CURDATE(),12)";
+            System.out.println("Starting to insert values to shophistory table.");
+
+            stmt.execute(shophistoryInsert);
+            System.out.println("Values are inserted to shophistory table.\n");
+
+            //RENEW INSERTION
+            String renewInsertion = "INSERT INTO renew VALUES " +
+                    "(1,1,2)";
+            System.out.println("Starting to insert values to renew table.");
+
+            stmt.execute(renewInsertion);
+            System.out.println("Values are inserted to renew table.\n");
 
         }
 
