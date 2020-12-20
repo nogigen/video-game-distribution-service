@@ -6,40 +6,44 @@ session_start();
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
-    $gameName = $_SESSION['selected_gameName_to_update'];
+
     $person_id = $_SESSION['person_id'];
+    $friendship_id = $_SESSION['selected_friendship_id'];
 
-    if(isset($_POST['update'])) {
+    if(isset($_POST['go_back'])) {
+        header("location: userSentFriendRequests.php");
+    }
+    else if(isset($_POST['retrieve'])) {
+        // delete relationship
         
-        // get the game_id from game_name
-        $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
-        $res = mysqli_query($db, $queryGame);
+        $query = "DELETE FROM relationship
+                  WHERE friendship_id = '$friendship_id'";
 
-        if(!$res) {
-            printf("Error: %s\n", mysqli_error($db));
+        $result = mysqli_query($db, $query);
+        if(!$result) {
+            printf("Error: Deleting relationship. %s\n", mysqli_error($db));
             exit();
         }
-        $gameIdRow = mysqli_fetch_array($res);
-        $gameId = $gameIdRow['game_id'];
-        $latestVersionNo = $gameIdRow['latest_version_no'];
-        
-        $query = "UPDATE has SET personVersion = '$latestVersionNo' WHERE person_id = '$person_id' and game_id = '$gameId'";
-        $res = mysqli_query($db, $query);
 
-        if(!$res) {
-            printf("Error: Update %s\n", mysqli_error($db));
+        // delete friendship
+        $query = "DELETE FROM friendship
+                  WHERE friendship_id = '$friendship_id'";
+
+
+        $result = mysqli_query($db, $query);
+        if(!$result) {
+            printf("Error: Deleting friendship. %s\n", mysqli_error($db));
             exit();
         }
-        
-        header("location: userCheckUpdates.php");
+
+        //header("location: userSentFriendRequests.php");
+
     }
     else {
         echo "<script LANGUAGE='JavaScript'>
         window.alert('it should never come here :D.');
         </script>";
     }
-
-
 }
 ?>
 
@@ -131,95 +135,78 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="centerwrapper">
             <div id="centerdiv">
                 <br><br>
-                <h1>Update</h1>
-
                 <?php
-                    $gameName = $_SESSION['selected_gameName_to_update'];
-                    // get the game_id from game_name
-                    $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
-                    $res = mysqli_query($db, $queryGame);
+                    $personId = $_SESSION['person_id'];
+                    $friendship_id = $_SESSION['selected_friendship_id'];
 
-                    if(!$res) {
-                        printf("Error: %s\n", mysqli_error($db));
+                    $query = "SELECT relationship_msg, person_id2 FROM relationship WHERE friendship_id = '$friendship_id'";
+                    $result = mysqli_query($db, $query);
+                    if(!$result) {
+                        printf("Error: select from relationship %s\n", mysqli_error($db));
                         exit();
                     }
-                    $gameIdRow = mysqli_fetch_array($res);
-                    $gameId = $gameIdRow['game_id'];
+                    $relationshipRow = mysqli_fetch_array($result);
+                    $relationship_msg = $relationshipRow['relationship_msg'];
+                    $person_id_received = $relationshipRow['person_id2'];
+
+                    // get name of that person
+                    $query = "SELECT nick_name, person_name, person_surname FROM person WHERE person_id = '$person_id_received'";
+                    $result = mysqli_query($db, $query);
+                    if(!$result) {
+                        printf("Error: select from person %s\n", mysqli_error($db));
+                        exit();
+                    }
+                    $personRow = mysqli_fetch_array($result);
+                    $nickname = $personRow['nick_name'];
+                    $firstName = $personRow['person_name'];
+                    $lastName = $personRow['person_surname'];
+
+                    echo "<h2>Friendship Request From User : $nickname </h2>";              
                     
-                    // get the developer name of this game
-                    $queryDeveloperId = "SELECT developer_id FROM updategame WHERE game_id = '$gameId' " ;
-                    $result5 = mysqli_query($db, $queryDeveloperId);
-
-                    if(!$result5) {
-                        printf("Error4: %s\n", mysqli_error($db));
-                        exit();
-                    }
-                    $developerIdRow = mysqli_fetch_array($result5);
-                    $developer_id = $developerIdRow['developer_id'];
-
-                
-                    $queryDeveloperName = "SELECT developer_name FROM developer WHERE developer_id = '$developer_id'" ;
-                    $result6 = mysqli_query($db, $queryDeveloperName);
-                    
-                    if(!$result6) {
-                        printf("Error5: %s\n", mysqli_error($db));
-                        exit();
-                    }
-                    $developerNameRow = mysqli_fetch_array($result6);
-                    $developer_name = $developerNameRow['developer_name'];
-
-                    // get the latest update to this game.
-                    
-                    $query = "SELECT update_desc, new_version_no FROM updategame WHERE game_id = '$gameId' and developer_id = '$developer_id'";
-                    $res = mysqli_query($db, $query);
-                    if(!$result6) {
-                        printf("Error: %s\n", mysqli_error($db));
-                        exit();
-                    }
-                    $updateRow = mysqli_fetch_array($res);
-                    $update_desc = $updateRow['update_desc'];
-                    $updateNo = $updateRow['new_version_no'];
-
-
                     echo "<form id=\"gameForm\" action=\"\" method=\"post\">";
 
                     echo "<div class=\"form-group\">
                             <label>Game Name</label>
-                            <input type=\"text\" name=\"gamename\" class=\"form-control\" id=\"gamename\" value=\"$gameName\" readonly=\"readonly\">
+                            <input type=\"text\" name=\"nickname\" class=\"form-control\" id=\"nickname\" value=\"$nickname\" readonly=\"readonly\">
                         </div>";
 
                     echo "<div class=\"form-group\">
-                            <label>Developer Name</label>
-                            <input type=\"text\" name=\"developername\" class=\"form-control\" id=\"developername\" value=\"$developer_name\" readonly=\"readonly\">
+                        <label>Mod Name</label>
+                        <input type=\"text\" name=\"firstname\" class=\"form-control\" id=\"firstname\" value=\"$firstName\" readonly=\"readonly\">
+
+                    </div>";
+
+                    echo "<div class=\"form-group\">
+                            <label>Creator Name</label>
+                            <input type=\"text\" name=\"lastname\" class=\"form-control\" id=\"lastname\" value=\"$lastName\" readonly=\"readonly\">
 
                         </div>";
 
                     echo "<div class=\"form-group\">
-                            <label>Update Description</label>
-                            <textarea class=\"form-control\" name=\"updatedesc\" id=\"gamedesc\" rows=\"8\" value=\"$update_desc\" readonly=\"readonly\" >$update_desc</textarea>
-
-                        </div>";
-                    echo "<div class=\"form-group\">
-                            <label>New Version No</label>
-                            <input type=\"text\" name=\"updateno\" class=\"form-control\" id=\"gamegenre\" value=\"$updateNo\" readonly=\"readonly\">
+                            <label>Mod Description</label>
+                            <textarea class=\"form-control\" name=\"friendshipmsg\" id=\"friendshipmsg\" rows=\"8\" readonly=\"readonly\">$relationship_msg</textarea>
 
                         </div>";
 
-                    echo "<button type=\"submit\"  name =\"update\" class=\"btn btn-primary\">UPDATE</button>";
+                    echo "<button type=\"submit\"  name =\"go_back\" class=\"btn btn-success\">GO BACK</button>";
+                    echo "<button type=\"submit\"  name =\"retrieve\" class=\"btn btn-danger\">RETRIEVE</button>";
                         
                         
                     echo "</form>";
-                ?>
+
+
+
+                  
+                        
+                    ?>
+          
             </div>
         </div>
     </div>
 
 
     <script type="text/javascript">
-        function checkEmpty() {
 
-            }
-        }
     </script>
 </body>
 </html>
