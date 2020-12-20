@@ -67,10 +67,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userStore.php">Store</a>
                 <a href="userCheckUpdates.php">Check Updates</a>
                 <a href="userCheckMods.php">Mods</a>
-                <a href="followCurators.php">Follow Curators</a>
+                <a href="userFollowCurators.php">Follow Curators</a>
                 <a href="userRefund.php">Refund</a>
                 <a href="userRefundHistory.php">Refund History</a>
                 <a href="userShopHistory.php">Shop History</a>
+                <a href="userReview.php">Review Games</a>
+
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
                     $res = mysqli_query($db, $query);
@@ -78,8 +80,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $credit = $row['credits'];
                     echo "<a href='userCredits.php'>Credit : $credit TL </a>";
                 ?>
-
-                <a href="userReview.php">Review Games</a>
                 
                 <div class="navbar-right">
 
@@ -108,11 +108,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             exit();
                         }
 
+                        echo "<div class=\"form-group\">
+                        <input type=\"text\" id=\"myInput\" onkeyup=\"myFunction()\" placeholder=\"Search for value & col type..\">
+                        <select id = \"filterType\">
+                            <option value =\"filterGameName\" selected=\"selected\">Game Name</option>
+                            <option value = \"filterGameGenre\">Game Genre</option>
+                            <option value = \"filterPublisherName\">Publisher Name</option>
+                            <option value = \"filterDeveloperName\">Developer Name</option>
+                        </select>
+
+                        </div>";
+
                         echo "<table class=\"table table-lg table-striped\">
                             <tr>
                             <th>Game Name</th>
                             <th>Genre</th>
-                            <th>Game Description</th>
                             <th>Publisher Name</th>
                             <th>Developer Name</th>
                             <th>        </th>
@@ -125,7 +135,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<tr>";
                             echo "<td>" . $row['game_name'] . "</td>";
                             echo "<td>" . $row['game_genre'] . "</td>";
-                            echo "<td>" . $row['game_desc'] . "</td>";
                             echo "<td>" . $row['publisher_name'] . "</td>";
                             echo "<td>" . $row['developer_name'] . "</td>";
 
@@ -146,7 +155,46 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <script type="text/javascript">
-        
+                function myFunction() {
+            // Declare variables
+            var input, filter, table, tr, td, i, txtValue, filterType, filterTypeVal;
+            input = document.getElementById("myInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+
+            filterType = document.getElementById("filterType");
+            filterTypeVal = filterType.value;
+
+            var index = 0;
+            if(filterTypeVal === "filterGameName") {
+                index = 0;
+            }
+            else if(filterTypeVal === "filterGameGenre") {
+                index = 1;
+            }
+
+            else if(filterTypeVal === "filterPublisherName") {
+                index = 2;
+            }
+            
+            else if(filterTypeVal === "filterDeveloperName") {
+                index = 3;
+            }
+            
+            // Loop through all table rows, and hide those who don't match the search query
+            for (i = 1; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[index];
+                if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+                }
+            }
+        }
     </script>
 </body>
 </html>
