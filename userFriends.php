@@ -115,6 +115,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
                 <a href="userFriends.php">Friends</a>
+                <a href="userSendFriendRequests.php">Send Friend Requests</a>
 
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
@@ -143,7 +144,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php
                         // Prepare a select statement
                         $person_id = $_SESSION['person_id'];
-                        $query = "SELECT person_id1, person_id2, friendship_id FROM relationship WHERE person_id1 = '$person_id' or person_id2 = '$person_id'"; 
+                        $query = "SELECT person_id1, person_id2, friendship_id FROM relationship WHERE (person_id1 = '$person_id' or person_id2 = '$person_id') and relationship_status = 'Accepted'"; 
 
 
                         echo "<p><b>Your Friends : </b></p>";
@@ -171,6 +172,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Nickname</th>
                             <th>First Name</th>
                             <th>Last Name</th>
+                            <th></th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {
@@ -186,14 +188,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
 
                             // get friends nickname,first name and last name
-                            $query = "SELECT nick_name, person_name, person_surname FROM person WHERE person_id = '$person_id'";
-                            $result = mysqli_query($db, $query);
+                            $query = "SELECT nick_name, person_name, person_surname FROM person WHERE person_id = '$friends_person_id'";
+                            $res = mysqli_query($db, $query);
 
-                            if (!$result) {
+                            if (!$res) {
                                 printf("Error: %s\n", mysqli_error($db));
                                 exit();
                             }
-                            $personRow = mysqli_fetch_array($result);
+                            $personRow = mysqli_fetch_array($res);
                             $nickname = $personRow['nick_name'];
                             $firstName = $personRow['person_name'];
                             $lastName = $personRow['person_surname'];
@@ -205,10 +207,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $firstName . "</td>";
                             echo "<td>" . $lastName . "</td>";
                             
-                            echo "<button type=\"submit\" onclick=\"checkEmpty()\" name =\"unfriend\"class=\"btn btn-danger btn-sm\" value=\"$friendship_id\">UNFRIEND</button>";
+                            echo "<td><button type=\"submit\" onclick=\"checkEmpty()\" name =\"unfriend\"class=\"btn btn-danger btn-sm\" value=\"$friendship_id\">UNFRIEND</button></td>";
+                            
                             
 
                             echo "</tr>";
+                            
                             echo "</form>";
                         }
 

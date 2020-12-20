@@ -8,47 +8,105 @@ session_start();
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $person_id = $_SESSION['person_id'];
-    $friendship_id = $_SESSION['selected_friendship_id'];
+    $other_person_id = $_SESSION['other_person_id'];
 
-    if(isset($_POST['accept'])) {
 
-        // update relationship_status
-        $query = "UPDATE relationship
-                  SET relationship_status = 'Accepted'
-                  WHERE friendship_id = '$friendship_id'";
+    if(isset($_POST['add'])) {
+        $message = $_POST['message'];
 
-        $result = mysqli_query($db, $query);
-        if(!$result) {
-            printf("Error: Updating relationship status to accepted. %s\n", mysqli_error($db));
+        // check to see if that user already sent you a request or not.
+        $query = "SELECT person_id1 FROM relationship WHERE person_id1 = '$other_person_id' and person_id2 = '$person_id' and relationship_status = 'Waiting for Approval'";
+        $res = mysqli_prepare($db, $query);
+        if(!$res) {
+            printf("Error: %s\n", mysqli_error($db));
             exit();
         }
+        mysqli_stmt_execute($res);
+        mysqli_stmt_store_result($res);
+        $numberOfRows = mysqli_stmt_num_rows($res);
 
+        if($numberOfRows != 0) {
+            $query = "UPDATE relationship
+                      SET relationship_message = '$message', relationship_status = 'Waiting for Approval'
+                      WHERE person_id1 = '$other_person_id' and person_id2 = '$person_id'";
 
-        header("location: userSentFriendRequests.php");
+            $result = mysqli_query($db,$query);
+            if(!$result) {
+                printf("Error: Updating relationship table %s\n", mysqli_error($db));
+                exit();
+            }
+    
+        }
+
+        else {
+            // check to see if this relationship already exists.
+            // if it's change status from declined to waiting for approval.
+            $query = "SELECT person_id1 FROM relationship WHERE person_id1 = '$person_id' and person_id2 = '$other_person_id'";
+            $res = mysqli_prepare($db, $query);
+            if(!$res) {
+                printf("Error: %s\n", mysqli_error($db));
+                exit();
+            }
+            mysqli_stmt_execute($res);
+            mysqli_stmt_store_result($res);
+            $numberOfRows = mysqli_stmt_num_rows($res);
+
+            if($numberOfRows != 0) {
+                $query = "UPDATE relationship
+                SET relationship_msg = '$message', relationship_status = 'Waiting for Approval'
+                WHERE person_id1 = '$person_id' and person_id2 = '$other_person_id'";
+
+                $result = mysqli_query($db,$query);
+                if(!$result) {
+                    printf("Error: 2- Updating relationship table %s\n", mysqli_error($db));
+                    exit();
+                }
+            }
+            else {
+                // else
+                // insert friendship
+                $query = "INSERT INTO friendship VALUES(DEFAULT)";
+                $result = mysqli_query($db,$query);
+                if(!$result) {
+                    printf("Error: Inserting into friendship %s\n", mysqli_error($db));
+                    exit();
+                }
+
+                // get last friendship instance
+                $query = "SELECT MAX(friendship_id) as friendship_id FROM friendship";
+                $result = mysqli_query($db,$query);        
+                if(!$result) {
+                    printf("Error: Getting last row of friendship %s\n", mysqli_error($db));
+                    exit();
+                }
+                $friendshipRow =  mysqli_fetch_array($result);
+                $friendship_id = $friendshipRow['friendship_id'];
+
+                // insert into relationship
+                $query = "INSERT INTO relationship VALUES ('$friendship_id', '$person_id', '$other_person_id', DEFAULT, '$message')";
+                $result = mysqli_query($db,$query);        
+                if(!$result) {
+                    printf("Error: Inserting into relationship %s\n", mysqli_error($db));
+                    exit();
+                }
+        }
 
     }
-    else if(isset($_POST['decline'])) {
 
-        // update relationship_status
-        $query = "UPDATE relationship
-        SET relationship_status = 'Declined'
-        WHERE friendship_id = '$friendship_id'";
-
-        $result = mysqli_query($db, $query);
-        if(!$result) {
-            printf("Error: Updating relationship status to declined. %s\n", mysqli_error($db));
-            exit();
-        }
+        header("location: userSendFriendRequests.php");
 
 
-        header("location: userSentFriendRequests.php");
-
+    }
+    else if(isset($_POST['cancel'])) {
+        header("location: userSendFriendRequests.php");
     }
     else {
         echo "<script LANGUAGE='JavaScript'>
         window.alert('it should never come here :D.');
         </script>";
     }
+
+
 }
 ?>
 
@@ -141,38 +199,30 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         <div id="centerwrapper">
             <div id="centerdiv">
                 <br><br>
+                <h1>Friend Request</h1>
+
                 <?php
-                    $personId = $_SESSION['person_id'];
-                    $friendship_id = $_SESSION['selected_friendship_id'];
+                    $person_id = $_SESSION['person_id'];
+                    $other_person_id = $_SESSION['other_person_id'];
 
-                    $query = "SELECT relationship_msg, person_id1 FROM relationship WHERE friendship_id = '$friendship_id'";
-                    $result = mysqli_query($db, $query);
-                    if(!$result) {
-                        printf("Error: select from relationship %s\n", mysqli_error($db));
+                    // get the nick name, first name and last name of that user
+                    $query = "SELECT nick_name, person_name, person_surname FROM person WHERE person_id = '$other_person_id'";
+                    $res = mysqli_query($db, $query);
+
+                    if(!$res) {
+                        printf("Error: %s\n", mysqli_error($db));
                         exit();
                     }
-                    $relationshipRow = mysqli_fetch_array($result);
-                    $relationship_msg = $relationshipRow['relationship_msg'];
-                    $person_id_sent = $relationshipRow['person_id1'];
-
-                    // get name of that person
-                    $query = "SELECT nick_name, person_name, person_surname FROM person WHERE person_id = '$person_id_sent'";
-                    $result = mysqli_query($db, $query);
-                    if(!$result) {
-                        printf("Error: select from person %s\n", mysqli_error($db));
-                        exit();
-                    }
-                    $personRow = mysqli_fetch_array($result);
+                    $personRow = mysqli_fetch_array($res);
                     $nickname = $personRow['nick_name'];
                     $firstName = $personRow['person_name'];
                     $lastName = $personRow['person_surname'];
-
-                    echo "<h2>Friendship Request From User : $nickname </h2>";              
                     
+
                     echo "<form id=\"gameForm\" action=\"\" method=\"post\">";
 
                     echo "<div class=\"form-group\">
-                            <label>Nickname</label>
+                            <label>User Nickname</label>
                             <input type=\"text\" name=\"nickname\" class=\"form-control\" id=\"nickname\" value=\"$nickname\" readonly=\"readonly\">
                         </div>";
 
@@ -190,29 +240,26 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     echo "<div class=\"form-group\">
                             <label>Message</label>
-                            <textarea class=\"form-control\" name=\"friendshipmsg\" id=\"friendshipmsg\" rows=\"8\" readonly=\"readonly\">$relationship_msg</textarea>
+                            <textarea class=\"form-control\" name=\"message\" id=\"message\" rows=\"8\"></textarea>
 
                         </div>";
 
-                    echo "<button type=\"submit\"  name =\"accept\" class=\"btn btn-success\">ACCEPT</button>";
-                    echo "<button type=\"submit\"  name =\"decline\" class=\"btn btn-danger\" >DECLINE</button>";
+                    echo "<button type=\"submit\"  name =\"add\" class=\"btn btn-success\">SEND</button>";
+                    echo "<button type=\"submit\"  name =\"cancel\" class=\"btn btn-danger\">CANCEL</button>";
                         
                         
                     echo "</form>";
-
-
-
-                  
-                        
-                    ?>
-          
+                ?>
             </div>
         </div>
     </div>
 
 
     <script type="text/javascript">
+        function checkEmpty() {
 
+            }
+        }
     </script>
 </body>
 </html>

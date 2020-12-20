@@ -92,6 +92,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
                 <a href="userFriends.php">Friends</a>
+                <a href="userSendFriendRequests.php">Send Friend Requests</a>
 
                 <?php
                     $query = "SELECT credits FROM person WHERE person_id = " .$_SESSION['person_id'];
@@ -156,13 +157,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $friendship_id = $row['friendship_id'];
 
                             $query = "SELECT nick_name, person_name, person_surname FROM person WHERE person_id ='$sent_user_id'";
-                            $result = mysqli_query($db, $query);
+                            $result2 = mysqli_query($db, $query);
 
-                            if (!$result) {
+                            if (!$result2) {
                                 printf("Error: %s\n", mysqli_error($db));
                                 exit();
                             }
-                            $personRow = mysqli_fetch_array($result);
+                            $personRow = mysqli_fetch_array($result2);
                             $nickname = $personRow['nick_name'];
                             $personFirstName = $personRow['person_name'];
                             $personLastName = $personRow['person_surname'];
@@ -176,7 +177,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             if($status == "Waiting for Approval") {
                                 echo "<td> 
-                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"seemore\"class=\"btn btn-success btn-sm\" value =\"$friendsip_id\">SEE MORE</button>
+                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"seemore\"class=\"btn btn-success btn-sm\" value =\"$friendship_id\">SEE MORE</button>
                                 </td>";
                             }
 
