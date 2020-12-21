@@ -135,12 +135,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                             // get game name, game genre and game price from game id
                             $query = "SELECT game_name, game_genre, game_price FROM game WHERE game_id = '$gameId'";
-                            $result = mysqli_query($db, $query);
+                            $result2 = mysqli_query($db, $query);
                             if(!$result) {
                                 printf("Error1: %s\n", mysqli_error($db));
                                 exit();
                             }
-                            $gameRow = mysqli_fetch_array($result);
+                            $gameRow = mysqli_fetch_array($result2);
                             $game_name = $gameRow['game_name'];
                             $game_genre = $gameRow['game_genre'];
                             $game_price = $gameRow['game_price'];

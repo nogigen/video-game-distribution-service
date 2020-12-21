@@ -72,7 +72,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 exit();
             }
 
-            header("location: publishRefundRequests.php");
+            header("location: publishRequest.php");
 
         }
     }

@@ -145,24 +145,24 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             // get game name and game genre from game id
                             $query = "SELECT game_name, game_genre FROM game WHERE game_id = '$game_id'";
-                            $result = mysqli_query($db, $query);
-                            if (!$result) {
+                            $result2 = mysqli_query($db, $query);
+                            if (!$result2) {
                                 printf("Error: getting game name and game genre %s\n", mysqli_error($db));
                                 exit();
                             }
-                            $gameRow = mysqli_fetch_array($result);
+                            $gameRow = mysqli_fetch_array($result2);
                             $game_name = $gameRow['game_name'];
                             $game_genre = $gameRow['game_genre'];
 
                             // get the nickname of the user who made that refund request
                             $query = "SELECT nick_name FROM person WHERE person_id = '$person_id'";
-                            $result = mysqli_query($db, $query);
-                            if (!$result) {
+                            $result2 = mysqli_query($db, $query);
+                            if (!$result2) {
                                 printf("Error: getting person name %s\n", mysqli_error($db));
                                 exit();
                                 
                             }
-                            $personRow = mysqli_fetch_array($result);
+                            $personRow = mysqli_fetch_array($result2);
                             $user_name = $personRow['nick_name'];
 
                             // get developer name
