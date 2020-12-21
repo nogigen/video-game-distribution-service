@@ -118,7 +118,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT  game_name, game_genre, game_desc, publisher_name, developer_name FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN updateGame NATURAL JOIN developer NATURAL JOIN has WHERE isInstalled = 1";
+                        $query = "SELECT  game_name, game_id, game_genre, game_desc, publisher_name, developer_name FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN updateGame NATURAL JOIN developer NATURAL JOIN has WHERE isInstalled = 1";
 
                         $result = mysqli_query($db, $query);
 
@@ -150,8 +150,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         while($row = mysqli_fetch_array($result)) {
 
                             $personId = $_SESSION['person_id'];
+                            $gameId = $row['game_id'];
 
-                            $is_ever_reviewed = "SELECT game_id FROM game NATURAL JOIN review NATURAL JOIN personreview WHERE person_id = '$personId'";
+                            $is_ever_reviewed = "SELECT game_id FROM game NATURAL JOIN review NATURAL JOIN personreview WHERE person_id = '$personId' and game_id = '$gameId'";
                             $res = mysqli_prepare($db, $is_ever_reviewed);
                             mysqli_stmt_execute($res);
                             mysqli_stmt_store_result($res);
