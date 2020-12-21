@@ -81,7 +81,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT  game_id, game_name, game_genre, publisher_name, developer_name, game_price FROM game NATURAL JOIN updategame NATURAL JOIN developer NATURAL JOIN publishgame NATURAL JOIN publisher";
+                        $query = "SELECT  game_id, game_name, game_genre, publisher_name, developer_name, game_price, AVG(review_score) as avg_review_score FROM game NATURAL JOIN updategame NATURAL JOIN developer NATURAL JOIN publishgame NATURAL JOIN publisher NATURAL JOIN review NATURAL JOIN personreview WHERE review.game_id = game.game_id GROUP BY game_id ORDER BY avg_review_score DESC";
 
                         $result = mysqli_query($db, $query);
 
@@ -113,19 +113,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         while($row = mysqli_fetch_array($result)) {
 
-                            $gameId = $row['game_id'];
+                            $avgRating = $row['avg_review_score'];
 
-                            $resultRating = "-";
+                            $avgRating = ($avgRating*100)/100;
 
-                            $queryGameId = "SELECT AVG(review_score) as review_score FROM game NATURAL JOIN personreview NATURAL JOIN review WHERE game_id = '$gameId'";
-                            $result1 = mysqli_query($db, $queryGameId);
-                            $gameIdRow = mysqli_fetch_array($result1);
-                            $resultRating = $gameIdRow['review_score'];
-
-                            $resultRating = ($resultRating/100)*100;
-
-                            if($resultRating == 0){
-                                $resultRating = "Not Rated Yet";
+                            if($avgRating == 0){
+                                $avgRating = "Not Rated Yet";
                             }
 
                             echo "<tr>";
@@ -134,7 +127,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $row['publisher_name'] . "</td>";
                             echo "<td>" . $row['developer_name'] . "</td>";
                             echo "<td>" . $row['game_price'] . "</td>";
-                            echo "<td>" . $resultRating. "</td>";
+                            echo "<td>" . $avgRating . "</td>";
                             echo "</tr>";
                         }
 
