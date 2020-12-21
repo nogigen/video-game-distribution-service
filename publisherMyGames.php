@@ -128,6 +128,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Game Genre</th>
                             <th>Developer Name</th>
                             <th>Game price</th>
+                            <th></th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {

@@ -72,7 +72,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 exit();
             }
 
-            header("location: publishRequest.php");
+            echo "<script LANGUAGE='JavaScript'>
+            window.alert('Game has been published');
+            window.location.href = 'publishRequest.php'; 
+            </script>";
 
         }
     }
