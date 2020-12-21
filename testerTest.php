@@ -11,21 +11,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $_SESSION['game_name'] = $_POST['test_button'];
 
-        echo "<script LANGUAGE='JavaScript'>
-                window.location.href = 'testerTestGame.php'; 
-                </script>";
+        header("location: testerTestGame.php");
 
     }
 
-    else if(isset($_POST['test_details_button'])) {
-
-        $_SESSION['game_name'] = $_POST['test_details_button'];
-
-        header("location: testerTestGameDetails.php");
-
-    }
-
-    
 }
 ?>
 
@@ -92,7 +81,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT  game_name, game_genre, game_desc, publisher_name, developer_name FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN updateGame NATURAL JOIN developer NATURAL JOIN has WHERE isInstalled = 1";
+                        $query = "SELECT  game_name, game_genre, game_desc, publisher_name, developer_id, developer_name FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN updateGame NATURAL JOIN developer";
 
                         $result = mysqli_query($db, $query);
 
@@ -123,10 +112,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         while($row = mysqli_fetch_array($result)) {
 
-                            $personId = $_SESSION['tester_id'];
+                            $testerId = $_SESSION['tester_id'];
+                            $_SESSION['developer_id'] = $row['developer_id'];
 
-                            $is_ever_tested = "SELECT game_id FROM game NATURAL JOIN debug NATURAL JOIN BugReport WHERE tester_id = '$testerId'";
-                            $res = mysqli_prepare($db, $is_ever_reviewed);
+
+                            $is_ever_tested = "SELECT game_id FROM game NATURAL JOIN debug NATURAL JOIN BugReport";
+                            $res = mysqli_prepare($db, $is_ever_tested);
                             mysqli_stmt_execute($res);
                             mysqli_stmt_store_result($res);
                             $numberOfRows = mysqli_stmt_num_rows($res);
@@ -144,16 +135,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $row['publisher_name'] . "</td>";
                             echo "<td>" . $row['developer_name'] . "</td>";
 
-                            if($isTested){
-                                echo "<td>
-                                <button onclick=\"cancelled()\" name = \"test_details_button\"class=\"btn btn-primary btn-sm\" value =".$row['game_name'] .">TEST DETAILS</button>
-                                </td>";
-                            }   
-                            else{
-                                echo "<td>
-                                <button onclick=\"cancelled()\" name = \"test_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">TEST</button>
-                                </td>";
-                            }         
+                            
+                            echo "<td>
+                            <button onclick=\"cancelled()\" name = \"test_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">WRITE BUG REPORT</button>
+                            </td>";
+                                    
   
                             echo "</tr>";
                         }
