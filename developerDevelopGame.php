@@ -221,6 +221,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="developerDevelopGame.php">Develop Game</a>
                 <a href="developerPublishedGames.php">Published Games</a>
                 <a href="developerCheckApproval.php">Check Approval</a>
+                <a href="developerReportedBugs.php">Reported Bugs</a>
                 <div class="navbar-right">
                     <a href="logout.php">Log Out</a>
                 </div>
