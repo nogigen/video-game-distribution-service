@@ -108,7 +108,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php
                         $person_id = $_SESSION['person_id'];
                         // Prepare a select statement
-                        $query = "SELECT shop_id, game_id FROM renew WHERE person_id = '$person_id'";
+                        $query = "SELECT shop_id, game_id FROM renew WHERE person_id = '$person_id'
+                                  ORDER BY shop_id";
 
 
                         echo "<p><b>Bought Games : </b></p>";

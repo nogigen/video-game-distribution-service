@@ -85,7 +85,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-
         // delete renew row from renew table
         $query = "DELETE FROM renew
                   WHERE person_id = '$person_id' and game_id = '$game_id'";
