@@ -118,7 +118,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT  game_name, game_id, game_genre, game_desc, publisher_name, developer_name FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN updateGame NATURAL JOIN developer NATURAL JOIN has WHERE isInstalled = 1";
+                        $personId = $_SESSION['person_id'];
+                        $query = "SELECT  game_name, game_id, game_genre, game_desc, publisher_name, developer_name FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN updateGame NATURAL JOIN developer NATURAL JOIN has WHERE isInstalled = 1 and person_id = '$personId'";
 
                         $result = mysqli_query($db, $query);
 

@@ -73,6 +73,74 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </nav>
         <div id="centerwrapper">
             <div id="centerdiv">
+            <br><br>
+                <h1>Top Rated Games</h1>
+
+                <form id="gameForm" action="" method="post">
+
+                    
+                    <?php
+                        // Prepare a select statement
+                        $query = "SELECT  game_id, game_name, game_genre, publisher_name, developer_name, game_price FROM game NATURAL JOIN updategame NATURAL JOIN developer NATURAL JOIN publishgame NATURAL JOIN publisher";
+
+                        $result = mysqli_query($db, $query);
+
+                        if (!$result) {
+                            printf("Error: %s\n", mysqli_error($db));
+                            exit();
+                        }
+
+                        echo "<div class=\"form-group\">
+                        <input type=\"text\" id=\"myInput\" onkeyup=\"myFunction()\" placeholder=\"Search for value & col type..\">
+                        <select id = \"filterType\">
+                            <option value =\"filterGameName\" selected=\"selected\">Game Name</option>
+                            <option value = \"filterGameGenre\">Game Genre</option>
+                            <option value = \"filterPublisherName\">Publisher Name</option>
+                            <option value = \"filterStatus\">Approval Status</option>
+                        </select>
+
+                        </div>";
+
+                        echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
+                            <tr>
+                            <th>Game Name</th>
+                            <th>Game Genre</th>
+                            <th>Publisher Name</th>
+                            <th>Developer Name</th>
+                            <th>Price</th>
+                            <th>Avg. Rating</th>
+                            </tr>";
+
+                        while($row = mysqli_fetch_array($result)) {
+
+                            $gameId = $row['game_id'];
+
+                            $resultRating = "-";
+
+                            $queryGameId = "SELECT AVG(review_score) as review_score FROM game NATURAL JOIN personreview NATURAL JOIN review WHERE game_id = '$gameId'";
+                            $result1 = mysqli_query($db, $queryGameId);
+                            $gameIdRow = mysqli_fetch_array($result1);
+                            $resultRating = $gameIdRow['review_score'];
+
+                            $resultRating = ($resultRating/100)*100;
+
+                            if($resultRating == 0){
+                                $resultRating = "Not Rated Yet";
+                            }
+
+                            echo "<tr>";
+                            echo "<td>" . $row['game_name'] . "</td>";
+                            echo "<td>" . $row['game_genre'] . "</td>";
+                            echo "<td>" . $row['publisher_name'] . "</td>";
+                            echo "<td>" . $row['developer_name'] . "</td>";
+                            echo "<td>" . $row['game_price'] . "</td>";
+                            echo "<td>" . $resultRating. "</td>";
+                            echo "</tr>";
+                        }
+
+                        echo "</table>";
+                        ?>
+                </form>  
                 
             </div>
         </div>
