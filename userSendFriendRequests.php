@@ -154,7 +154,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             $cond = false;
 
-                            $query = "SELECT person_id1 FROM relationship WHERE person_id1 = '$personID' and person_id2 = '$person_id' and (relationship_status = 'Accepted' or relationship_status = 'Waiting for Approval')";
+                            $query = "SELECT person_id1 FROM relationship WHERE person_id1 = '$personID' and person_id2 = '$person_id' and (relationship_status = 'Accepted')";
                             $res = mysqli_prepare($db, $query);
                             if(!$res) {
                                 printf("Error: %s\n", mysqli_error($db));

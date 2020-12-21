@@ -25,9 +25,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         mysqli_stmt_store_result($res);
         $numberOfRows = mysqli_stmt_num_rows($res);
 
+
         if($numberOfRows != 0) {
             $query = "UPDATE relationship
-                      SET relationship_message = '$message', relationship_status = 'Waiting for Approval'
+                      SET relationship_msg = '$message', relationship_status = 'Accepted'
                       WHERE person_id1 = '$other_person_id' and person_id2 = '$person_id'";
 
             $result = mysqli_query($db,$query);
@@ -35,6 +36,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 printf("Error: Updating relationship table %s\n", mysqli_error($db));
                 exit();
             }
+
+            echo "<script LANGUAGE='JavaScript'>
+            window.alert('That user already sent you a friend request, that is why you dont need to wait for a response. You are friends now!');
+            window.location.href = 'userSendFriendRequests.php'; 
+            </script>";
     
         }
 
@@ -61,6 +67,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     printf("Error: 2- Updating relationship table %s\n", mysqli_error($db));
                     exit();
                 }
+
+
+
             }
             else {
                 // else
@@ -90,10 +99,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     exit();
                 }
         }
+        header("location: userSendFriendRequests.php");
 
     }
 
-        header("location: userSendFriendRequests.php");
 
 
     }
