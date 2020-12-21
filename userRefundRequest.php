@@ -35,7 +35,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $publisher_id = $publishGameRow['publisher_id'];
 
     // get shop id
-    $query = "SELECT shop_id FROM renew WHERE person_id = '$person_id' and game_id = '$gameId'";
+    $query = "SELECT shop_id FROM renew WHERE person_id = '$person_id' and game_id = '$gameId' and buy_type = 'buy'";
     $res = mysqli_query($db, $query);
 
     if(!$res) {
