@@ -88,7 +88,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $shopId = $row['shop_id'];
 
                 // update renew table
-                $query = "INSERT into renew VALUES('$shopId', '$person_id', '$game_id')";
+                $query = "INSERT into renew VALUES('$shopId', '$person_id', '$game_id', 'gift')";
                 $res = mysqli_query($db, $query);
                 if(!$res) {
                     printf("Error: Inserting to renew table. %s\n", mysqli_error($db));

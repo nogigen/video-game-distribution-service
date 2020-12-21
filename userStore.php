@@ -26,6 +26,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         header("location: userStoreDisplay.php");
 
     }
+    else if(isset($_POST['gift'])) {
+        $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
+        $res = mysqli_query($db, $queryGame);
+
+        if(!$res) {
+            printf("Error: %s\n", mysqli_error($db));
+            exit();
+        }
+        $gameIdRow = mysqli_fetch_array($res);
+        $gameId = $gameIdRow['game_id'];
+
+        $_SESSION['selected_game_id'] = $gameId;
+
+        header("location: userGiftGame.php");
+
+    }
     else {
         echo "<script LANGUAGE='JavaScript'>
         window.alert('it should never come here :D.');
@@ -241,6 +257,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <button onclick=\"checkEmpty()\" name = \"buy\"class=\"btn btn-danger btn-sm\">BUY</button>
                                 </td>";
                             }                   
+                            echo "<td>
+                            <button onclick=\"checkEmpty()\" name = \"gift\"class=\"btn btn-success btn-sm\">GIFT</button>
+                            </td>";
 
                             echo "</tr>";
                             echo "</form>";

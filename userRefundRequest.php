@@ -241,7 +241,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                 // get shop_id
-                $query = "SELECT shop_id FROM renew WHERE person_id = '$person_id' and game_id = '$gameId'";
+                $query = "SELECT shop_id FROM renew WHERE person_id = '$person_id' and game_id = '$gameId' and buy_type = 'buy'";
                 $res = mysqli_query($db, $query);
 
                 if(!$res) {
