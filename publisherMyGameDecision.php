@@ -26,9 +26,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 printf("Error: Game price couldnt be updated. %s\n", mysqli_error($db));
                 exit();
 
-            header("location: publisherMyGames.php");
             
             }
+        header("location: publisherMyGames.php");
+
         }
     }
 

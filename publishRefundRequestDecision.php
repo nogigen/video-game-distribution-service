@@ -85,6 +85,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
+
+        // delete renew row from renew table
+        $query = "DELETE FROM renew
+                  WHERE person_id = '$person_id' and game_id = '$game_id'";
+
+        $res = mysqli_query($db, $query);
+
+        if(!$res) {
+            printf("Error: Deleting from renew table. %s\n", mysqli_error($db));
+            exit();
+        }
+
         header("location: publishRefundRequests.php");
     }
     

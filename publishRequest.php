@@ -192,13 +192,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             // get developer name from developer id
                             $developer_id = $row['developer_id'];
                             $query = "SELECT developer_name FROM developer WHERE developer_id = '$developer_id'";
-                            $result = mysqli_query($db, $query);
+                            $result2 = mysqli_query($db, $query);
                             
                             if (!$result) {
                                 printf("Error: %s\n", mysqli_error($db));
                                 exit();
                             }
-                            $developerRow = mysqli_fetch_array($result);
+                            $developerRow = mysqli_fetch_array($result2);
                             $developer_name = $developerRow['developer_name'];
 
 
