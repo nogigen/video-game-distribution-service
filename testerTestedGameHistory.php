@@ -33,6 +33,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $_SESSION['written_bug_report'] = $reportDescription;
 
+        $_SESSION['the_report_id'] = $reportId;
+
         header("location: testerTestGameDetails.php");
 
     }

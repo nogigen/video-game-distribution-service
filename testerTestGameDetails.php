@@ -11,7 +11,18 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if(isset($_POST['delete_report'])) {
 
-        //İŞTE BURAYA EDİT YAPILABİLİR?
+        //DELETE FROM DEBUG
+        $follow_insertion = "DELETE FROM debug WHERE report_id = '$reportId'";
+        $result = mysqli_query($db,$follow_insertion);
+
+        //DELETE FROM BUGREPORT
+        $follow_insertion = "DELETE FROM bugreport WHERE report_id = '$reportId'";
+        $result = mysqli_query($db,$follow_insertion);
+
+        echo "<script LANGUAGE='JavaScript'>
+                window.alert('Bug Report is successfully deleted.');
+                window.location.href = 'testerTest.php'; 
+                </script>";
 
     }
     
