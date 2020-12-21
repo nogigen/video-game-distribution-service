@@ -108,7 +108,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php
                         $person_id = $_SESSION['person_id'];
                         // Prepare a select statement
-                        $query = "SELECT shop_id, game_id FROM renew WHERE person_id = '$person_id'";
+                        $query = "SELECT shop_id, game_id, buy_type FROM renew WHERE person_id = '$person_id'
+                                  ORDER BY shop_id";
 
 
                         echo "<p><b>Bought Games : </b></p>";
@@ -127,6 +128,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <option value = \"filterBoughtDate\">Bought Date</option>
                             <option value = \"filterBoughtPrice\">Bought Price</option>
                             <option value = \"filterCurrentPrice\">Current Price</option>                          
+                            <option value = \"filterBuyType\">Buy Type</option>                          
                         </select>
 
                         </div>";
@@ -137,11 +139,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Bought Date</th>
                             <th>Bought Price</th>
                             <th>Current Price</th>
+                            <th>Buy Type</th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {
                             $shop_id = $hasRow['shop_id'];
                             $game_id = $hasRow['game_id'];
+                            $buy_type = $hasRow['buy_type'];
 
                             // get game name from game id;
                             $queryGame = "SELECT game_name, game_price FROM game WHERE game_id = '$game_id'";
@@ -174,6 +178,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $bought_date . "</td>";
                             echo "<td>" . $bought_price . "</td>";
                             echo "<td>" . $game_price . "</td>";
+                            echo "<td>" . $buy_type . "</td>";
 
                             echo "</tr>";
                             echo "</form>";
@@ -214,6 +219,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             else if(filterTypeVal === "filterCurrentPrice") {
                 index = 3;
             }
+            else if(filterTypeVal === "filterBuyType") {
+                index = 4;
+            }
+            
             
             // Loop through all table rows, and hide those who don't match the search query
             for (i = 1; i < tr.length; i++) {

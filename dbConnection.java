@@ -59,6 +59,8 @@ public class dbConnection {
                     "(friendship_id INT, " +
                     "person_id1 INT, " +
                     "person_id2 INT, " +
+                    "relationship_status ENUM('Waiting for Approval', 'Declined', 'Accepted') DEFAULT 'Waiting for Approval', " +
+                    "relationship_msg VARCHAR(300)," +
                     "PRIMARY KEY(friendship_id), " +
                     "UNIQUE(person_id1, person_id2), " +
                     "FOREIGN KEY (friendship_id) REFERENCES friendship(friendship_id), " +
@@ -189,8 +191,12 @@ public class dbConnection {
                     "(shop_id INT, " +
                     "person_id INT, " +
                     "game_id INT, " +
+                    "buy_type ENUM('buy', 'gift'), " +
                     "PRIMARY KEY(shop_id), " +
-                    "UNIQUE(person_id, game_id))";
+                    "FOREIGN KEY (shop_id) REFERENCES shophistory(shop_id), " +
+                    "FOREIGN KEY (person_id) REFERENCES person(person_id), " +
+                    "FOREIGN KEY (game_id) REFERENCES game(game_id))";
+
             stmt.execute(renewDefinition);
             System.out.println("Renew table is created successfully.\n");
 
@@ -519,7 +525,7 @@ public class dbConnection {
                     "(1,1,2)";
             System.out.println("Starting to insert values to renew table.");
 
-            stmt.execute(renewInsertion);
+            //stmt.execute(renewInsertion);
             System.out.println("Values are inserted to renew table.\n");
 
         }

@@ -124,6 +124,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     
                     <?php
+                        $person_id = $_SESSION['person_id'];
                         // Prepare a select statement
                         $query = "SELECT person_id, game_id, isInstalled, personVersion FROM has WHERE person_id = " .$_SESSION['person_id'];
 
@@ -215,28 +216,43 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
                             $developerNameRow = mysqli_fetch_array($result6);
                             $developer_name = $developerNameRow['developer_name'];
-                                            
-                            echo "<form action=\"\" METHOD=\"POST\">";
-                            echo "<tr>";
-                            echo "<td><input type=\"hidden\" name=\"gamename\" value=". $game_name .">" . $game_name . "</td>";
-                            echo "<td>" . $game_genre . "</td>";
-                            echo "<td>" . $publisher_name . "</td>";
-                            echo "<td>" . $developer_name . "</td>";
-                            echo "<td>" . $latestVersionNo . "</td>";
 
-                            if($isInstalled) {
-                                echo "<td>" . $personVersion . "</td>";
+
+                            // check if there is already a refund request
+                            $query = "SELECT refund_id FROM request WHERE person_id = '$person_id' and game_id = '$gameId'";
+                            $res = mysqli_prepare($db, $query);
+                            if(!$res) {
+                                printf("Error: %s\n", mysqli_error($db));
+                                exit();
                             }
-                            else {
-                                echo "<td>" . "-" . "</td>";
-                            }                          
+                            mysqli_stmt_execute($res);
+                            mysqli_stmt_store_result($res);
+                            $numberOfRows = mysqli_stmt_num_rows($res);
 
-                            echo "<td> 
-                                <button type=\"submit\" onclick=\"checkEmpty()\" name = \"refund\"class=\"btn btn-success btn-sm\">REFUND</button>
-                                </td>";
+                            if($numberOfRows == 0) {
+                                             
+                                echo "<form action=\"\" METHOD=\"POST\">";
+                                echo "<tr>";
+                                echo "<td><input type=\"hidden\" name=\"gamename\" value=". $game_name .">" . $game_name . "</td>";
+                                echo "<td>" . $game_genre . "</td>";
+                                echo "<td>" . $publisher_name . "</td>";
+                                echo "<td>" . $developer_name . "</td>";
+                                echo "<td>" . $latestVersionNo . "</td>";
 
-                            echo "</tr>";
-                            echo "</form>";
+                                if($isInstalled) {
+                                    echo "<td>" . $personVersion . "</td>";
+                                }
+                                else {
+                                    echo "<td>" . "-" . "</td>";
+                                }                          
+
+                                echo "<td> 
+                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"refund\"class=\"btn btn-success btn-sm\">REFUND</button>
+                                    </td>";
+
+                                echo "</tr>";
+                                echo "</form>";
+                            }
                         }
 
                         echo "</table>";

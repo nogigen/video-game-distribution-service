@@ -60,7 +60,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             $shopId = $row['shop_id'];
 
              // update renew table
-             $query = "INSERT into renew VALUES('$shopId', '$person_id', '$gameId')";
+             $query = "INSERT into renew VALUES('$shopId', '$person_id', '$gameId', 'buy')";
              $res = mysqli_query($db, $query);
              if(!$res) {
                  printf("Error: Inserting to renew table. %s\n", mysqli_error($db));
@@ -80,10 +80,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             </script>";
         } 
     }
-    else if(isset($_POST['gift'])) {
-        header("location: userGiftGame.php");
-    }
-  
+
     elseif(isset($_POST['cancel'])) {
         header("location: userStore.php");
     }
@@ -327,7 +324,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     
                         <button type=\"submit\" onclick=\"checkEmpty()\" name =\"buy\"class=\"btn btn-success btn-sm\">BUY</button>
-                        <button type=\"submit\" onclick=\"checkEmpty()\" name =\"gift\"class=\"btn btn-success btn-sm\">GIFT</button>
                         <button type=\"submit\" onclick=\"checkEmpty()\" name = \"cancel\"class=\"btn btn-danger btn-sm\">CANCEL</button>
 
 
