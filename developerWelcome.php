@@ -90,17 +90,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             exit();
                         }
 
-                        echo "<div class=\"form-group\">
-                        <input type=\"text\" id=\"myInput\" onkeyup=\"myFunction()\" placeholder=\"Search for value & col type..\">
-                        <select id = \"filterType\">
-                            <option value =\"filterGameName\" selected=\"selected\">Game Name</option>
-                            <option value = \"filterGameGenre\">Game Genre</option>
-                            <option value = \"filterPublisherName\">Publisher Name</option>
-                            <option value = \"filterStatus\">Approval Status</option>
-                        </select>
-
-                        </div>";
-
                         echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
                             <tr>
                             <th>Game Name</th>
@@ -133,7 +122,85 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         echo "</table>";
                         ?>
-                </form>  
+                </form>
+
+                <br><br>
+                <h1>Most Followed Curators</h1>
+
+                <form id="gameForm" action="" method="post">
+
+                    
+                    <?php
+                        // Prepare a select statement
+                        $query = "SELECT  curator_login_name, curator_first_name, curator_last_name, no_of_followers FROM curator ORDER BY no_of_followers DESC";
+
+                        $result = mysqli_query($db, $query);
+
+                        if (!$result) {
+                            printf("Error: %s\n", mysqli_error($db));
+                            exit();
+                        }
+
+
+                        echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
+                            <tr>
+                            <th>Curator Nick Name</th>
+                            <th>Curator First Name</th>
+                            <th>Curator Last Name Name</th>
+                            <th>No. of Followers</th>
+                            </tr>";
+
+                        while($row = mysqli_fetch_array($result)) {
+
+        
+                            echo "<tr>";
+                            echo "<td>" . $row['curator_login_name'] . "</td>";
+                            echo "<td>" . $row['curator_first_name'] . "</td>";
+                            echo "<td>" . $row['curator_last_name'] . "</td>";
+                            echo "<td>" . $row['no_of_followers'] . "</td>";
+                            echo "</tr>";
+                        }
+
+                        echo "</table>";
+                        ?>
+                </form>
+
+                <br><br>
+                <h1>Most Published Developers</h1>
+
+                <form id="gameForm" action="" method="post">
+
+                    
+                    <?php
+                        // Prepare a select statement
+                        $query = "SELECT  developer_name, COUNT(game_id) as published_games FROM developer NATURAL JOIN updategame NATURAL JOIN game WHERE updategame.game_id = game.game_id GROUP BY developer_name ORDER BY published_games DESC";
+
+                        $result = mysqli_query($db, $query);
+
+                        if (!$result) {
+                            printf("Error: %s\n", mysqli_error($db));
+                            exit();
+                        }
+
+
+                        echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
+                            <tr>
+                            <th>Developer Name</th>
+                            <th>No. of Published Games</th>
+                            </tr>";
+
+                        while($row = mysqli_fetch_array($result)) {
+
+        
+                            echo "<tr>";
+                            echo "<td>" . $row['developer_name'] . "</td>";
+                            echo "<td>" . $row['published_games'] . "</td>";
+                            echo "</tr>";
+                        }
+
+                        echo "</table>";
+                        ?>
+                </form> 
                 
             </div>
         </div>
