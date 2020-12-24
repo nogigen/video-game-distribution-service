@@ -25,7 +25,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt = mysqli_prepare($db, $sql);
     mysqli_stmt_bind_param($stmt, "sssss", $username, $email, $password, $firstName, $lastName);
     mysqli_stmt_execute($stmt);
-    header("location: index.php");
+    
+    echo "<script LANGUAGE='JavaScript'>
+        window.alert('Account is successfully created.');
+        window.location.href = 'index.php'; 
+        </script>";
     
 }
 ?>
