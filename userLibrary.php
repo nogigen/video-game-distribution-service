@@ -166,17 +166,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT person_id, game_id, isInstalled, personVersion FROM has WHERE person_id = " .$_SESSION['person_id'];
-
-
                         echo "<p><b>Your Games : </b></p>";
 
+                        $query = "SELECT person_id, game_id, personVersion FROM has WHERE person_id = " .$_SESSION['person_id'];
                         $result = mysqli_query($db, $query);
 
-                        if (!$result) {
-                            printf("Error: %s\n", mysqli_error($db));
-                            exit();
-                        }
+                        $query = "CREATE OR REPLACE VIEW installed_games as SELECT game_id FROM has WHERE isInstalled = 1 AND person_id = " .$_SESSION['person_id'];
+                        $result2 = mysqli_query($db, $query);
+
 
                         echo "<div class=\"form-group\">
                         <input type=\"text\" id=\"myInput\" onkeyup=\"myFunction()\" placeholder=\"Search for value & col type..\">
@@ -203,8 +200,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {
+
                             $gameId = $hasRow['game_id'];
-                            $isInstalled = $hasRow['isInstalled'];
+
+                            $is_ever_installed_query = "SELECT game_id FROM installed_games WHERE game_id = '$gameId'";
+                            $res = mysqli_prepare($db, $is_ever_installed_query);
+                            mysqli_stmt_execute($res);
+                            mysqli_stmt_store_result($res);
+                            $numberOfRows = mysqli_stmt_num_rows($res);
+
+                            $isInstalled = FALSE;
+
+                            if($numberOfRows > 0 ){
+                                
+                                $isInstalled = TRUE;
+                            }
+
                             $personVersion = $hasRow['personVersion'];
 
                             $queryGame = "SELECT game_name, game_genre, latest_version_no FROM game WHERE game_id = '$gameId'";
