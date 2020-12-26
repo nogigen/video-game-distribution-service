@@ -540,6 +540,19 @@ public class dbConnection {
             stmt.execute(GameIdToGameName);
             System.out.println("GameIdToGameName Stored Procedure is inserted\n");
 
+            //before_update_credits TRIGGER
+            String creditsTrigger = "CREATE OR REPLACE TRIGGER before_update_credits BEFORE UPDATE ON person FOR EACH ROW INSERT trigger_credits VALUES(\"Credits Action\");";
+            System.out.println("creditsTrigger is inserting");
+            stmt.execute(creditsTrigger);
+            System.out.println("creditsTrigger inserted\n");
+
+            //TRIGGER CREDITS TABLE
+            String triggerCreditsDefinition = "CREATE TABLE trigger_credits " +
+                    "(message VARCHAR (32))";
+            stmt.execute(triggerCreditsDefinition);
+            System.out.println("trigger_credits is created successfully.\n");
+
+
         }
 
 
