@@ -47,11 +47,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 exit();
             }
 
-            //GET GAME ID
-            $queryGameId = "SELECT game_id FROM game WHERE game_name = '$gameName'";
-            $result3 = mysqli_query($db, $queryGameId);
-            $gameIdRow = mysqli_fetch_array($result3);
-            $gameId = $gameIdRow['game_id'];
+            //GET GAME ID WITH STORED PROCEDURE
+            $query = "CALL GameNameToGameId('$gameName')";
+            $res = mysqli_prepare($db, $query);
+            mysqli_stmt_execute($res);
+            mysqli_stmt_store_result($res);
+            $gameId = mysqli_stmt_num_rows($res);
+            $res->close();
+            $db->next_result();
 
             //ADD TO PUBLISH GAME
             $publish_game_query_2 = "INSERT INTO publishgame(publisher_id, game_id, discount) VALUES ('$publisherId', '$gameId', 0)";

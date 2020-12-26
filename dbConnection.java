@@ -528,6 +528,18 @@ public class dbConnection {
             //stmt.execute(renewInsertion);
             System.out.println("Values are inserted to renew table.\n");
 
+            //GAME NAME TO GAME ID STORED PROCEDURE
+            String GameNameToGameId = "CREATE OR REPLACE PROCEDURE GameNameToGameId(IN gameName VARCHAR(32)) BEGIN SELECT game_id FROM game WHERE game_name = gameName; END;";
+            System.out.println("GameNameToGameId Stored Procedure is inserting");
+            stmt.execute(GameNameToGameId);
+            System.out.println("GameNameToGameId Stored Procedure is inserted\n");
+
+            //GAME ID TO GAME ID NAME PROCEDURE
+            String GameIdToGameName = "CREATE OR REPLACE PROCEDURE GameIdToGameName(IN gameId INT) BEGIN SELECT game_name FROM game WHERE game_id = gameId; END;";
+            System.out.println("GameIdToGameName Stored Procedure is inserting");
+            stmt.execute(GameIdToGameName);
+            System.out.println("GameIdToGameName Stored Procedure is inserted\n");
+
         }
 
 
