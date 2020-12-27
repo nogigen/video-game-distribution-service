@@ -5,11 +5,41 @@ include("config.php");
 session_start();
 
 
+if(isset($_POST['submit'])) {
+
+
+    $valueToSearch = mysqli_real_escape_string($db,$_POST['valueToSearch']);
+    $filterType = mysqli_real_escape_string($db,$_POST['filter']);
+
+    $query = "SELECT game_id, game_name, game_genre, game_price, developer_name, publisher_name
+              FROM game NATURAL JOIN publishgame NATURAL JOIN publisher NATURAL JOIN updategame NATURAL JOIN developer
+              WHERE $filterType LIKE '%$valueToSearch%'";
+
+    $resulted_query = mysqli_query($db, $query);
+
+    
+
+    if(!$resulted_query) {
+        printf("Error: filtering table. %s\n", mysqli_error($db));
+        exit();
+    }
+}
+
+else {
+
+    $query = "SELECT game_id, game_name, game_genre, game_price, developer_name, publisher_name
+              FROM game NATURAL JOIN publishgame NATURAL JOIN publisher NATURAL JOIN updategame NATURAL JOIN developer";
+
+    $resulted_query = mysqli_query($db, $query);
+
+}
+
 if($_SERVER["REQUEST_METHOD"] == "POST") {
 
-    $gameName = $_POST['gamename'];
 
     if(isset($_POST['buy'])) {
+        $gameName = $_POST['gamename'];
+
         // get the game_id from game_name
         $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
         $res = mysqli_query($db, $queryGame);
@@ -27,6 +57,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     }
     else if(isset($_POST['gift'])) {
+        $gameName = $_POST['gamename'];
+        
         $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
         $res = mysqli_query($db, $queryGame);
 
@@ -42,11 +74,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         header("location: userGiftGame.php");
 
     }
-    else {
-        echo "<script LANGUAGE='JavaScript'>
-        window.alert('it should never come here :D.');
-        </script>";
-    }
+
+
+
 
 
 
@@ -151,29 +181,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     
                     <?php
-                        // Prepare a select statement
-                        $query = "SELECT game_id, game_name, game_genre, game_price, latest_version_no FROM game";
-
-                        $result = mysqli_query($db, $query);
-
-                        if (!$result) {
-                            printf("Error: %s\n", mysqli_error($db));
-                            exit();
-                        }
-
+        
                         echo "<p><b>Current Games : </b></p>";
 
 
-                       echo "<div class=\"form-group\">
+                       echo "<form method=\"post\">
+                            <div class=\"form-group\">
                             <input type=\"text\" name=\"valueToSearch\" placeholder=\"Search for value & col type..\">
-                            <select id = \"filterType\">
-                                <option value =\"filterGameName\" selected=\"selected\">Game Name</option>
-                                <option value = \"filterGameGenre\">Game Genre</option>
-                                <option value = \"filterPublisherName\">Publisher Name</option>
-                                <option value = \"filterDeveloperName\">Developer Name</option>
+                            <select id = \"filterType\" name=\"filter\">
+                                <option value =\"game_name\" selected=\"selected\">Game Name</option>
+                                <option value = \"game_genre\">Game Genre</option>
+                                <option value = \"publisher_name\">Publisher Name</option>
+                                <option value = \"developer_name\">Developer Name</option>
+                                <option value = \"game_price\">Credits</option>
                             </select>
-                            <input type = \"submit\" name=\"search\" value=\"Filter\">
-
+                            <input type = \"submit\" name=\"submit\" value=\"Filter\">
                             </div>";
 
                        
@@ -188,51 +210,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Credits</th>
                             </tr>";
 
-                        while($hasRow = mysqli_fetch_array($result)) {
+                        while($hasRow = mysqli_fetch_array($resulted_query)) {
                             $gameId = $hasRow['game_id'];
                             $game_price = $hasRow['game_price'];
                             $game_name = $hasRow['game_name'];
                             $game_genre = $hasRow['game_genre'];
+                            $developer_name = $hasRow['developer_name'];
+                            $publisher_name = $hasRow['publisher_name'];
 
-                            $queryPublisherId = "SELECT publisher_id FROM publishgame WHERE game_id = '$gameId'";
-                            $result3 = mysqli_query($db, $queryPublisherId);
-                            if(!$result3) {
-                                printf("Error2: %s\n", mysqli_error($db));
-                                exit();
-                            }
-                            $publisherIdRow = mysqli_fetch_array($result3);
-                            $publisher_id = $publisherIdRow['publisher_id'];
-
-                            $queryPublisherName = "SELECT publisher_name FROM publisher WHERE publisher_id = '$publisher_id'";
-                            $result4 = mysqli_query($db, $queryPublisherName);
-                            if(!$result4) {
-                                printf("Error3: %s\n", mysqli_error($db));
-                                exit();
-                            }
-                            $publisherNameRow = mysqli_fetch_array($result4);
-                            $publisher_name = $publisherNameRow['publisher_name'];
-
-                            
-                            $queryDeveloperId = "SELECT developer_id FROM updategame WHERE game_id = '$gameId'";
-                            $result5 = mysqli_query($db, $queryDeveloperId);
-
-                            if(!$result5) {
-                                printf("Error4: %s\n", mysqli_error($db));
-                                exit();
-                            }
-                            $developerIdRow = mysqli_fetch_array($result5);
-                            $developer_id = $developerIdRow['developer_id'];
-
-                        
-                            $queryDeveloperName = "SELECT developer_name FROM developer WHERE developer_id = '$developer_id'";
-                            $result6 = mysqli_query($db, $queryDeveloperName);
-                            
-                            if(!$result6) {
-                                printf("Error5: %s\n", mysqli_error($db));
-                                exit();
-                            }
-                            $developerNameRow = mysqli_fetch_array($result6);
-                            $developer_name = $developerNameRow['developer_name'];
                             
                             $person_id = $_SESSION['person_id'];
                             $query = "SELECT isInstalled FROM has WHERE person_id = '$person_id' and game_id = '$gameId'";
@@ -267,6 +252,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         }
 
                         echo "</table>";
+                        echo "</form>";
                         
                         ?>
           
