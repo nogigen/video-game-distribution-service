@@ -49,10 +49,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
             //GET GAME ID WITH STORED PROCEDURE
             $query = "CALL GameNameToGameId('$gameName')";
-            $res = mysqli_prepare($db, $query);
-            mysqli_stmt_execute($res);
-            mysqli_stmt_store_result($res);
-            $gameId = mysqli_stmt_num_rows($res);
+            $res = mysqli_query($db, $query);
+            $row = mysqli_fetch_array($res);
+            $gameId = $row['game_id'];
+            
+
+            //
             $res->close();
             $db->next_result();
 
