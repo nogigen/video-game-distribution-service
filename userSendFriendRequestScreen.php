@@ -12,7 +12,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     if(isset($_POST['add'])) {
-        $message = $_POST['message'];
+        $message = mysqli_real_escape_string($db, $_POST['message']);
 
         // check to see if that user already sent you a request or not.
         $query = "SELECT person_id1 FROM relationship WHERE person_id1 = '$other_person_id' and person_id2 = '$person_id' and relationship_status = 'Waiting for Approval'";

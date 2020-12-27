@@ -11,7 +11,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $testerId = $_SESSION['tester_id'];
     $developerId =  $_SESSION['developer_id'];
 
-    $bugReport = $_POST['bugreport'];
+    $bugReport = mysqli_real_escape_string($db, $_POST['bugreport']);
 
     if($bugReport == ""){ 
 

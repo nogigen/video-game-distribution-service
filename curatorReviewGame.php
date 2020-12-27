@@ -10,7 +10,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameName = $_SESSION['game_name'];
     $curatorId = $_SESSION['curator_id'];
 
-    $reviewText = $_POST['reviewcomment'];
+    $reviewText = mysqli_real_escape_string($db, $_POST['reviewcomment']);
     $score = $_POST['rating'];
 
     if($reviewText == ""){ 

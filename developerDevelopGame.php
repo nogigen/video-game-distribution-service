@@ -21,13 +21,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $developerId = $_SESSION["developer_id"];
 
 
-    $gameName = $_POST['gamename'];
-    $gameGenre = $_POST['gamegenre'];
-    $gameDesc = $_POST['gamedesc'];
-    $os = $_POST['operatingsystem'];
-    $memory = $_POST['memory'];
-    $storage = $_POST['memory'];
-    $processor = $_POST['processor'];
+    $gameName = mysqli_real_escape_string($db, $_POST['gamename']);
+    $gameGenre = mysqli_real_escape_string($db, $_POST['gamegenre']);
+    $gameDesc = mysqli_real_escape_string($db, $_POST['gamedesc']);
+    $os = mysqli_real_escape_string($db, $_POST['operatingsystem']);
+    $memory = mysqli_real_escape_string($db, $_POST['memory']);
+    $storage = mysqli_real_escape_string($db, $_POST['memory']);
+    $processor = mysqli_real_escape_string($db, $_POST['processor']);
 
     $query = "SELECT game_id FROM game WHERE game_name = '$gameName'";
     $res = mysqli_prepare($db, $query);

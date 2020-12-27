@@ -10,7 +10,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameName = $_SESSION['selected_game_to_refund'];
     $person_id = $_SESSION['person_id'];
 
-    $refund_desc = $_POST['refund_desc'];
+    $refund_desc = mysqli_real_escape_string($db, $_POST['refund_desc']);
 
     // game id from game name
     $queryGame = "SELECT game_id FROM game WHERE game_name = '$gameName'";
