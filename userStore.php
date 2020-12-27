@@ -165,13 +165,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                        echo "<div class=\"form-group\">
-                            <input type=\"text\" id=\"myInput\" onkeyup=\"myFunction()\" placeholder=\"Search for value & col type..\">
+                            <input type=\"text\" name=\"valueToSearch\" placeholder=\"Search for value & col type..\">
                             <select id = \"filterType\">
                                 <option value =\"filterGameName\" selected=\"selected\">Game Name</option>
                                 <option value = \"filterGameGenre\">Game Genre</option>
                                 <option value = \"filterPublisherName\">Publisher Name</option>
                                 <option value = \"filterDeveloperName\">Developer Name</option>
                             </select>
+                            <input type = \"submit\" name=\"search\" value=\"Filter\">
 
                             </div>";
 
@@ -254,11 +255,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                             if($numberOfRows == 0) {
                                 echo "<td>
-                                <button onclick=\"checkEmpty()\" name = \"buy\"class=\"btn btn-danger btn-sm\">BUY</button>
+                                <button name = \"buy\"class=\"btn btn-danger btn-sm\">BUY</button>
                                 </td>";
                             }                   
                             echo "<td>
-                            <button onclick=\"checkEmpty()\" name = \"gift\"class=\"btn btn-success btn-sm\">GIFT</button>
+                            <button name = \"gift\"class=\"btn btn-success btn-sm\">GIFT</button>
                             </td>";
 
                             echo "</tr>";
@@ -275,44 +276,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     <script type="text/javascript">
-        function myFunction() {
-            // Declare variables
-            var input, filter, table, tr, td, i, txtValue, filterType, filterTypeVal;
-            input = document.getElementById("myInput");
-            filter = input.value.toUpperCase();
-            table = document.getElementById("myTable");
-            tr = table.getElementsByTagName("tr");
 
-            filterType = document.getElementById("filterType");
-            filterTypeVal = filterType.value;
-
-            var index = 0;
-            if(filterTypeVal === "filterGameName") {
-                index = 0;
-            }
-            else if(filterTypeVal === "filterGameGenre") {
-                index = 1;
-            }
-
-            else if(filterTypeVal === "filterPublisherName") {
-                index = 2;
-            }
-            else if(filterTypeVal === "filterDeveloperName") {
-                index = 3;
-            }
-            // Loop through all table rows, and hide those who don't match the search query
-            for (i = 1; i < tr.length; i++) {
-                td = tr[i].getElementsByTagName("td")[index];
-                if (td) {
-                txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-                }
-            }
-        }
     </script>
 </body>
 </html>
