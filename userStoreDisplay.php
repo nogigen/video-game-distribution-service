@@ -144,15 +144,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userWelcome.php">Home</a>
                 <a href="userLibrary.php">Library</a>
                 <a href="userStore.php">Store</a>
-                <a href="userCheckUpdates.php">Check Updates</a>
+                <a href="userCheckUpdates.php">Update</a>
                 <a href="userCheckMods.php">Mods</a>
-                <a href="userFollowCurators.php">Follow Curators</a>
+                <a href="userFollowCurators.php">Curator</a>
                 <a href="userRefund.php">Refund</a>
                 <a href="userRefundHistory.php">Refund History</a>
                 <a href="userShopHistory.php">Shop History</a>
                 <a href="userReview.php">Review Games</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
-                <a href="userSendFriendRequests.php">Send Friend Requests</a>
+                <a href="userSendFriendRequests.php">Add Friend</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
                 <a href="userFriends.php">Friends</a>
 
