@@ -15,6 +15,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     if( isset($_POST['select_approve']) )
     {
 
+        
+
         /*
         $accepted_query = "UPDATE ask
         SET approval = 'Accepted'
@@ -204,8 +206,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             echo "<form action=\"\" METHOD=\"POST\">";
                             echo "<tr>";
-                            echo "<td><input type=\"hidden\" name=\"gamename\" value=". $row['ask_game_name'] .">" . $row['ask_game_name'] . "</td>";
-                            echo "<td><input type=\"hidden\" name=\"gamegenre\" value=". $row['ask_game_genre'] .">" . $row['ask_game_genre'] . "</td>";
+                            echo "<td><input type=\"hidden\" name=\"gamename\" value='". $row['ask_game_name'] ."'>" . $row['ask_game_name'] . "</td>";
+                            echo "<td><input type=\"hidden\" name=\"gamegenre\" value='". $row['ask_game_genre'] ."'>" . $row['ask_game_genre'] . "</td>";
                             echo "<td><input type=\"hidden\" name=\"developerid\" value=". $row['developer_id'] .">" . $developer_name . "</td>";
                                 echo "<td> 
                                     <button type = \"submit\" onclick=\"approved()\" name = \"select_approve\"class=\"btn btn-success btn-sm\">APPROVE</button>

@@ -233,7 +233,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                              
                                 echo "<form action=\"\" METHOD=\"POST\">";
                                 echo "<tr>";
-                                echo "<td><input type=\"hidden\" name=\"gamename\" value=". $game_name .">" . $game_name . "</td>";
+                                echo "<td><input type=\"hidden\" name=\"gamename\" value='". $game_name ."'>" . $game_name . "</td>";
                                 echo "<td>" . $game_genre . "</td>";
                                 echo "<td>" . $publisher_name . "</td>";
                                 echo "<td>" . $developer_name . "</td>";

@@ -124,7 +124,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $row['game_price'] . "</td>";
                             echo "<td>" . $row['latest_version_no'] . "</td>";
                             echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"update_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">UPDATE</button>
+                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"update_button\"class=\"btn btn-success btn-sm\" value ='".$row['game_name'] ."'>UPDATE</button>
                                 </td>";
                             echo "</tr>";
                         }

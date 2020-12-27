@@ -174,12 +174,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             if($isReviewed){
                                 echo "<td>
-                                <button onclick=\"cancelled()\" name = \"review_details_button\"class=\"btn btn-primary btn-sm\" value =".$row['game_name'] .">REVIEW DETAILS</button>
+                                <button onclick=\"cancelled()\" name = \"review_details_button\"class=\"btn btn-primary btn-sm\" value ='".$row['game_name'] ."'>REVIEW DETAILS</button>
                                 </td>";
                             }   
                             else{
                                 echo "<td>
-                                <button onclick=\"cancelled()\" name = \"review_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">REVIEW</button>
+                                <button onclick=\"cancelled()\" name = \"review_button\"class=\"btn btn-success btn-sm\" value ='".$row['game_name'] ."'>REVIEW</button>
                                 </td>";
                             }         
   
