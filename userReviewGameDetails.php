@@ -113,8 +113,20 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $gameName = $_SESSION['game_name'];
                 $person_id = $_SESSION['person_id'];
 
-                $review_desc = $_SESSION['review_text'];
-                $rating = $_SESSION['score'];
+                //GET GAME ID WITH STORED PROCEDURE
+                $query = "CALL GameNameToGameId('$gameName')";
+                $res = mysqli_query($db, $query);
+                $row = mysqli_fetch_array($res);
+                $gameId = $row['game_id'];
+                $res->close();
+                $db->next_result();
+
+                
+                $queryReviewId = "SELECT review_text, review_score FROM personreview NATURAL JOIN review WHERE game_id = '$gameId' AND person_id = '$person_id'";
+                $result = mysqli_query($db, $queryReviewId);
+                $reviewIdRow = mysqli_fetch_array($result);
+                $review_desc = $reviewIdRow['review_text'];
+                $rating = $reviewIdRow['review_score'];
                 
                 echo "<h2>Review of $gameName</h2>";
 
