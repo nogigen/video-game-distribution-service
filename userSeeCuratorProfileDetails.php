@@ -110,13 +110,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $rating = $gameIdRow['c_review_score'];
 
                 
-                echo "<h2>Review of $gameName by Curator $curatorName</h2>";
+                echo "<h1>Review of $gameName by Curator $curatorName</h1>";
 
                 echo "<form id=\"reviewForm\" action=\"\" method=\"post\">
 
                 <div class=\"form-group\">
                     <label>Review Description</label>
-                    <input type=\"text\" name=\"reviewdesc\" class=\"form-control\" id=\"reviewdesc\" value=\"$review_desc\" readonly=\"readonly\">
+                    <textarea class=\"form-control\" name=\"review_desc\" id=\"review_desc\" rows=\"8\" value=\"$review_desc\" readonly=\"readonly\">$review_desc</textarea>
 
                  </div>
 
