@@ -114,7 +114,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <?php
                         // Prepare a select statement
                         $developerId = $_SESSION['developer_id'];
-                        $query = "SELECT  game_name, game_genre, game_desc, publisher_name, tester_login_name, report_id, report_description FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN updateGame NATURAL JOIN developer NATURAL JOIN debug NATURAL JOIN bugreport NATURAL JOIN tester WHERE developer_id = '$developerId'";
+                        $query = "SELECT  game_name, game_genre, game_desc, publisher_name, tester_login_name, report_id, report_description FROM game NATURAL JOIN publishGame NATURAL JOIN publisher NATURAL JOIN developer NATURAL JOIN debug NATURAL JOIN bugreport NATURAL JOIN tester WHERE developer_id = '$developerId'";
 
                         $result = mysqli_query($db, $query);
 

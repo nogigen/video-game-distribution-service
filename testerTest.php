@@ -10,6 +10,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     if(isset($_POST['test_button'])) {
 
         $_SESSION['game_name'] = $_POST['test_button'];
+        $_SESSION['selected_developer_id'] = $_POST['selected_developer_id'];
+        $developerId = $_SESSION['selected_developer_id'];
 
         header("location: testerTestGame.php");
 
@@ -112,36 +114,21 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         while($row = mysqli_fetch_array($result)) {
 
-                            $testerId = $_SESSION['tester_id'];
-                            $_SESSION['developer_id'] = $row['developer_id'];
-
-
-                            $is_ever_tested = "SELECT game_id FROM game NATURAL JOIN debug NATURAL JOIN BugReport";
-                            $res = mysqli_prepare($db, $is_ever_tested);
-                            mysqli_stmt_execute($res);
-                            mysqli_stmt_store_result($res);
-                            $numberOfRows = mysqli_stmt_num_rows($res);
-
-                            $isTested = TRUE;
-
-                            if($numberOfRows == 0){
-                                $isTested = FALSE;
-                            }
-
+                            echo "<form action=\"\" METHOD=\"POST\">";
 
                             echo "<tr>";
                             echo "<td>" . $row['game_name'] . "</td>";
                             echo "<td>" . $row['game_genre'] . "</td>";
                             echo "<td>" . $row['publisher_name'] . "</td>";
-                            echo "<td>" . $row['developer_name'] . "</td>";
-
+                            echo "<td><input type=\"hidden\" name=\"selected_developer_id\" value='". $row['developer_id'] ."'>" . $row['developer_name']. "</td>";
+                            
                             
                             echo "<td>
                             <button onclick=\"cancelled()\" name = \"test_button\"class=\"btn btn-success btn-sm\" value ='".$row['game_name'] ."'>WRITE BUG REPORT</button>
                             </td>";
                                     
-  
                             echo "</tr>";
+                            echo "</form>";
                         }
 
                         echo "</table>";

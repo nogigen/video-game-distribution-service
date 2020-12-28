@@ -87,7 +87,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class=\"form-group\">
                     <label>Review Description</label>
-                    <input type=\"text\" name=\"reviewdesc\" class=\"form-control\" id=\"reviewdesc\" value=\"$report_desc\" readonly=\"readonly\">
+                    <textarea class=\"form-control\" name=\"reviewdesc\" id=\"reviewdesc\" rows=\"8\" value=\"$report_desc\" readonly=\"readonly\">$report_desc</textarea>
+                    
 
                  </div>
 

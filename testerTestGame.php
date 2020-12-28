@@ -9,7 +9,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $gameName = $_SESSION['game_name'];
     $testerId = $_SESSION['tester_id'];
-    $developerId =  $_SESSION['developer_id'];
+    $developerId =  $_SESSION['selected_developer_id'];
 
     $bugReport = mysqli_real_escape_string($db, $_POST['bugreport']);
 
