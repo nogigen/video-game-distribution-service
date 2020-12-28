@@ -90,7 +90,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userRefund.php">Refund</a>
                 <a href="userRefundHistory.php">Refund History</a>
                 <a href="userShopHistory.php">Shop History</a>
-                <a href="userReview.php">Review Games</a>
+                <a href="userReview.php">Review</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSendFriendRequests.php">Add Friend</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
@@ -153,6 +153,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Status</th>
+                            <th></th>
                             </tr>";
 
                         while($row = mysqli_fetch_array($result)) {
