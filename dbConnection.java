@@ -12,7 +12,7 @@ public class dbConnection {
 
         // idk why but if I use the string "jdbc:mysql://localhost:3306/hw4" , I'll get an error about time zone etc. Apparently, It's a bug about mySQL and timezones. I don't know why the line
         // below solves the problem, but it solves.
-        String jdbc = "jdbc:mysql://localhost:3306/dbproject?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
+        //String jdbc = "jdbc:mysql://localhost:3306/dbproject?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
         //String jdbc = "jdbc:mysql://dijkstra.ug.bcc.bilkent.edu.tr:3306/nogay_evirgen";
 
 
@@ -39,11 +39,11 @@ public class dbConnection {
             stmt.execute("DROP PROCEDURE IF EXISTS GameNameToGameId");
 
 
-            boolean LOAD = true;
+            boolean LOAD = false;
 
             if(LOAD){
                 ScriptRunner runner = new ScriptRunner(conn, false, false);
-                String file = "D:\\cs353programmingAssigment\\/dbproject.sql";
+                String file = "D:\\cs353programmingAssigment\\/dbproject_8.sql";
                 runner.runScript(new BufferedReader(new FileReader(file)));
 
             }
@@ -92,7 +92,7 @@ public class dbConnection {
                 //FRIENDSHIPMESSAGES
                 String friendshipmessagesDefinition = "CREATE TABLE friendshipmessages " +
                         "(f_msg_id INT AUTO_INCREMENT, " +
-                        "f_msg_content VARCHAR(100), " +
+                        "f_msg_content VARCHAR(300), " +
                         "friendship_id INT, " +
                         "PRIMARY KEY(f_msg_id), " +
                         "FOREIGN KEY (friendship_id) REFERENCES friendship(friendship_id))";
@@ -121,7 +121,7 @@ public class dbConnection {
                 //COMMUNITY MESSAGES
                 String communitymessagesDefinition = "CREATE TABLE communitymessages " +
                         "(c_msg_id INT AUTO_INCREMENT, " +
-                        "c_msg_content VARCHAR(100), " +
+                        "c_msg_content VARCHAR(300), " +
                         "community_id INT, " +
                         "PRIMARY KEY(c_msg_id))";
                 stmt.execute(communitymessagesDefinition);
@@ -130,8 +130,8 @@ public class dbConnection {
                 //SYSTEM REQ
                 String systemrequirementsDefinition = "CREATE TABLE systemrequirements " +
                         "(req_id INT AUTO_INCREMENT, " +
-                        "os VARCHAR(32) NOT NULL, " +
-                        "processor VARCHAR(32) NOT NULL, " +
+                        "os VARCHAR(300) NOT NULL, " +
+                        "processor VARCHAR(300) NOT NULL, " +
                         "memory VARCHAR(32) NOT NULL, " +
                         "storage VARCHAR(32) NOT NULL, " +
                         "PRIMARY KEY(req_id))";
@@ -144,7 +144,7 @@ public class dbConnection {
                         "game_name VARCHAR(32) NOT NULL UNIQUE, " +
                         "game_price FLOAT NOT NULL CHECK(game_price >= 0), " +
                         "req_id INT, " +
-                        "game_desc VARCHAR(250) NOT NULL, " +
+                        "game_desc VARCHAR(300) NOT NULL, " +
                         "game_genre VARCHAR(250) NOT NULL, " +
                         "latest_version_no FLOAT NOT NULL DEFAULT 1.0, " +
                         "FOREIGN KEY (req_id) REFERENCES systemrequirements(req_id))";
@@ -155,7 +155,7 @@ public class dbConnection {
                 String modDefinition = "CREATE TABLE gamemod " +
                         "(mod_id INT AUTO_INCREMENT, " +
                         "mod_name VARCHAR(32) NOT NULL, " +
-                        "mod_desc VARCHAR(120) NOT NULL, " +
+                        "mod_desc VARCHAR(300) NOT NULL, " +
                         "PRIMARY KEY(mod_id))";
                 stmt.execute(modDefinition);
                 System.out.println("Mod table is created successfully.\n");
@@ -234,7 +234,7 @@ public class dbConnection {
                 String refundhistoryDefinition = "CREATE TABLE refundhistory " +
                         "(refund_id INT AUTO_INCREMENT, " +
                         "shop_id INT, " +
-                        "refund_description VARCHAR(120) NOT NULL, " +
+                        "refund_description VARCHAR(300) NOT NULL, " +
                         "refund_approval ENUM('Waiting for Approval', 'Declined', 'Accepted') DEFAULT 'Waiting for Approval', " +
                         "PRIMARY KEY(refund_id), " +
                         "FOREIGN KEY (shop_id) REFERENCES shophistory(shop_id))";
@@ -294,7 +294,7 @@ public class dbConnection {
                 //CURATOR REVIEW
                 String curatorreviewDefinition = "CREATE TABLE curatorreview " +
                         "(c_review_id INT AUTO_INCREMENT, " +
-                        "c_review_text VARCHAR(32) NOT NULL, " +
+                        "c_review_text VARCHAR(300) NOT NULL, " +
                         "c_review_score VARCHAR(32) NOT NULL, " +
                         "PRIMARY KEY(c_review_id))";
                 stmt.execute(curatorreviewDefinition);
@@ -381,7 +381,7 @@ public class dbConnection {
                 //BUG REPORT
                 String bugreportDefinition = "CREATE TABLE bugreport " +
                         "(report_id INT AUTO_INCREMENT, " +
-                        "report_description VARCHAR(200) NOT NULL, " +
+                        "report_description VARCHAR(300) NOT NULL, " +
                         "PRIMARY KEY(report_id))";
                 stmt.execute(bugreportDefinition);
                 System.out.println("BugReport table is created successfully.\n");
@@ -404,7 +404,7 @@ public class dbConnection {
                 String updateDefinition = "CREATE TABLE updategame " +
                         "(game_id INT, " +
                         "developer_id INT, " +
-                        "update_desc VARCHAR(100) NOT NULL, " +
+                        "update_desc VARCHAR(300) NOT NULL, " +
                         "new_version_no FLOAT NOT NULL, " +
                         "PRIMARY KEY(game_id), " +
                         "FOREIGN KEY (developer_id) REFERENCES developer(developer_id), " +
@@ -418,8 +418,8 @@ public class dbConnection {
                         "developer_id INT, " +
                         "req_id INT, " +
                         "ask_game_name VARCHAR(50) NOT NULL, " +
-                        "ask_game_genre VARCHAR(30) NOT NULL, " +
-                        "ask_game_desc VARCHAR(50) NOT NULL, " +
+                        "ask_game_genre VARCHAR(50) NOT NULL, " +
+                        "ask_game_desc VARCHAR(300) NOT NULL, " +
                         "approval ENUM('Available', 'Waiting for Approval', 'Declined', 'Accepted') DEFAULT 'Waiting for Approval', " +
                         "PRIMARY KEY(publisher_id, developer_id, ask_game_name), " +
                         "FOREIGN KEY (publisher_id) REFERENCES publisher(publisher_id), " +
@@ -440,41 +440,6 @@ public class dbConnection {
                 System.out.println("PublishGame table is created successfully.\n");
 
                 //INSERTION
-
-                //PERSON INSERTION
-                String personInsert = "INSERT INTO person(nick_name, email, password, person_name, person_surname) VALUES" +
-                        "( 'u1', 'u1', 'u1','u1', 'u1')";
-                System.out.println("Starting to insert values to person table...");
-                stmt.execute(personInsert);
-                System.out.println("Values are inserted to person table.\n");
-
-                //CURATOR INSERTION
-                String curatorInsert = "INSERT INTO curator VALUES" +
-                        "(1, 'c1', 'c1', 'c1', 'c1', 'c1', 0)";
-                System.out.println("Starting to insert values to curator table...");
-                stmt.execute(curatorInsert);
-                System.out.println("Values are inserted to curator table.\n");
-
-                //PUBLISHER INSERTION
-                String publisherInsert = "INSERT INTO publisher VALUES" +
-                        "(1, 'p1', 'p1', 'p1', 'p1')";
-                System.out.println("Starting to insert values to publisher table...");
-                stmt.execute(publisherInsert);
-                System.out.println("Values are inserted to publisher table.\n");
-
-                //DEVELOPER INSERTION
-                String developerInsert = "INSERT INTO developer VALUES" +
-                        "(1, 'd1', 'd1', 'd1', 'd1')";
-                System.out.println("Starting to insert values to developer table...");
-                stmt.execute(developerInsert);
-                System.out.println("Values are inserted to developer table.\n");
-
-                //TESTER INSERTION
-                String testerInsert = "INSERT INTO tester VALUES" +
-                        "(1, 't1', 't1', 't1', 't1', 't1')";
-                System.out.println("Starting to insert values to tester table...");
-                stmt.execute(testerInsert);
-                System.out.println("Values are inserted to tester table.\n");
 
 
                 //GAME NAME TO GAME ID STORED PROCEDURE
