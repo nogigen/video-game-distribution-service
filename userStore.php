@@ -25,6 +25,30 @@ if(isset($_POST['submit'])) {
     }
 }
 
+else if(isset($_POST['creditFilter'])) {
+    $lowerThan =  mysqli_real_escape_string($db,$_POST['lowerThan']);
+    $greaterThan =  mysqli_real_escape_string($db,$_POST['greaterThan']);
+
+
+    if($lowerThan == "" || $greaterThan == "") {
+
+        $query = "SELECT game_id, game_name, game_genre, game_price, developer_name, publisher_name
+        FROM game NATURAL JOIN publishgame NATURAL JOIN publisher NATURAL JOIN updategame NATURAL JOIN developer";
+
+        $resulted_query = mysqli_query($db, $query);
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('You need to give inputs.');
+        </script>";
+    }
+    else {
+        $query = "SELECT game_id, game_name, game_genre, game_price, developer_name, publisher_name
+        FROM game NATURAL JOIN publishgame NATURAL JOIN publisher NATURAL JOIN updategame NATURAL JOIN developer
+        WHERE game_price > '$greaterThan' and game_price < '$lowerThan'";
+
+        $resulted_query = mysqli_query($db, $query);
+    }
+}
+
 else {
 
     $query = "SELECT game_id, game_name, game_genre, game_price, developer_name, publisher_name
@@ -195,9 +219,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <option value = \"developer_name\">Developer Name</option>
                                 <option value = \"game_price\">Credits</option>
                             </select>
-                            <input type = \"submit\" name=\"submit\" value=\"Filter\">
+                            <input type = \"submit\"  name=\"submit\" value=\"Filter\">
                             </div>";
 
+                        
+                        echo "<div class=\"form-group\">
+                            
+                             <input type=\"text\" name=\"greaterThan\" placeholder=\"Price greater than..\">
+                             <input type=\"text\" name=\"lowerThan\" placeholder=\"Price lower than..\">
+                             <input type = \"submit\" name=\"creditFilter\" value=\"Filter\">
+                            
+                            </div>";
                        
 
                        
