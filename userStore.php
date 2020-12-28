@@ -116,13 +116,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
 
+    else if(isset($_POST['seereviews'])) {
 
+        $gameName = $_POST['gamename'];
 
+        // get the game_id from game_name
+        $queryGame = "SELECT game_id, latest_version_no FROM game WHERE game_name = '$gameName'";
+        $res = mysqli_query($db, $queryGame);
 
+        if(!$res) {
+            printf("Error: %s\n", mysqli_error($db));
+            exit();
+        }
+        $gameIdRow = mysqli_fetch_array($res);
+        $gameId = $gameIdRow['game_id'];
 
+        $_SESSION['selected_game_id'] = $gameId;
 
+        $_SESSION['selected_game_name'] = $gameName;
+        header("location: userSeeReviews.php");
 
-    
+    }
 }
 ?>
 
@@ -258,6 +272,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Price</th>
                             <th></th>
                             <th></th>
+                            <th></th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($resulted_query)) {
@@ -287,15 +302,22 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $publisher_name . "</td>";
                             echo "<td>" . $developer_name . "</td>";
                             echo "<td>" . $game_price . " TL"."</td>";
+
+                            echo "<td>
+                            <button name = \"seereviews\"class=\"btn btn-info btn-sm\">REVIEWS</button>
+                            </td>";
                             
                             if($numberOfRows == 0) {
                                 echo "<td>
                                 <button name = \"buy\"class=\"btn btn-success btn-sm\">BUY</button>
                                 </td>";
-                            }                   
+                            }     
+                            
                             echo "<td>
                             <button name = \"gift\"class=\"btn btn-primary btn-sm\">GIFT</button>
                             </td>";
+
+                            
 
                             echo "</tr>";
                             echo "</form>";
