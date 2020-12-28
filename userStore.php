@@ -30,7 +30,7 @@ else if(isset($_POST['creditFilter'])) {
     $greaterThan =  mysqli_real_escape_string($db,$_POST['greaterThan']);
 
 
-    if($lowerThan == "" || $greaterThan == "") {
+    if($lowerThan == "" && $greaterThan == "") {
 
         $query = "SELECT game_id, game_name, game_genre, game_price, developer_name, publisher_name
         FROM game NATURAL JOIN publishgame NATURAL JOIN publisher NATURAL JOIN updategame NATURAL JOIN developer";
@@ -39,6 +39,22 @@ else if(isset($_POST['creditFilter'])) {
         echo "<script LANGUAGE='JavaScript'>
         window.alert('You need to give inputs.');
         </script>";
+    }
+
+    else if($lowerThan == "") {
+        $query = "SELECT game_id, game_name, game_genre, game_price, developer_name, publisher_name
+        FROM game NATURAL JOIN publishgame NATURAL JOIN publisher NATURAL JOIN updategame NATURAL JOIN developer
+        WHERE game_price > '$greaterThan'";
+
+        $resulted_query = mysqli_query($db, $query);
+    }
+
+    else if($greaterThan == "") {
+        $query = "SELECT game_id, game_name, game_genre, game_price, developer_name, publisher_name
+        FROM game NATURAL JOIN publishgame NATURAL JOIN publisher NATURAL JOIN updategame NATURAL JOIN developer
+        WHERE game_price < '$lowerThan'";
+
+        $resulted_query = mysqli_query($db, $query);
     }
     else {
         $query = "SELECT game_id, game_name, game_genre, game_price, developer_name, publisher_name
