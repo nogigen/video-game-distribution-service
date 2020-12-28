@@ -11,8 +11,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $gameName = $_SESSION['gameName_for_mod'];
         $person_id = $_SESSION["person_id"];
-        $modName = $_POST['modname'];
-        $modDesc = $_POST['moddesc'];
+
+        $modName = mysqli_real_escape_string($db, $_POST['modname']);
+        $modDesc = mysqli_real_escape_string($db, $_POST['moddesc']);
 
         // get id from the game name
         $queryGame = "SELECT game_id FROM game WHERE game_name = '$gameName'";
@@ -51,7 +52,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-        header("location: userCheckMods.php");
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('Mod has been created.');
+        window.location.href = 'userCheckMods.php'; 
+        </script>";
+
     }
 }
 ?>
@@ -119,7 +124,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userRefund.php">Refund</a>
                 <a href="userRefundHistory.php">Refund History</a>
                 <a href="userShopHistory.php">Shop History</a>
-                <a href="userReview.php">Review Games</a>
+                <a href="userReview.php">Review</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSendFriendRequests.php">Add Friend</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>

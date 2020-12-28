@@ -18,6 +18,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         </script>";
     }
     else {
+
+        
         $query = "UPDATE person SET credits = credits + " .$amount  . " WHERE person_id = " .$person_id;
         $res = mysqli_query($db ,$query);
         if($res) {
@@ -97,7 +99,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="navbar-header">
                     <h4 class="navbar-text">User <?php echo htmlspecialchars($_SESSION['nick_name']); ?></h4>
 
-                </div>
+                    </div>
                 <a href="userWelcome.php">Home</a>
                 <a href="userLibrary.php">Library</a>
                 <a href="userStore.php">Store</a>
@@ -107,7 +109,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userRefund.php">Refund</a>
                 <a href="userRefundHistory.php">Refund History</a>
                 <a href="userShopHistory.php">Shop History</a>
-                <a href="userReview.php">Review Games</a>
+                <a href="userReview.php">Review</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSendFriendRequests.php">Add Friend</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>

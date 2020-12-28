@@ -98,16 +98,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <?php
                 $gameName = $_SESSION['game_name'];
 
-                $review_desc = $_SESSION['review_text'];
-                $rating = $_SESSION['score'];
+                $query = "SELECT c_review_text, c_review_score  FROM curator NATURAL JOIN game NATURAL JOIN publish NATURAL JOIN curatorreview WHERE game_name = '$gameName' AND curator_id = " .$_SESSION['curator_id'];
+                $res = mysqli_query($db, $query);
+                $row = mysqli_fetch_array($res);
+                $review_desc = $row['c_review_text'];
+                $rating = $row['c_review_score'];
                 
-                echo "<h2>Review of $gameName</h2>";
+                echo "<h2>Review of $gameName </h2>";
 
                 echo "<form id=\"reviewForm\" action=\"\" method=\"post\">
 
                 <div class=\"form-group\">
                     <label>Review Description</label>
-                    <input type=\"text\" name=\"reviewdesc\" class=\"form-control\" id=\"reviewdesc\" value=\"$review_desc\" readonly=\"readonly\">
+                    <textarea class=\"form-control\" name=\"review_desc\" id=\"review_desc\" rows=\"8\" value=\"$review_desc\" readonly=\"readonly\">$review_desc</textarea>
 
                  </div>
 

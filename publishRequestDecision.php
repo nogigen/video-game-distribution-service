@@ -15,6 +15,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameName = $_SESSION['selected_ask_game_name'];
     $gamePrice = (float)$_POST['gameprice'];
 
+
     if(isset($_POST['publish'])) {
 
         // check game name

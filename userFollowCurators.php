@@ -154,7 +154,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userRefund.php">Refund</a>
                 <a href="userRefundHistory.php">Refund History</a>
                 <a href="userShopHistory.php">Shop History</a>
-                <a href="userReview.php">Review Games</a>
+                <a href="userReview.php">Review</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSendFriendRequests.php">Add Friend</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
@@ -184,7 +184,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     <?php
                         // Prepare a select statement
-                        $query = "SELECT curator_id, curator_first_name, curator_last_name, no_of_followers FROM curator";
+                        $query = "SELECT curator_id, curator_login_name, curator_first_name, curator_last_name, no_of_followers FROM curator";
 
 
                         echo "<p><b>Available Curators: </b></p>";
@@ -208,9 +208,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
                             <tr>
+                            <th>Curator Nick Name</th>
                             <th>Curator First Name</th>
                             <th>Curator Last Name</th>
                             <th>No. of Followers</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
                             </tr>";
 
                         while($row = mysqli_fetch_array($result)) {
@@ -233,6 +237,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     
                             echo "<form action=\"\" METHOD=\"POST\">";                 
                             echo "<tr>";
+                            echo "<td>" . $row['curator_login_name'] . "</td>";
                             echo "<td>" . $row['curator_first_name'] . "</td>";
                             echo "<td>" . $row['curator_last_name'] . "</td>";
                             echo "<td>" . $row['no_of_followers'] . "</td>";

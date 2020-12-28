@@ -173,7 +173,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userRefund.php">Refund</a>
                 <a href="userRefundHistory.php">Refund History</a>
                 <a href="userShopHistory.php">Shop History</a>
-                <a href="userReview.php">Review Games</a>
+                <a href="userReview.php">Review</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSendFriendRequests.php">Add Friend</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
@@ -239,7 +239,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Game Genre</th>
                             <th>Publisher Name</th>
                             <th>Developer Name</th>
-                            <th>Credits</th>
+                            <th>Price</th>
+                            <th></th>
+                            <th></th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($resulted_query)) {
@@ -264,19 +266,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             echo "<form action=\"\" METHOD=\"POST\">";
                             echo "<tr>";
-                            echo "<td><input type=\"hidden\" name=\"gamename\" value=". $game_name .">" . $game_name . "</td>";
+                            echo "<td><input type=\"hidden\" name=\"gamename\" value='". $game_name ."'>" . $game_name . "</td>";
                             echo "<td>" . $game_genre . "</td>";
                             echo "<td>" . $publisher_name . "</td>";
                             echo "<td>" . $developer_name . "</td>";
-                            echo "<td>" . $game_price . "</td>";
+                            echo "<td>" . $game_price . " TL"."</td>";
                             
                             if($numberOfRows == 0) {
                                 echo "<td>
-                                <button name = \"buy\"class=\"btn btn-danger btn-sm\">BUY</button>
+                                <button name = \"buy\"class=\"btn btn-success btn-sm\">BUY</button>
                                 </td>";
                             }                   
                             echo "<td>
-                            <button name = \"gift\"class=\"btn btn-success btn-sm\">GIFT</button>
+                            <button name = \"gift\"class=\"btn btn-primary btn-sm\">GIFT</button>
                             </td>";
 
                             echo "</tr>";

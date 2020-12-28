@@ -23,8 +23,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('Friendship Request has been approved.');
+        window.location.href = 'userReceivedFriendRequests.php'; 
+        </script>";
 
-        header("location: userSentFriendRequests.php");
 
     }
     else if(isset($_POST['decline'])) {
@@ -40,8 +43,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-
-        header("location: userSentFriendRequests.php");
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('Friendship Request has been declined.');
+        window.location.href = 'userReceivedFriendRequests.php'; 
+        </script>";
 
     }
     else {
@@ -115,7 +120,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userRefund.php">Refund</a>
                 <a href="userRefundHistory.php">Refund History</a>
                 <a href="userShopHistory.php">Shop History</a>
-                <a href="userReview.php">Review Games</a>
+                <a href="userReview.php">Review</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSendFriendRequests.php">Add Friend</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>

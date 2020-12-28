@@ -137,7 +137,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             
                             echo "<td>
-                            <button onclick=\"cancelled()\" name = \"test_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">WRITE BUG REPORT</button>
+                            <button onclick=\"cancelled()\" name = \"test_button\"class=\"btn btn-success btn-sm\" value ='".$row['game_name'] ."'>WRITE BUG REPORT</button>
                             </td>";
                                     
   

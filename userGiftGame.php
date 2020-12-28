@@ -180,7 +180,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userRefund.php">Refund</a>
                 <a href="userRefundHistory.php">Refund History</a>
                 <a href="userShopHistory.php">Shop History</a>
-                <a href="userReview.php">Review Games</a>
+                <a href="userReview.php">Review</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSendFriendRequests.php">Add Friend</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
@@ -209,7 +209,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <br><br>
 
                 <?php
-                $gameId = $_SESSION[selected_game_id];
+                $gameId = $_SESSION['selected_game_id'];
                 $query = "SELECT game_name from game WHERE game_id = '$gameId'";
                 $res = mysqli_query($db, $query);
 

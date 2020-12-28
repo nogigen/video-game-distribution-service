@@ -82,7 +82,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="userRefund.php">Refund</a>
                 <a href="userRefundHistory.php">Refund History</a>
                 <a href="userShopHistory.php">Shop History</a>
-                <a href="userReview.php">Review Games</a>
+                <a href="userReview.php">Review</a>
                 <a href="userReceivedFriendRequests.php">Received Friend Requests</a>
                 <a href="userSendFriendRequests.php">Add Friend</a>
                 <a href="userSentFriendRequests.php">Sent Friend Requests</a>
@@ -97,7 +97,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "<a href='userCredits.php'>Credit : $credit TL </a>";
                 ?>
 
-                <a href="userReview.php">Review Games</a>
                 
                 <div class="navbar-right">
 
@@ -121,7 +120,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $res->close();
                 $db->next_result();
 
-                
+
                 $queryReviewId = "SELECT review_text, review_score FROM personreview NATURAL JOIN review WHERE game_id = '$gameId' AND person_id = '$person_id'";
                 $result = mysqli_query($db, $queryReviewId);
                 $reviewIdRow = mysqli_fetch_array($result);
@@ -134,7 +133,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <div class=\"form-group\">
                     <label>Review Description</label>
-                    <input type=\"text\" name=\"reviewdesc\" class=\"form-control\" id=\"reviewdesc\" value=\"$review_desc\" readonly=\"readonly\">
+                    <textarea class=\"form-control\" name=\"review_desc\" id=\"review_desc\" rows=\"8\" value=\"$review_desc\" readonly=\"readonly\">$review_desc</textarea>
 
                  </div>
 

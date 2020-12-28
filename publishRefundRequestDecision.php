@@ -96,7 +96,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
-        header("location: publishRefundRequests.php");
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('Refund Request has been approved.');
+        window.location.href = 'publishRefundRequests.php'; 
+        </script>";
+
+        
     }
     
     elseif(isset($_POST['decline'])) { 
@@ -108,7 +113,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
             
         }
-        header("location: publishRequest.php");
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('Refund Request has been declined.');
+        window.location.href = 'publishRefundRequests.php'; 
+        </script>";
 
     }
     else {

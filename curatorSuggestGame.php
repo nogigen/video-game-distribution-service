@@ -20,6 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     else if(isset($_POST['review_details_button'])) {
 
         $_SESSION['game_name'] = $_POST['review_details_button'];
+        
 
         header("location: curatorReviewGameDetails.php");
 
@@ -133,8 +134,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         while($row = mysqli_fetch_array($result)) {
 
                             $curatorId = $_SESSION['curator_id'];
+                            $gameName = $row['game_name'];
 
-                            $is_ever_reviewed = "SELECT game_id FROM game NATURAL JOIN publish NATURAL JOIN curatorreview WHERE curator_id = '$curatorId'";
+                            $is_ever_reviewed = "SELECT game_id FROM game NATURAL JOIN publish NATURAL JOIN curatorreview WHERE curator_id = '$curatorId' AND game_name = '$gameName'";
                             $res = mysqli_prepare($db, $is_ever_reviewed);
                             mysqli_stmt_execute($res);
                             mysqli_stmt_store_result($res);
@@ -155,12 +157,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             if($isReviewed){
                                 echo "<td>
-                                <button onclick=\"cancelled()\" name = \"review_details_button\"class=\"btn btn-primary btn-sm\" value =".$row['game_name'] .">REVIEW DETAILS</button>
+                                <button onclick=\"cancelled()\" name = \"review_details_button\"class=\"btn btn-primary btn-sm\" value ='".$row['game_name'] ."'>REVIEW DETAILS</button>
                                 </td>";
                             }   
                             else{
                                 echo "<td>
-                                <button onclick=\"cancelled()\" name = \"review_button\"class=\"btn btn-success btn-sm\" value =".$row['game_name'] .">REVIEW</button>
+                                <button onclick=\"cancelled()\" name = \"review_button\"class=\"btn btn-success btn-sm\" value ='".$row['game_name'] ."'>REVIEW</button>
                                 </td>";
                             }         
   
