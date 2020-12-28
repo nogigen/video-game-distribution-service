@@ -92,9 +92,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 exit();
             }
 
-            header("location: userRefund.php");
-
-
+            echo "<script LANGUAGE='JavaScript'>
+            window.alert('Refund request has been sent to the publisher.');
+            window.location.href = 'userRefund.php'; 
+            </script>";
 
 
         }

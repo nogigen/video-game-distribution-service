@@ -207,7 +207,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Game Genre</th>
                             <th>Publisher Name</th>
                             <th>Developer Name</th>
-                            <th>Credits</th>
+                            <th>Price</th>
+                            <th></th>
+                            <th></th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($resulted_query)) {
@@ -236,15 +238,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             echo "<td>" . $game_genre . "</td>";
                             echo "<td>" . $publisher_name . "</td>";
                             echo "<td>" . $developer_name . "</td>";
-                            echo "<td>" . $game_price . "</td>";
+                            echo "<td>" . $game_price . " TL"."</td>";
                             
                             if($numberOfRows == 0) {
                                 echo "<td>
-                                <button name = \"buy\"class=\"btn btn-danger btn-sm\">BUY</button>
+                                <button name = \"buy\"class=\"btn btn-success btn-sm\">BUY</button>
                                 </td>";
                             }                   
                             echo "<td>
-                            <button name = \"gift\"class=\"btn btn-success btn-sm\">GIFT</button>
+                            <button name = \"gift\"class=\"btn btn-primary btn-sm\">GIFT</button>
                             </td>";
 
                             echo "</tr>";

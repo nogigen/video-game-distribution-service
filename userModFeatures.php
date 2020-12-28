@@ -30,8 +30,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             printf("Error: Download mod. %s\n", mysqli_error($db));
             exit();
         }
+
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('Mod has been installed.');
+        window.location.href = 'userSeeMod.php'; 
+        </script>";
         
-        header("location: userSeeMod.php");
     }
     else {
         echo "<script LANGUAGE='JavaScript'>
@@ -210,7 +214,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                         </div>";
 
-                    echo "<button type=\"submit\"  name =\"install\" class=\"btn btn-primary\">INSALL MOD</button>";
+                    echo "<button type=\"submit\"  name =\"install\" class=\"btn btn-primary\">INSTALL MOD</button>";
                         
                         
                     echo "</form>";

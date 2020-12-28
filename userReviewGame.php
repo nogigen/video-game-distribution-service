@@ -129,7 +129,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "<a href='userCredits.php'>Credit : $credit TL </a>";
                 ?>
 
-                <a href="userReview.php">Review Games</a>
                 
                 <div class="navbar-right">
 

@@ -182,6 +182,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Game Genre</th>
                             <th>Mod Name</th>
                             <th>Mod's Creator</th>
+                            <th></th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {
@@ -235,7 +236,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             }
                             else {
                                 echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"uninstall_mod\"class=\"btn btn-success btn-sm\">UNINSTALL MOD</button>
+                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"uninstall_mod\"class=\"btn btn-danger btn-sm\">UNINSTALL MOD</button>
                                 </td>";
                             }
 

@@ -159,8 +159,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Game Genre</th>
                             <th>Publisher Name</th>
                             <th>Developer Name</th>
-                            <th>Latest Version No</th>
+                            <th>Latest Version</th>
                             <th>User's version</th>
+                            <th></th>
+                            <th></th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {
@@ -240,7 +242,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 </td>";
 
                                 echo "<td> 
-                                     <button type=\"submit\" onclick=\"checkEmpty()\" name = \"see_mod\"class=\"btn btn-success btn-sm\">SEE MODS</button>
+                                     <button type=\"submit\" onclick=\"checkEmpty()\" name = \"see_mod\"class=\"btn btn-primary btn-sm\">SEE MODS</button>
                                 </td>";
                             }
 

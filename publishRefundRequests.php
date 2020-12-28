@@ -131,11 +131,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <tr>
                             <th>Game Name</th>
                             <th>Game Genre</th>
-                            <th>User NickName</th>                            
+                            <th>User Nick Name</th>                            
                             <th>Developer Name</th>
                             <th>Bought Date</th>
                             <th>Bought Price</th>
                             <th>Refund Status</th>
+                            <th></th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {

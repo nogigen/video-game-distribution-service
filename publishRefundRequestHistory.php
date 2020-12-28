@@ -194,6 +194,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                             // get bought date and price from shop_id
                             $query = "SELECT bought_date, bought_price FROM shophistory WHERE shop_id = '$shop_id'";
+                            $res = mysqli_query($db, $query);
                             if(!$res) {
                                 printf("Error5: %s\n", mysqli_error($db));
                                 exit();

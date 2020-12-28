@@ -195,8 +195,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Game Genre</th>
                             <th>Publisher Name</th>
                             <th>Developer Name</th>
-                            <th>Latest Version No</th>
-                            <th>User's version</th>
+                            <th>Latest Version</th>
+                            <th>User's Version</th>
+                            <th></th>
                             </tr>";
 
                         while($hasRow = mysqli_fetch_array($result)) {
@@ -286,7 +287,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             
                             if($isInstalled) {
                                 echo "<td> 
-                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"uninstall\"class=\"btn btn-success btn-sm\">UNINSTALL</button>
+                                    <button type=\"submit\" onclick=\"checkEmpty()\" name = \"uninstall\"class=\"btn btn-danger btn-sm\">UNINSTALL</button>
                                 </td>";
 
                             }
