@@ -150,6 +150,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             <th>Nickname</th>
                             <th>First Name</th>
                             <th>Last Name</th>
+                            <th></th>
                             </tr>";
 
                         while($row = mysqli_fetch_array($result)) {

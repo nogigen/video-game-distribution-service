@@ -209,7 +209,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <br><br>
 
                 <?php
-                $gameId = $_SESSION[selected_game_id];
+                $gameId = $_SESSION['selected_game_id'];
                 $query = "SELECT game_name from game WHERE game_id = '$gameId'";
                 $res = mysqli_query($db, $query);
 
