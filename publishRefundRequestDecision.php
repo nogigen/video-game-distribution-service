@@ -207,7 +207,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $refund_id = $_SESSION['selected_refund_id'];
 
                     // get game id and person id from refund id
-                    $query = "SELECT game_id, person_id FROM request WHERE publisher_id = '$publisher_id'";
+                    $query = "SELECT game_id, person_id FROM request WHERE refund_id = '$refund_id'";
                     $result = mysqli_query($db, $query);
                     if (!$result) {
                         printf("Error: getting game name and game genre %s\n", mysqli_error($db));

@@ -50,7 +50,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         
         echo "<script LANGUAGE='JavaScript'>
-        window.alert('Report has been sent to the Publisher');
+        window.alert('Report has been sent to the Developer');
         window.location.href = 'testerTest.php'; 
         </script>";
 

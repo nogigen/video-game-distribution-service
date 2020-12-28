@@ -30,8 +30,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             printf("Error: Update %s\n", mysqli_error($db));
             exit();
         }
+
+        echo "<script LANGUAGE='JavaScript'>
+        window.alert('Game is updated.');
+        window.location.href = 'userCheckUpdates.php'; 
+        </script>";
         
-        header("location: userCheckUpdates.php");
     }
     else {
         echo "<script LANGUAGE='JavaScript'>

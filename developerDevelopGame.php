@@ -21,13 +21,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $developerId = $_SESSION["developer_id"];
 
 
-    $gameName = mysqli_real_escape_string($db, $_POST['gamename']);
-    $gameGenre = mysqli_real_escape_string($db, $_POST['gamegenre']);
-    $gameDesc = mysqli_real_escape_string($db, $_POST['gamedesc']);
-    $os = mysqli_real_escape_string($db, $_POST['operatingsystem']);
-    $memory = mysqli_real_escape_string($db, $_POST['memory']);
-    $storage = mysqli_real_escape_string($db, $_POST['memory']);
-    $processor = mysqli_real_escape_string($db, $_POST['processor']);
+    $gameName = $_POST['gamename'];
+    $gameGenre = $_POST['gamegenre'];
+    $gameDesc = $_POST['gamedesc'];
+    $os = $_POST['operatingsystem'];
+    $memory = $_POST['memory'];
+    $storage = $_POST['memory'];
+    $processor = $_POST['processor'];
 
     $query = "SELECT game_id FROM game WHERE game_name = '$gameName'";
     $res = mysqli_prepare($db, $query);
@@ -303,14 +303,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         echo "<table class=\"table table-lg table-striped\" id=\"myTable\">
                             <tr>
                             <th>Publisher Name</th>
-                            <th>Publisher ID</th>
                             <th>Option</th>
                             </tr>";
 
                         while($row = mysqli_fetch_array($result)) {
                             echo "<tr>";
                             echo "<td>" . $row['publisher_login_name'] . "</td>";
-                            echo "<td>" . $row['publisher_id'] . "</td>";
                             echo "<td> 
                                     <button type=\"submit\" onclick=\"checkEmpty()\" name = \"selected_publisher_id\"class=\"btn btn-success btn-sm\"  value =".$row['publisher_id'].">SELECT</button>
                                 </td>";
