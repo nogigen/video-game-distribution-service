@@ -26,7 +26,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     $gameDesc = $_POST['gamedesc'];
     $os = $_POST['operatingsystem'];
     $memory = $_POST['memory'];
-    $storage = $_POST['memory'];
+    $storage = $_POST['storage'];
     $processor = $_POST['processor'];
 
     $query = "SELECT game_id FROM game WHERE game_name = '$gameName'";
