@@ -28,7 +28,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
             
             }
-        header("location: publisherMyGames.php");
+
+            echo "<script LANGUAGE='JavaScript'>
+            window.alert('Game price has been updated.');
+            window.location.href = 'publisherMyGames.php'; 
+            </script>";   
 
         }
     }
